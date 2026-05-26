@@ -23,6 +23,18 @@ LendlyApp resuelve esto integrando todos estos flujos bajo una arquitectura de s
 
 ---
 
+## 2.1 Diseño Visual y Referencia de Figma
+
+La aplicación sigue fielmente el diseño de la interfaz y la guía de estilos provistas en el archivo de Figma local del proyecto:
+* **Archivo de Diseño:** [Loan Management and Fintech Mobile Design Kit (Community).fig](file:///c:/Users/-Batt0/Desktop/Parcial%20TP3/Loan%20Management%20and%20Fintech%20Mobile%20Design%20Kit%20(Community).fig) (Ubicado en la raíz del espacio de trabajo).
+* **Identidad Visual y Paleta de Colores (Premium Fintech):**
+  * **Color Primario (Emerald Green):** `#0E9F6E` (y variantes de luminancia para interacciones). Representa crecimiento financiero, éxito y balance positivo.
+  * **Color Secundario (Navy/Slate Slate 800):** `#1E293B`. Otorga confianza, estabilidad y elegancia institucional.
+  * **Color Terciario / Acento (Amber Orange):** `#F59E0B`. Utilizado para llamadas a la acción, alertas y estados del score crediticio intermedio.
+  * **Fondos (Slate 50 / Slate 900):** `#F8FAFC` en tema claro y `#0F172A` en tema oscuro, asegurando un contraste prémium y descansado.
+
+---
+
 ## 3. Alcance
 
 ### 3.1 Dentro del Alcance
