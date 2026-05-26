@@ -4,7 +4,7 @@ plugins {
   alias(libs.plugins.kotlin.serialization)
   alias(libs.plugins.hilt)
   id("org.jetbrains.kotlin.android")
-  id("kotlin-kapt")
+  alias(libs.plugins.ksp)
 }
 
 android {
@@ -88,7 +88,7 @@ dependencies {
 
   // Dependencias Añadidas
   implementation(libs.hilt.android)
-  "kapt"(libs.hilt.compiler)
+  ksp(libs.hilt.compiler)
   implementation(libs.hilt.navigation.compose)
 
   implementation(libs.retrofit)
@@ -97,7 +97,7 @@ dependencies {
 
   implementation(libs.room.runtime)
   implementation(libs.room.ktx)
-  "kapt"(libs.room.compiler)
+  ksp(libs.room.compiler)
 
   implementation(libs.coil.compose)
   implementation(libs.datastore.preferences)
