@@ -28,6 +28,13 @@ El código fuente está estructurado de manera modular dentro del paquete `com.e
 - `domain/`: Lógica de negocio, modelos y casos de uso.
 - `presentation/`: Interfaz de usuario dividida por feature (ej: `auth`, `navigation`, `theme`).
 
+## 📋 Especificaciones del Proyecto
+
+Para guiar el desarrollo de todo el equipo y asegurar el cumplimiento de las pautas del parcial, hemos redactado especificaciones formales:
+* **[Especificación Funcional](docs/SPEC_FUNCIONAL.md):** Describe el alcance de la app, las historias de usuario, las reglas de negocio (límites de crédito por Score) y la división detallada del backlog de tareas para cada integrante del grupo.
+* **[Especificación Técnica](docs/SPEC_TECNICO.md):** Contiene el mapa del stack, los esquemas de base de datos local y DataStore, la estructura de directorios y los endpoints específicos de la API REST que cada módulo debe consumir.
+* **Diseño Figma:** Toda la implementación visual se rige por el archivo local `Loan Management and Fintech Mobile Design Kit (Community).fig`.
+
 ## 🚀 Cómo empezar (Para los Colaboradores)
 
 1. Clonen el repositorio en su entorno local:
