@@ -73,16 +73,19 @@ LendlyApp/
 
 Para asegurar consistencia visual con el archivo de diseño **`Loan Management and Fintech Mobile Design Kit (Community).fig`**, se definieron los siguientes tokens en [Color.kt](file:///c:/Users/-Batt0/Desktop/Parcial%20TP3/LendlyApp/app/src/main/java/com/example/lendlyapp/theme/Color.kt) y se mapearon en [Theme.kt](file:///c:/Users/-Batt0/Desktop/Parcial%20TP3/LendlyApp/app/src/main/java/com/example/lendlyapp/theme/Theme.kt):
 
-### Mapeo de Colores del Tema
-| Token de UI | Color Hex | Uso en Material 3 |
+### Mapeo de Colores del Tema (Tokens de figma.json)
+| Token de UI (Compose) | Color Hex | Uso en Material 3 |
 |---|---|---|
-| `EmeraldPrimary` | `#0E9F6E` | Color principal de la marca, botones principales, barra de título activa, etc. |
-| `SlateSecondary` | `#1E293B` | Color para tarjetas secundarias, texto de énfasis medio, bordes. |
-| `AmberTertiary` | `#F59E0B` | Acentuación, estados intermedios del Score Gauge. |
-| `LightBackground` | `#F8FAFC` | Fondo de la aplicación en tema claro. |
-| `LightSurface` | `#FFFFFF` | Fondo de las tarjetas y contenedores en tema claro. |
-| `DarkBackground` | `#0F172A` | Fondo de la aplicación en tema oscuro. |
-| `DarkSurface` | `#1E293B` | Fondo de las tarjetas y contenedores en tema oscuro. |
+| `FigmaNeonGreen` | `#7BF179` | Color de marca primario interactivo, botones principales (Primary), estados activos. |
+| `FigmaOliveGreen` | `#4C662B` | Color de marca secundario, bordes, iconos de énfasis medio. |
+| `FigmaOrangeAccent` | `#FD7E14` | Acentuación y estados de alerta. |
+| `FigmaLightBg` | `#FCF8F8` | Fondo neutral cálido para la aplicación en tema claro. |
+| `FigmaLightSurface` | `#FFFFFF` | Fondo de las tarjetas, modales y campos en tema claro. |
+| `FigmaLightText` | `#171D1E` | Color para textos principales en tema claro. |
+| `FigmaDarkBg` | `#0B0B0B` | Fondo del modo oscuro general. |
+| `FigmaDarkForest` | `#002203` | Fondo de pantallas oscuras de alto impacto (ej. Onboarding). |
+| `FigmaDarkSurface` | `#122300` | Superficies de tarjetas y contenedores en tema oscuro/onboarding. |
+| `FigmaMintSplash` | `#E5F5EA` | Color de fondo específico para la pantalla de Splash. |
 
 ### Configuración del Tema
 * Se ha deshabilitado el color dinámico por defecto (`dynamicColor = false`) en `LendlyAppTheme` para forzar el uso estricto del branding corporativo de la aplicación.
