@@ -3,10 +3,10 @@
 LendlyApp es una aplicación fintech orientada a Android, desarrollada como evaluación para el curso de **Desarrollo de Aplicaciones Móviles**. Facilita la gestión de préstamos, pagos, compras en un shop integrado y la administración del perfil y puntaje crediticio de los clientes de Software ORT.
 
 ## 👥 Equipo de Trabajo
-- **[Tu Nombre/Apellido]** - Legajo: [Tu Legajo]
-- **[Compañero 2]** - Legajo: [Su Legajo]
-- **[Compañero 3]** - Legajo: [Su Legajo]
-- **[Compañero 4]** - Legajo: [Su Legajo]
+- **Marcelo Wainschenker** (GitHub: [mrw3192](https://github.com/mrw3192))
+- **Agustina Salatino** (GitHub: [agussalatino](https://github.com/agussalatino))
+- **Zaida Martinez** (GitHub: [zaimartinezj](https://github.com/zaimartinezj))
+- **Santino Lamberti** (GitHub: [santinolamberti](https://github.com/santinolamberti))
 
 ## 🛠️ Stack Tecnológico
 
@@ -32,20 +32,20 @@ El código fuente está estructurado de manera modular dentro del paquete `com.e
 
 1. Clonen el repositorio en su entorno local:
    ```bash
-   git clone <URL_DEL_REPOSITORIO>
+   git clone https://github.com/mrw3192/LendlyApp.git
    ```
 2. Abran el proyecto en **Android Studio**.
 3. El proyecto ya cuenta con la estructura base y todas las dependencias en `libs.versions.toml` y `build.gradle.kts`. Sincronicen Gradle.
-4. **Importante:** Trabajen en sus respectivas ramas (ej. `feature/modulo-3-home`) y hagan Pull Requests hacia `main`.
+4. **Importante:** Trabajen en sus respectivas ramas (ej. `feature/modulo-3-home`) y hagan Pull Requests hacia `master`.
 
 ## 📋 División de Tareas
 
 El trabajo se ha dividido equitativamente para que podamos avanzar en paralelo:
 
-- **Persona 1:** Módulo Core (Setup, Arquitectura) y Módulo de Autenticación (Splash, Login, Registro).
-- **Persona 2:** Módulo Préstamos (Home Dashboard, Lista de préstamos, Solicitud).
-- **Persona 3:** Módulo Tienda (Catálogo de productos) y Transacciones (Historial).
-- **Persona 4:** Módulo Perfil (Manage, actualización de perfil, operaciones, cerrar sesión).
+- **Marcelo Wainschenker:** Módulo Core (Setup, Arquitectura) y Módulo de Autenticación (Splash, Login, Registro).
+- **Agustina Salatino:** Módulo Préstamos (Home Dashboard, Lista de préstamos, Solicitud).
+- **Zaida Martinez:** Módulo Tienda (Catálogo de productos) y Transacciones (Historial).
+- **Santino Lamberti:** Módulo Perfil (Manage, actualización de perfil, operaciones, cerrar sesión).
 
 ## 🤖 Uso de IA Generativa
 Este proyecto ha hecho uso de herramientas de IA generativa para establecer la arquitectura base, dependencias y planificación del proyecto, cumpliendo con la declaración de uso solicitada.
