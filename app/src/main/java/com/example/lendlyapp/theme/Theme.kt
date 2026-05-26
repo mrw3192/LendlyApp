@@ -12,27 +12,27 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = EmeraldPrimaryLight,
-    onPrimary = Color(0xFF070B0E),
-    secondary = SlateSecondaryLight,
+    primary = FigmaNeonGreen,
+    onPrimary = FigmaDarkForest,
+    secondary = FigmaOliveGreen,
     onSecondary = Color.White,
-    tertiary = AmberTertiary,
-    background = DarkBackground,
-    surface = DarkSurface,
-    onBackground = DarkOnBackground,
-    onSurface = DarkOnSurface
+    tertiary = FigmaOrangeAccent,
+    background = FigmaDarkBg,
+    surface = FigmaDarkSurface,
+    onBackground = FigmaDarkText,
+    onSurface = FigmaDarkText
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = EmeraldPrimary,
-    onPrimary = Color.White,
-    secondary = SlateSecondary,
+    primary = FigmaNeonGreen,
+    onPrimary = FigmaDarkForest,
+    secondary = FigmaOliveGreen,
     onSecondary = Color.White,
-    tertiary = AmberTertiary,
-    background = LightBackground,
-    surface = LightSurface,
-    onBackground = LightOnBackground,
-    onSurface = LightOnSurface
+    tertiary = FigmaOrangeAccent,
+    background = FigmaLightBg,
+    surface = FigmaLightSurface,
+    onBackground = FigmaLightText,
+    onSurface = FigmaLightText
 )
 
 @Composable

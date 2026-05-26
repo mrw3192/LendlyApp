@@ -2,25 +2,24 @@ package com.example.lendlyapp.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Fintech Emerald Palette
-val EmeraldPrimary = Color(0xFF0E9F6E)    // Primary Brand Green
-val EmeraldPrimaryDark = Color(0xFF0B7E58)
-val EmeraldPrimaryLight = Color(0xFF10B981)
+// Exact Figma Style Tokens
+val FigmaNeonGreen = Color(0xFF7BF179)      // Accent / Interactive / Primary Button Green
+val FigmaOliveGreen = Color(0xFF4C662B)     // Light Primary / Secondary Green
+val FigmaDarkForest = Color(0xFF002203)     // Onboarding Screen Background / Dark Background
+val FigmaOliveSeed = Color(0xFF122300)      // Deep Olive Seed / Dark Surface
+val FigmaOrangeAccent = Color(0xFFFD7E14)   // SystemOrange / Accent Orange
 
-val SlateSecondary = Color(0xFF1E293B)    // Navy/Slate Slate 800
-val SlateSecondaryLight = Color(0xFF64748B) // Slate 500
+// Light Theme Neutrals
+val FigmaLightBg = Color(0xFFFCF8F8)        // Soft Off-White Background
+val FigmaLightSurface = Color(0xFFFFFFFF)
+val FigmaLightText = Color(0xFF171D1E)       // Dark Slate Charcoal Text
 
-val AmberTertiary = Color(0xFFF59E0B)     // Accent Amber
+// Dark Theme Neutrals
+val FigmaDarkBg = Color(0xFF0B0B0B)         // Deep Charcoal Black Background
+val FigmaDarkSurface = Color(0xFF122300)     // Dark Olive Surface
+val FigmaDarkText = Color(0xFFFCF8F8)
 
-// Light Mode Neutral Colors
-val LightBackground = Color(0xFFF8FAFC)   // Slate 50
-val LightSurface = Color(0xFFFFFFFF)
-val LightOnBackground = Color(0xFF0F172A) // Slate 900
-val LightOnSurface = Color(0xFF0F172A)
+// Special Screen Fills
+val FigmaMintSplash = Color(0xFFE5F5EA)     // Splash Screen Mint Background
 
-// Dark Mode Neutral Colors
-val DarkBackground = Color(0xFF0F172A)    // Slate 900
-val DarkSurface = Color(0xFF1E293B)       // Slate 800
-val DarkOnBackground = Color(0xFFF8FAFC)  // Slate 50
-val DarkOnSurface = Color(0xFFF8FAFC)
 
