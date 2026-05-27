@@ -27,6 +27,7 @@ gradle/wrapper/gradle-wrapper.jar
 # Android Studio / IntelliJ IDEA
 # =============================================
 /.idea/
+.idea/
 # Uncomment if you don't share run configurations:
 # /.idea/runConfigurations/
 
