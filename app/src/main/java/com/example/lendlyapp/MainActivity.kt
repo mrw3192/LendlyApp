@@ -4,19 +4,24 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.ui.Modifier
+import com.example.lendlyapp.presentation.navigation.AppNavigation
 import com.example.lendlyapp.theme.LendlyAppTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-    enableEdgeToEdge()
-    setContent {
-      LendlyAppTheme { Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) { MainNavigation() } }
+        // enableEdgeToEdge draws content behind status bar and navigation bar.
+        // Each screen manages its own insets / status bar icon colour.
+        enableEdgeToEdge()
+
+        setContent {
+            // dynamicColor = false → enforces Figma colour tokens on all API levels.
+            LendlyAppTheme(dynamicColor = false) {
+                AppNavigation()
+            }
+        }
     }
-  }
 }

@@ -100,5 +100,12 @@ dependencies {
   ksp(libs.room.compiler)
 
   implementation(libs.coil.compose)
+  implementation(libs.coil.svg)
   implementation(libs.datastore.preferences)
+
+  // Compose Foundation (HorizontalPager, explicit)
+  implementation("androidx.compose.foundation:foundation")
+
+  // Material Icons Extended (payment, shopping, calendar icons)
+  implementation("androidx.compose.material:material-icons-extended")
 }

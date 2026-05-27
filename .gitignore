@@ -1,15 +1,91 @@
+# =============================================
+# Android / Gradle
+# =============================================
 *.iml
-.gradle
+.gradle/
 /local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
+/build/
+/captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# Generated files
+bin/
+gen/
+out/
+release/
+
+# Gradle wrapper (keep gradlew scripts, ignore cache)
+.gradle/
+gradle/wrapper/gradle-wrapper.jar
+
+# =============================================
+# Android Studio / IntelliJ IDEA
+# =============================================
+/.idea/
+.idea/
+# Uncomment if you don't share run configurations:
+# /.idea/runConfigurations/
+
+# =============================================
+# Kotlin
+# =============================================
+.kotlin/
+
+# =============================================
+# Keystore / Signing (NUNCA subir al repo)
+# =============================================
+*.jks
+*.keystore
+keystore.properties
+signing.properties
+release-keystore.properties
+
+# =============================================
+# Google Services / Firebase
+# =============================================
+google-services.json
+GoogleService-Info.plist
+.firebase/
+
+# =============================================
+# Secrets / API Keys
+# =============================================
+secrets.properties
+apikeys.properties
+local.defaults.properties
+
+# =============================================
+# OS
+# =============================================
+
+# macOS
 .DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
-local.properties
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Linux
+*~
+
+# =============================================
+# Misceláneos
+# =============================================
+*.log
+*.tmp
+*.temp
+*.swp
+*.bak
+*.orig
