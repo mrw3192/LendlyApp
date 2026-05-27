@@ -1,199 +1,523 @@
-# Espec Funcional — LendlyApp
-**Versión 1.0 — Mayo 2026**
+# Especificación Funcional — LendlyApp
+
+**Versión 3.0 — Mayo 2026**
 
 ---
 
-## 1. Objetivo
+# 1. Objetivo
 
-El sistema **LendlyApp** es una aplicación móvil nativa para Android diseñada para automatizar y facilitar el acceso a microcréditos, la adquisición de productos a crédito (Shop integrado) y el control financiero personal de los usuarios. 
+**LendlyApp** es una aplicación móvil Android orientada a la gestión de microcréditos, compras financiadas y control financiero personal.
 
-La aplicación reemplaza la necesidad de realizar simulaciones financieras manuales y de acudir a plataformas web complejas, ofreciendo una experiencia 100% móvil, intuitiva, rápida y con validación automática de perfiles crediticios a través de una API REST.
+La aplicación busca ofrecer una experiencia 100 % móvil, simple y rápida, permitiendo:
 
----
+* Solicitar préstamos.
+* Consultar límites de crédito.
+* Comprar productos financiados.
+* Visualizar movimientos financieros.
+* Gestionar perfil y saldo.
 
-## 2. Contexto del Problema Actual
-
-En la actualidad, los estudiantes y jóvenes profesionales de Software ORT carecen de una herramienta financiera unificada que les permita:
-* Evaluar su puntaje crediticio de forma instantánea.
-* Simular y contratar préstamos personales adaptados a su perfil de riesgo.
-* Acceder a un catálogo de productos electrónicos y de estudio, y adquirirlos en cuotas financiadas.
-* Realizar un seguimiento transparente de todos sus movimientos (ingresos de saldo, compras y cuotas pagadas).
-
-LendlyApp resuelve esto integrando todos estos flujos bajo una arquitectura de software limpia (Clean Architecture) y moderna utilizando Jetpack Compose en Android.
+La aplicación reemplaza procesos manuales y simulaciones externas mediante una experiencia unificada centrada en el usuario.
 
 ---
 
-## 2.1 Diseño Visual y Referencia de Figma
+# 2. Objetivos del Producto
 
-La aplicación sigue fielmente el diseño de la interfaz y la guía de estilos provistas en el archivo de Figma local del proyecto:
-* **Archivo de Diseño:** [Loan Management and Fintech Mobile Design Kit (Community).fig](file:///c:/Users/-Batt0/Desktop/Parcial%20TP3/Loan%20Management%20and%20Fintech%20Mobile%20Design%20Kit%20(Community).fig) (Ubicado en la raíz del espacio de trabajo).
-* **Identidad Visual y Paleta de Colores (Premium Fintech - Mapeado desde figma.json):**
-  * **Color Primario (Figma Neon Green):** `#7BF179`. Utilizado para elementos de acción clave (botones de confirmación, Cash In, Request Loan, etc.) y estados activos/resaltados.
-  * **Color Secundario (Figma Olive Green):** `#4C662B`. Utilizado para branding, cabeceras secundarias y textos de énfasis medio.
-  * **Color Terciario / Acento (Figma Orange Accent):** `#FD7E14`. Para alertas y avisos en la UI.
-  * **Fondos de Pantalla (Claro / Oscuro / Splash):**
-    * Tema Claro (`FigmaLightBg`): `#FCF8F8`. Fondo neutral cálido y sofisticado.
-    * Tema Oscuro (`FigmaDarkForest` / `FigmaDarkBg`): `#002203` (para onboarding de alto contraste) y `#0B0B0B` (para modo oscuro estándar).
-    * Fondo de Splash (`FigmaMintSplash`): `#E5F5EA`. Color verde menta pastel para la pantalla de carga inicial.
+## 2.1 Objetivos de negocio
 
----
+* Incrementar la accesibilidad a préstamos personales.
+* Facilitar compras financiadas desde la aplicación.
+* Centralizar información financiera del usuario.
+* Incentivar el uso recurrente mediante experiencia simple y rápida.
 
-## 3. Alcance
+## 2.2 Objetivos de experiencia
 
-### 3.1 Dentro del Alcance
-
-| Módulo / Épica | Descripción |
-|---|---|
-| **Registro y Autenticación** | Pantalla de Splash, Login con validaciones, Registro de nuevos usuarios y persistencia de sesión con DataStore. |
-| **Navegación Core** | Bottom Navigation Bar para cambiar entre las 5 pestañas principales: Home, Préstamos, Tienda, Historial y Perfil. |
-| **Dashboard (Home)** | Indicador visual animado de Credit Score (Gauge), perfil básico del usuario y resumen de balance actual. |
-| **Simulador y Solicitud de Préstamos** | Calculador interactivo de cuotas, montos e intereses, y solicitud de créditos con aprobación inmediata basada en el Score. |
-| **Tienda (Shop)** | Catálogo de productos, ficha detallada del producto y simulación de compra financiada a crédito. |
-| **Historial Financiero** | Lista cronológica de transacciones (Cash In, Cuota Pagada, Compra) con filtros rápidos. |
-| **Perfil y Administración** | Actualización de perfil del usuario, Cash In (recarga de saldo simulada) y cierre seguro de sesión. |
-
-### 3.2 Fuera del Alcance
-
-| Área / Módulo | Motivo |
-|---|---|
-| **Pasarelas de Pago Reales (Stripe/MercadoPago)** | Fuera de scope; los pagos y recargas de saldo se simulan a través de endpoints de la API REST de prueba. |
-| **Envío de SMS/WhatsApp reales para verificación** | La verificación se simula en la UI de Registro para simplificar el flujo del examen. |
-| **Emisión física de tarjetas de débito/crédito** | LendlyApp funciona exclusivamente como billetera y simulador de crédito digital. |
+* Navegación intuitiva.
+* Flujo de onboarding corto.
+* Acciones principales accesibles desde Home.
+* Baja fricción en login y solicitud de préstamos.
+* Feedback visual claro ante éxito, carga o error.
 
 ---
 
-## 4. Backlog de Épicas y Tareas (División por Integrantes)
+# 3. Alcance
 
-Para garantizar un desarrollo ordenado y sin solapamientos en Git, el proyecto se divide en **5 Épicas**, asignadas equitativamente entre los 4 integrantes del equipo.
+## 3.1 Dentro del alcance
 
-```mermaid
-graph TD
-    A[LendlyApp] --> B[Épica 1: Auth & Core - Marcelo]
-    A --> C[Épica 2: Dashboard & Loans - Agustina]
-    A --> D[Épica 3: Shop & Catalogo - Zaida]
-    A --> E[Épica 4: Transacciones & Historial - Zaida/Santino]
-    A --> F[Épica 5: Perfil & Cash In - Santino]
+| Módulo            | Descripción                             |
+| ----------------- | --------------------------------------- |
+| Onboarding & Auth | Splash, onboarding, login y registro    |
+| Home              | Dashboard principal y accesos rápidos   |
+| Préstamos         | Simulación y solicitud de préstamos     |
+| Shop              | Catálogo de productos financiables      |
+| Historial         | Consulta de movimientos y transacciones |
+| Perfil            | Datos personales, cash in y logout      |
+
+---
+
+## 3.2 Fuera del alcance
+
+* Integración con bancos reales.
+* Pasarelas de pago reales.
+* Transferencias bancarias.
+* Emisión de tarjetas físicas.
+* Verificación por SMS o WhatsApp.
+* Sistema antifraude avanzado.
+* Firma digital legal.
+
+---
+
+# 4. Roles de Usuario
+
+## 4.1 Usuario autenticado
+
+Puede:
+
+* Solicitar préstamos.
+* Comprar productos.
+* Consultar historial.
+* Gestionar perfil.
+* Realizar cash in.
+
+---
+
+## 4.2 Usuario no autenticado
+
+Puede:
+
+* Ver onboarding.
+* Registrarse.
+* Iniciar sesión.
+
+No puede acceder a funcionalidades financieras.
+
+---
+
+# 5. Navegación General
+
+## 5.1 Flujo principal
+
+```text
+Splash
+ ├─ Usuario autenticado → Home
+ ├─ Primera apertura → Onboarding
+ │      ├─ Registro → Home
+ │      └─ Login → Home
+ └─ Usuario no autenticado → Login
 ```
 
 ---
 
-### 📋 Épica 1: Setup Core & Módulo de Autenticación
-* **Responsable:** Marcelo Wainschenker
-* **Estado:** Completado (Rama `feature/auth`)
+## 5.2 Navegación inferior principal
 
-| Código | Tarea / Subtarea | Estimación |
-|---|---|---|
-| **T1.1** | Configuración base del proyecto, Gradle Kotlin DSL, Hilt y dependencias en `libs.versions.toml`. | 3h |
-| **T1.2** | Configuración del módulo de red base con Retrofit, Gson y el interceptor de seguridad `x-api-key: 123456789`. | 2h |
-| **T1.3** | Implementación de persistencia segura de sesión (`auth_token`) con **AndroidX DataStore**. | 3h |
-| **T1.4** | Pantalla de **Splash**: Lógica de desvío automático (si hay token → Home; si no → Login). | 2h |
-| **T1.5** | Pantalla de **Login**: UI responsiva, validaciones de email y password, consumo de `/auth/login`. | 5h |
-| **T1.6** | Pantalla de **Registro**: Formulario completo (Nombre, Apellido, DNI, Email, Password) y consumo de `/auth/create`. | 6h |
-| **T1.7** | Estructuración de la navegación base (`AppNavigation`) y configuración del Bottom Navigation Bar. | 4h |
+La aplicación posee una Bottom Navigation con 5 secciones:
+
+| Tab     | Función                |
+| ------- | ---------------------- |
+| Home    | Dashboard principal    |
+| Loans   | Solicitud de préstamos |
+| Shop    | Catálogo de productos  |
+| History | Historial financiero   |
+| Manage  | Perfil y configuración |
 
 ---
 
-### 📋 Épica 2: Dashboard & Módulo de Préstamos (Loans)
-* **Responsable:** Agustina Salatino
-* **Estado:** Pendiente
-
-| Código | Tarea / Subtarea | Estimación |
-|---|---|---|
-| **T2.1** | Diseño de la pantalla de **Dashboard (Home)**: Datos básicos del usuario (balance, límite de crédito) y accesos rápidos. | 5h |
-| **T2.2** | Desarrollo del componente personalizado **Credit Score Gauge**: Gráfico animado que represente el nivel crediticio (rojo/amarillo/verde). | 5h |
-| **T2.3** | Pantalla de **Listado de Préstamos**: GET `/loans` para listar préstamos activos y cancelados con su estado de cuotas. | 4h |
-| **T2.4** | **Simulador de Préstamos**: Selector deslizante de monto (hasta el límite permitido) y plazo (3, 6, 12 cuotas), con cálculo en tiempo real de intereses. | 6h |
-| **T2.5** | Solicitud y Aprobación: POST `/loans/apply` para crear el préstamo y redirigir a una pantalla de éxito/error. | 5h |
+# 6. Módulos Funcionales
 
 ---
 
-### 📋 Épica 3: Catálogo de Tienda (Shop)
-* **Responsable:** Zaida Martinez
-* **Estado:** Pendiente
+# 6.1 Splash
 
-| Código | Tarea / Subtarea | Estimación |
-|---|---|---|
-| **T3.1** | Diseño de la pantalla **Shop (Catálogo)**: Grilla interactiva con tarjetas de productos. | 5h |
-| **T3.2** | Integración del consumo de GET `/products` y renderización con carga de imágenes asíncronas usando **Coil**. | 4h |
-| **T3.3** | Pantalla de **Detalle del Producto**: Ficha técnica, precio de contado, y selector para calcular cuotas financiadas. | 5h |
-| **T3.4** | Lógica de **Compra a Crédito**: Consumo del endpoint de compra (POST `/purchases/create`), validando si el usuario tiene límite de crédito suficiente. | 6h |
+## Objetivo
+
+Validar el estado inicial de sesión y determinar el flujo de navegación.
 
 ---
 
-### 📋 Épica 4: Transacciones & Historial Financiero
-* **Responsables:** Zaida Martinez & Santino Lamberti
-* **Estado:** Pendiente
+## Comportamiento
 
-| Código | Tarea / Subtarea | Estimación |
-|---|---|---|
-| **T4.1** | Pantalla de **Historial (History)**: Diseño de lista cronológica unificada de movimientos (GET `/transactions`). | 4h |
-| **T4.2** | Chips de filtrado rápido por tipo: *Todos, Préstamos, Compras, Ingresos (Cash In)*. | 3h |
-| **T4.3** | Detalle de Transacción: Modal o BottomSheet que muestre la información ampliada (fecha, ID de transacción, descripción, método de pago). | 4h |
+La pantalla debe:
 
----
-
-### 📋 Épica 5: Perfil del Usuario & Operaciones (Manage)
-* **Responsable:** Santino Lamberti
-* **Estado:** Pendiente
-
-| Código | Tarea / Subtarea | Estimación |
-|---|---|---|
-| **T5.1** | Pantalla **Manage (Perfil)**: Muestra información personal completa del usuario (GET `/users/{id}`). | 4h |
-| **T5.2** | Formulario de **Actualización de Perfil**: Permitir modificar datos de contacto (teléfono, email) mediante PUT `/users/{id}`. | 5h |
-| **T5.3** | Pantalla de **Cash In (Carga de Saldo)**: Formulario para ingresar montos ficticios, simulando un depósito exitoso en la cuenta (POST `/users/cash-in`). | 5h |
-| **T5.4** | Flujo de **Cierre de Sesión**: Limpieza del `auth_token` en el DataStore y redirección inmediata al Login, limpiando el backstack de navegación. | 3h |
+* Mostrar branding inicial.
+* Validar si el usuario posee sesión activa.
+* Verificar si ya visualizó el onboarding.
+* Redireccionar automáticamente.
 
 ---
 
-## 5. Especificación de Pantallas y Flujos de Usuario
+## Reglas
 
-### 5.1 Flujo de Autenticación
-1. **Splash Screen:** Muestra la marca Lendly. Verifica en background si existe un token persistido en `DataStore`.
-   * Si existe token: Navega a `Home` (Dashboard).
-   * Si no existe token: Navega a `Login`.
-2. **Login Screen:** Pide Email y Contraseña. 
-   * Tiene validaciones locales de formato.
-   * Al presionar "Ingresar", muestra un indicador de carga (`CircularProgressIndicator`) y consume `/auth/login`.
-   * Ante éxito: guarda el token y navega a `Home`.
-   * Ante error: muestra un mensaje interactivo en pantalla (Snackbar).
-3. **Register Screen:** Permite crear una cuenta.
-   * Campos: Nombre, Apellido, DNI, Email, Password, Confirmar Password.
-   * Validaciones estrictas: DNI numérico, Email válido, coincidencia de contraseñas.
-   * Al registrarse, se consume `/auth/create` y navega automáticamente al login con el email precargado.
-
-### 5.2 Dashboard (Home)
-* **Credit Score Gauge:** Componente dinámico en forma de arco (Gauge) que posiciona una aguja según el score del usuario (rango 0 - 1000).
-  * **0 - 399 (Rojo):** Score bajo. Límite de crédito limitado.
-  * **400 - 699 (Amarillo):** Score regular/bueno. Límite intermedio.
-  * **700 - 1000 (Verde):** Score excelente. Límite de crédito máximo.
-* **Tarjeta de Balance:** Muestra el saldo disponible para compras (ficticio) y el límite disponible de crédito.
-* **Sección de Atajos rápidos:** Botones flotantes para navegar directamente a: *Solicitar Préstamo*, *Comprar en Tienda* o *Cargar Saldo*.
-
-### 5.3 Módulo de Préstamos
-* **Calculadora:** Deslizador (`Slider`) para elegir el monto deseado. El monto máximo se autocalcula según el Credit Score obtenido del perfil de usuario.
-* **Selector de Cuotas:** 3 botones para elegir entre 3, 6 y 12 cuotas.
-* Al seleccionar, se muestra el desglose del plan:
-  * Monto solicitado.
-  * Tasa de Interés Aplicada (fija mensual).
-  * Valor de cada cuota.
-  * Total a devolver.
-* **Botón "Confirmar Préstamo":** Dispara el POST a la API. Muestra pantalla de éxito animada y actualiza el saldo disponible en el Home.
+| Condición           | Resultado           |
+| ------------------- | ------------------- |
+| Usuario autenticado | Navega a Home       |
+| Primera apertura    | Navega a Onboarding |
+| Sin sesión          | Navega a Login      |
 
 ---
 
-## 6. Reglas de Negocio Consolidadas
+# 6.2 Onboarding
 
-1. **Límites de Crédito según Score:**
-   * `Score < 400`: Límite máximo de préstamo de `$15,000`. Tasa de interés del `12%` mensual.
-   * `400 <= Score < 700`: Límite máximo de préstamo de `$50,000`. Tasa de interés del `8%` mensual.
-   * `Score >= 700`: Límite máximo de préstamo de `$150,000`. Tasa de interés del `5%` mensual.
-2. **Exclusión de Compra en Shop:** No se puede adquirir ningún producto si su valor financiado en 1 cuota excede el límite de crédito disponible actual del usuario.
-3. **Autenticación Obligatoria:** Todas las peticiones HTTP (salvo `/auth/login` y `/auth/create`) deben adjuntar el Bearer Token en el header `Authorization`, además de la API key global en `x-api-key`.
+## Objetivo
+
+Introducir los beneficios principales de la aplicación.
 
 ---
 
-## 7. Requerimientos No Funcionales
+## Páginas
 
-* **Determinismo de la UI:** La interfaz debe reaccionar de forma fluida a los estados de carga, error y éxito (`UiState` usando sellados en Kotlin).
-* **Persistencia Reactiva:** El estado del token se observa mediante Kotlin Flows desde el DataStore, asegurando que la UI cambie de inmediato al expirar o cerrar sesión.
-* **Responsividad:** Soporte para pantallas medianas, pequeñas y modo oscuro básico adaptando las paletas de colores del Theme de Material 3.
+| Página | Mensaje principal      |
+| ------ | ---------------------- |
+| 1      | Préstamos rápidos      |
+| 2      | Productos financiables |
+| 3      | Seguimiento y pagos    |
+
+---
+
+## Acciones
+
+| Acción           | Resultado                 |
+| ---------------- | ------------------------- |
+| Continuar        | Avanza al siguiente slide |
+| Sign up for free | Navega a registro         |
+| Log In           | Navega a login            |
+
+---
+
+## Reglas
+
+* El onboarding solo debe mostrarse en la primera apertura.
+* Una vez completado, no debe volver a aparecer automáticamente.
+
+---
+
+# 6.3 Login
+
+## Objetivo
+
+Permitir autenticación del usuario.
+
+---
+
+## Datos solicitados
+
+| Campo    | Obligatorio |
+| -------- | ----------- |
+| Email    | Sí          |
+| Password | Sí          |
+
+---
+
+## Validaciones
+
+| Validación               | Resultado                                 |
+| ------------------------ | ----------------------------------------- |
+| Email inválido           | Mostrar error                             |
+| Password vacía           | Mostrar error                             |
+| Credenciales incorrectas | Mostrar mensaje de autenticación inválida |
+
+---
+
+## Resultado esperado
+
+* Login exitoso → Home.
+* Persistencia de sesión.
+
+---
+
+# 6.4 Registro
+
+## Objetivo
+
+Permitir creación de cuenta.
+
+---
+
+## Campos requeridos
+
+| Campo              | Regla               |
+| ------------------ | ------------------- |
+| Nombre             | Obligatorio         |
+| Apellido           | Obligatorio         |
+| DNI                | Numérico            |
+| Email              | Formato válido      |
+| Password           | Mínimo 6 caracteres |
+| Confirmar password | Debe coincidir      |
+
+---
+
+## Resultado esperado
+
+* Registro exitoso.
+* Inicio automático de sesión.
+* Navegación a Home.
+
+---
+
+# 6.5 Home
+
+## Objetivo
+
+Centralizar información financiera principal del usuario.
+
+---
+
+## Información mostrada
+
+| Elemento           | Descripción                  |
+| ------------------ | ---------------------------- |
+| Credit Score       | Nivel crediticio del usuario |
+| Balance disponible | Saldo actual                 |
+| Límite de crédito  | Monto máximo disponible      |
+| Accesos rápidos    | Acciones principales         |
+
+---
+
+## Accesos rápidos
+
+| Acción       | Resultado               |
+| ------------ | ----------------------- |
+| Request Loan | Navega a préstamos      |
+| Shop         | Navega a tienda         |
+| Cash In      | Navega a carga de saldo |
+
+---
+
+# 6.6 Préstamos
+
+## Objetivo
+
+Permitir simulación y solicitud de préstamos.
+
+---
+
+## Funcionalidades
+
+* Selección de monto.
+* Selección de cuotas.
+* Simulación de intereses.
+* Visualización del total a devolver.
+* Confirmación de solicitud.
+
+---
+
+## Datos mostrados
+
+| Dato             | Descripción        |
+| ---------------- | ------------------ |
+| Monto solicitado | Capital solicitado |
+| Tasa             | Interés aplicado   |
+| Cuota mensual    | Valor mensual      |
+| Total a devolver | Monto final        |
+
+---
+
+## Resultado esperado
+
+* Solicitud exitosa.
+* Actualización de balance e historial.
+
+---
+
+# 6.7 Shop
+
+## Objetivo
+
+Permitir compras financiadas desde la aplicación.
+
+---
+
+## Funcionalidades
+
+* Visualización de catálogo.
+* Consulta de detalle de producto.
+* Selección de cuotas.
+* Compra financiada.
+
+---
+
+## Información de producto
+
+| Campo  | Descripción              |
+| ------ | ------------------------ |
+| Imagen | Imagen del producto      |
+| Nombre | Nombre comercial         |
+| Precio | Valor contado            |
+| Cuotas | Opciones de financiación |
+
+---
+
+## Restricciones
+
+* No puede superarse el límite disponible.
+* Si el usuario no posee crédito suficiente, la compra debe bloquearse.
+
+---
+
+# 6.8 Historial
+
+## Objetivo
+
+Permitir consulta de movimientos financieros.
+
+---
+
+## Tipos de movimientos
+
+| Tipo      |
+| --------- |
+| Préstamos |
+| Compras   |
+| Ingresos  |
+| Cash In   |
+
+---
+
+## Funcionalidades
+
+* Lista cronológica.
+* Filtros por categoría.
+* Visualización de detalle.
+
+---
+
+# 6.9 Perfil
+
+## Objetivo
+
+Gestionar datos del usuario y configuración básica.
+
+---
+
+## Funcionalidades
+
+| Funcionalidad | Descripción                    |
+| ------------- | ------------------------------ |
+| Ver perfil    | Consulta de datos personales   |
+| Editar perfil | Modificación de datos          |
+| Cash In       | Simulación de ingreso de saldo |
+| Logout        | Cierre de sesión               |
+
+---
+
+## Resultado esperado
+
+* Logout elimina sesión activa.
+* Usuario vuelve al flujo de autenticación.
+
+---
+
+# 7. Reglas de Negocio
+
+## 7.1 Límites por score crediticio
+
+| Score   | Límite   | Tasa mensual |
+| ------- | -------- | ------------ |
+| < 400   | $15.000  | 12 %         |
+| 400–699 | $50.000  | 8 %          |
+| ≥ 700   | $150.000 | 5 %          |
+
+---
+
+## 7.2 Restricción de compras
+
+Una compra no puede aprobarse si supera el límite disponible del usuario.
+
+---
+
+## 7.3 Autenticación requerida
+
+Todas las funcionalidades financieras requieren sesión activa.
+
+---
+
+## 7.4 Persistencia de sesión
+
+La sesión debe mantenerse activa hasta logout explícito.
+
+---
+
+# 8. Estados de Sistema
+
+## 8.1 Estados de carga
+
+Todas las acciones asincrónicas deben contemplar:
+
+* Estado inicial.
+* Estado de carga.
+* Estado exitoso.
+* Estado de error.
+
+---
+
+## 8.2 Manejo de errores
+
+La aplicación debe informar:
+
+* Errores de red.
+* Validaciones inválidas.
+* Fallos de autenticación.
+* Operaciones rechazadas.
+
+---
+
+# 9. Requerimientos No Funcionales
+
+## 9.1 Usabilidad
+
+* Navegación intuitiva.
+* Flujo simple.
+* Acciones principales visibles.
+
+---
+
+## 9.2 Performance
+
+* Navegación fluida.
+* Carga rápida de pantallas.
+* Respuesta inmediata en interacciones.
+
+---
+
+## 9.3 Responsividad
+
+La aplicación debe adaptarse correctamente a:
+
+* pantallas pequeñas,
+* medianas,
+* orientación vertical.
+
+---
+
+## 9.4 Persistencia
+
+El estado de sesión y preferencias del usuario deben persistirse entre aperturas.
+
+---
+
+## 9.5 Fidelidad visual
+
+La interfaz debe respetar los diseños definidos en Figma y mantener consistencia visual entre pantallas.
+
+---
+
+# 10. Dependencias Externas
+
+| Dependencia  | Uso                     |
+| ------------ | ----------------------- |
+| Backend API  | Operaciones financieras |
+| Diseño Figma | Referencia visual       |
+
+---
+
+# 11. Criterios de Aceptación Generales
+
+## La aplicación se considera funcional cuando:
+
+* El usuario puede registrarse e iniciar sesión.
+* Puede solicitar préstamos.
+* Puede realizar compras financiadas.
+* Puede visualizar historial.
+* Puede gestionar perfil.
+* La navegación funciona correctamente.
+* La sesión persiste.
+* Las reglas de negocio se respetan.
+* Los errores son manejados adecuadamente.
