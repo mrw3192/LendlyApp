@@ -1,4 +1,4 @@
-package com.example.lendlyapp.theme
+package com.example.lendlyapp.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
