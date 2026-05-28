@@ -1,4 +1,4 @@
-package com.example.lendlyapp.presentation.auth
+package com.example.lendlyapp.ui.screens.auth
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -16,10 +16,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.lendlyapp.presentation.components.HomeIndicatorBar
-import com.example.lendlyapp.presentation.components.LendlyLogo
-import com.example.lendlyapp.theme.FigmaMintSplash
-import com.example.lendlyapp.theme.LendlyAppTheme
+import com.example.lendlyapp.ui.shared.HomeIndicatorBar
+import com.example.lendlyapp.ui.shared.LendlyLogo
+import com.example.lendlyapp.ui.theme.FigmaMintSplash
+import com.example.lendlyapp.ui.theme.LendlyAppTheme
+import com.example.lendlyapp.viewmodel.SplashViewModel
 import kotlinx.coroutines.delay
 
 // ─── Splash Screen ─────────────────────────────────────────────────────────────
@@ -87,7 +88,6 @@ private fun SplashScreenContent(modifier: Modifier = Modifier) {
     }
 }
 
-
 // ─── Previews ─────────────────────────────────────────────────────────────────
 
 @Preview(showBackground = true, widthDp = 393, heightDp = 852)
@@ -96,12 +96,4 @@ private fun SplashScreenPreview() {
     LendlyAppTheme(dynamicColor = false) {
         SplashScreenContent()
     }
-}
-
-@Preview(showBackground = true, backgroundColor = 0xFF002203)
-@Composable
-private fun LendlyLogoSmallPreview() {
-    LendlyLogo(
-        size = DpSize(116.dp, 40.dp),
-    )
 }

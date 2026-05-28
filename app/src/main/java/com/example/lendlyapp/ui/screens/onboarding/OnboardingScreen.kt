@@ -1,4 +1,4 @@
-package com.example.lendlyapp.presentation.onboarding
+package com.example.lendlyapp.ui.screens.onboarding
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -54,21 +54,22 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.example.lendlyapp.presentation.components.HomeIndicatorBar
-import com.example.lendlyapp.presentation.components.LendlyLogo
-import com.example.lendlyapp.theme.FigmaDarkForest
-import com.example.lendlyapp.theme.FigmaLightSurface
-import com.example.lendlyapp.theme.FigmaMintSplash
-import com.example.lendlyapp.theme.FigmaNeonGreen
-import com.example.lendlyapp.theme.FormLabel
-import com.example.lendlyapp.theme.IllustrationGradientEnd
-import com.example.lendlyapp.theme.IllustrationGradientStart
-import com.example.lendlyapp.theme.InterFamily
-import com.example.lendlyapp.theme.MontserratFamily
-import com.example.lendlyapp.theme.OnPrimaryGreen
-import com.example.lendlyapp.theme.OnboardingDotInactive
-import com.example.lendlyapp.theme.OnboardingTitleGreen
-import com.example.lendlyapp.theme.LendlyAppTheme
+import com.example.lendlyapp.ui.shared.HomeIndicatorBar
+import com.example.lendlyapp.ui.shared.LendlyLogo
+import com.example.lendlyapp.ui.theme.FigmaDarkForest
+import com.example.lendlyapp.ui.theme.FigmaLightSurface
+import com.example.lendlyapp.ui.theme.FigmaMintSplash
+import com.example.lendlyapp.ui.theme.FigmaNeonGreen
+import com.example.lendlyapp.ui.theme.FormLabel
+import com.example.lendlyapp.ui.theme.IllustrationGradientEnd
+import com.example.lendlyapp.ui.theme.IllustrationGradientStart
+import com.example.lendlyapp.ui.theme.InterFamily
+import com.example.lendlyapp.ui.theme.MontserratFamily
+import com.example.lendlyapp.ui.theme.OnPrimaryGreen
+import com.example.lendlyapp.ui.theme.OnboardingDotInactive
+import com.example.lendlyapp.ui.theme.OnboardingTitleGreen
+import com.example.lendlyapp.ui.theme.LendlyAppTheme
+import com.example.lendlyapp.viewmodel.OnboardingViewModel
 import kotlinx.coroutines.launch
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -511,7 +512,7 @@ private fun TransactionCard(modifier: Modifier = Modifier) {
                 fontSize = 11.sp,
                 fontFamily = InterFamily,
                 fontWeight = FontWeight.SemiBold,
-                color = FigmaMintSplash, // Figma: texto label claro
+                color = FigmaMintSplash,
             )
             Text(
                 text = "Fees of February",

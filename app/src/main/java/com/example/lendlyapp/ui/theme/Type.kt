@@ -1,4 +1,4 @@
-package com.example.lendlyapp.theme
+package com.example.lendlyapp.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

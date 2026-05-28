@@ -1,4 +1,4 @@
-package com.example.lendlyapp.presentation.onboarding
+package com.example.lendlyapp.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

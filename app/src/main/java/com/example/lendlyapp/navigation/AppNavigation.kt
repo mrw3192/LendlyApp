@@ -1,4 +1,4 @@
-package com.example.lendlyapp.presentation.navigation
+package com.example.lendlyapp.navigation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -12,27 +12,17 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
-import com.example.lendlyapp.CreatePasswordRoute
-import com.example.lendlyapp.DoneRoute
-import com.example.lendlyapp.HomeRoute
-import com.example.lendlyapp.LoginRoute
-import com.example.lendlyapp.OnboardingRoute
-import com.example.lendlyapp.ProfileDetailRoute
-import com.example.lendlyapp.RegisterRoute
-import com.example.lendlyapp.SmsVerificationRoute
-import com.example.lendlyapp.SplashRoute
-import com.example.lendlyapp.VerifyPhoneRoute
-import com.example.lendlyapp.presentation.auth.LoginScreen
-import com.example.lendlyapp.presentation.auth.SplashScreen
-import com.example.lendlyapp.presentation.onboarding.OnboardingScreen
-import com.example.lendlyapp.presentation.register.CreatePasswordScreen
-import com.example.lendlyapp.presentation.register.DoneScreen
-import com.example.lendlyapp.presentation.register.ProfileDetailScreen
-import com.example.lendlyapp.presentation.register.RegisterViewModel
-import com.example.lendlyapp.presentation.register.SmsVerificationScreen
-import com.example.lendlyapp.presentation.register.VerifyPhoneScreen
-import com.example.lendlyapp.theme.FigmaDarkBg
-import com.example.lendlyapp.theme.FigmaDarkText
+import com.example.lendlyapp.ui.screens.auth.LoginScreen
+import com.example.lendlyapp.ui.screens.auth.SplashScreen
+import com.example.lendlyapp.ui.screens.onboarding.OnboardingScreen
+import com.example.lendlyapp.ui.screens.register.VerifyPhoneScreen
+import com.example.lendlyapp.ui.screens.register.SmsVerificationScreen
+import com.example.lendlyapp.ui.screens.register.ProfileDetailScreen
+import com.example.lendlyapp.ui.screens.register.CreatePasswordScreen
+import com.example.lendlyapp.ui.screens.register.DoneScreen
+import com.example.lendlyapp.viewmodel.RegisterViewModel
+import com.example.lendlyapp.ui.theme.FigmaDarkBg
+import com.example.lendlyapp.ui.theme.FigmaDarkText
 
 /**
  * Root navigation graph for LendlyApp.

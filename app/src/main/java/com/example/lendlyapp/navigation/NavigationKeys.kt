@@ -1,4 +1,4 @@
-package com.example.lendlyapp
+package com.example.lendlyapp.navigation
 
 import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
