@@ -34,7 +34,7 @@ import com.example.lendlyapp.theme.FigmaDarkText
  */
 @Composable
 fun AppNavigation() {
-    val backStack = rememberNavBackStack(SplashRoute)
+    val backStack = rememberNavBackStack(HomeRoute)
 
     NavDisplay(
         backStack = backStack,
@@ -83,7 +83,7 @@ fun AppNavigation() {
             // ── Home ─────────────────────────────────────────────────────────────
             entry<HomeRoute> {
                 // TODO: Replace with HomeScreen composable once implemented.
-                PlaceholderScreen("Home Screen")
+                MainScaffold()
             }
         },
     )
