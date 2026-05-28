@@ -54,8 +54,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.example.lendlyapp.shared.HomeIndicatorBar
-import com.example.lendlyapp.shared.LendlyLogo
+import com.example.lendlyapp.ui.shared.HomeIndicatorBar
+import com.example.lendlyapp.ui.shared.LendlyLogo
 import com.example.lendlyapp.ui.theme.FigmaDarkForest
 import com.example.lendlyapp.ui.theme.FigmaLightSurface
 import com.example.lendlyapp.ui.theme.FigmaMintSplash

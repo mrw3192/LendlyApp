@@ -56,13 +56,8 @@ LendlyApp/
 │       │   ├── AppNavigation.kt
 │       │   └── NavigationKeys.kt
 │       ├── shared/
-│       │   ├── LendlyAlertDialog.kt
-│       │   ├── LendlyBottomBar.kt
-│       │   ├── LendlyLogo.kt
-│       │   ├── LendlyPhoneInput.kt
-│       │   ├── LendlyTextField.kt
-│       │   ├── LendlyTopAppBar.kt
-│       │   └── OtpInputRow.kt
+│       │   ├── LendlyApiService.kt
+│       │   └── ILendlyService.kt
 │       ├── ui/
 │       │   ├── screens/
 │       │   │   ├── auth/
@@ -81,6 +76,14 @@ LendlyApp/
 │       │   │   ├── shop/
 │       │   │   ├── history/
 │       │   │   └── profile/
+│       │   ├── shared/
+│       │   │   ├── LendlyAlertDialog.kt
+│       │   │   ├── LendlyBottomBar.kt
+│       │   │   ├── LendlyLogo.kt
+│       │   │   ├── LendlyPhoneInput.kt
+│       │   │   ├── LendlyTextField.kt
+│       │   │   ├── LendlyTopAppBar.kt
+│       │   │   └── OtpInputRow.kt
 │       │   └── theme/
 │       │       ├── Color.kt
 │       │       ├── Theme.kt
@@ -113,8 +116,9 @@ LendlyApp/
 | `helpers/` | Funciones utilitarias puras: formateo de fechas, validaciones, extensiones de `String`, etc. |
 | `model/` | Entidades del negocio y DTOs de la API. Data classes que Retrofit deserializa con Gson y que los ViewModels consumen para construir el UiState. |
 | `navigation/` | Grafo de navegación (`AppNavigation.kt`) y rutas (`NavigationKeys.kt`). Centraliza toda la lógica de backstack. |
-| `shared/` | Componentes Compose reutilizables entre pantallas. Solo reciben parámetros y emiten eventos via callbacks — sin lógica de negocio. |
+| `shared/` | Interfaz Retrofit (`LendlyApiService`), abstracción de API y use cases compartidos entre features. Sin UI. Mismo propósito que en el proyecto de referencia. |
 | `ui/screens/` | Pantallas organizadas por feature. Cada `Screen` es un `@Composable` puro que observa el ViewModel y delega acciones. |
+| `ui/shared/` | Componentes Compose reutilizables entre pantallas (botones, inputs, diálogos, logo). Solo reciben parámetros y emiten callbacks — sin lógica de negocio ni llamadas de red. |
 | `ui/theme/` | Design system: tokens de color, tipografía y tema Material 3. Nunca usar hex hardcodeado fuera de este paquete. |
 | `viewmodel/` | Todos los ViewModels. Cada uno expone un `StateFlow<UiState>` con sealed class y recibe dependencias por Hilt. No referencian clases de Android directamente. |
 
@@ -130,7 +134,11 @@ Existen tres tipos de "modelo" en el proyecto. Es importante no confundirlos:
 | **UiState** | `ui/screens/feature/XxxUiState.kt` | Sealed class con los estados posibles de una pantalla (`Idle`, `Loading`, `Success`, `Error`). Vive **junto a la Screen**, no en `viewmodel/`. |
 | **Estado de formulario** | `ui/screens/feature/XxxUiState.kt` | Data class con los campos de un formulario en pantalla. Ej: `RegisterState`. También vive junto a la Screen. |
 
-**Regla:** el ViewModel importa el `UiState` desde `ui/screens/`, lo llena con datos de los repositorios y lo expone como `StateFlow`. La capa `ui/screens/` nunca accede directamente a los DTOs de red.
+**Regla de ubicación del UiState:**
+- UiState de **una sola pantalla** → `ui/screens/feature/XxxUiState.kt` (junto a su Screen)
+- UiState **compartido entre múltiples pantallas de la misma feature** → `feature/XxxUiState.kt` (ej: `auth/AuthUiState.kt` si Login, Register y ForgotPassword comparten el mismo ViewModel)
+
+El ViewModel importa el `UiState` desde su ubicación correspondiente, lo llena con datos de los repositorios y lo expone como `StateFlow`. La capa `ui/screens/` nunca accede directamente a los DTOs de red.
 
 ---
 

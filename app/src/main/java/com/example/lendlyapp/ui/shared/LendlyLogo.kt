@@ -1,4 +1,4 @@
-package com.example.lendlyapp.shared
+package com.example.lendlyapp.ui.shared
 
 import android.net.Uri
 import androidx.compose.foundation.background
