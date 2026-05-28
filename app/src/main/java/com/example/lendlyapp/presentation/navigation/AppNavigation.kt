@@ -34,7 +34,7 @@ import com.example.lendlyapp.theme.FigmaDarkText
  */
 @Composable
 fun AppNavigation() {
-    val backStack = rememberNavBackStack(HomeRoute)
+    val backStack = rememberNavBackStack(SplashRoute)
 
     NavDisplay(
         backStack = backStack,
