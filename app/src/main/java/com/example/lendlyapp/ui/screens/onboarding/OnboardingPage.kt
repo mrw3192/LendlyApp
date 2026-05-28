@@ -1,4 +1,4 @@
-package com.example.lendlyapp.presentation.onboarding
+package com.example.lendlyapp.ui.screens.onboarding
 
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp

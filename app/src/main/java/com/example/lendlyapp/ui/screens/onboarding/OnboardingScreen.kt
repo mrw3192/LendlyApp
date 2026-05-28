@@ -1,4 +1,4 @@
-package com.example.lendlyapp.presentation.onboarding
+package com.example.lendlyapp.ui.screens.onboarding
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -54,8 +54,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.example.lendlyapp.presentation.auth.HomeIndicatorBar
-import com.example.lendlyapp.presentation.auth.LendlyLogo
+import com.example.lendlyapp.shared.HomeIndicatorBar
+import com.example.lendlyapp.shared.LendlyLogo
 import com.example.lendlyapp.theme.FigmaDarkForest
 import com.example.lendlyapp.theme.FigmaLightSurface
 import com.example.lendlyapp.theme.FigmaMintSplash
@@ -69,6 +69,7 @@ import com.example.lendlyapp.theme.OnPrimaryGreen
 import com.example.lendlyapp.theme.OnboardingDotInactive
 import com.example.lendlyapp.theme.OnboardingTitleGreen
 import com.example.lendlyapp.theme.LendlyAppTheme
+import com.example.lendlyapp.viewmodel.OnboardingViewModel
 import kotlinx.coroutines.launch
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -511,7 +512,7 @@ private fun TransactionCard(modifier: Modifier = Modifier) {
                 fontSize = 11.sp,
                 fontFamily = InterFamily,
                 fontWeight = FontWeight.SemiBold,
-                color = FigmaMintSplash, // Figma: texto label claro
+                color = FigmaMintSplash,
             )
             Text(
                 text = "Fees of February",

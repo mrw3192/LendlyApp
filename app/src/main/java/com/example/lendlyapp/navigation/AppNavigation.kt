@@ -1,4 +1,4 @@
-package com.example.lendlyapp.presentation.navigation
+package com.example.lendlyapp.navigation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -10,15 +10,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
-import com.example.lendlyapp.HomeRoute
-import com.example.lendlyapp.LoginRoute
-import com.example.lendlyapp.OnboardingRoute
-import com.example.lendlyapp.RegisterRoute
-import com.example.lendlyapp.SplashRoute
-import com.example.lendlyapp.presentation.auth.SplashScreen
-import com.example.lendlyapp.presentation.onboarding.OnboardingScreen
 import com.example.lendlyapp.theme.FigmaDarkBg
 import com.example.lendlyapp.theme.FigmaDarkText
+import com.example.lendlyapp.ui.screens.auth.SplashScreen
+import com.example.lendlyapp.ui.screens.onboarding.OnboardingScreen
 
 /**
  * Root navigation graph for LendlyApp.

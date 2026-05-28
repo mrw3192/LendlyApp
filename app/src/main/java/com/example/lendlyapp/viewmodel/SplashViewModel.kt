@@ -1,8 +1,9 @@
-package com.example.lendlyapp.presentation.auth
+package com.example.lendlyapp.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.lendlyapp.data.local.UserPreferences
+import com.example.lendlyapp.ui.screens.auth.SplashDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -10,21 +11,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
-// ─── Navigation Destination ────────────────────────────────────────────────────
-
-/**
- * The three possible exits from the Splash screen (SPEC_TECNICO §3):
- *
- *  [Home]       → token is valid (user is authenticated)
- *  [Onboarding] → first app launch (has_seen_onboarding = false)
- *  [Login]      → returning user without an active session
- */
-sealed class SplashDestination {
-    data object Home : SplashDestination()
-    data object Onboarding : SplashDestination()
-    data object Login : SplashDestination()
-}
 
 // ─── ViewModel ─────────────────────────────────────────────────────────────────
 

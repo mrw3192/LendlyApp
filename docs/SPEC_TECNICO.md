@@ -126,11 +126,11 @@ Existen tres tipos de "modelo" en el proyecto. Es importante no confundirlos:
 
 | Tipo | Dónde vive | Qué es |
 |---|---|---|
-| **Entidad / DTO** | `model/` | Data class que representa una entidad del negocio o la respuesta cruda de la API. Ejemplo: `User.kt`, `Loan.kt`, `AuthResult.kt`. |
-| **UiState** | Dentro del ViewModel de cada feature | Sealed class que representa los estados posibles de una pantalla (`Idle`, `Loading`, `Success`, `Error`). No va en `model/`. |
-| **Estado de formulario** | Dentro del ViewModel | Data class con los campos del formulario en pantalla. Ejemplo: `RegisterState`. No va en `model/`. |
+| **Entidad / DTO** | `model/` | Data class que representa una entidad del negocio o respuesta de la API. Ej: `User.kt`, `Loan.kt`, `AuthResult.kt`. |
+| **UiState** | `ui/screens/feature/XxxUiState.kt` | Sealed class con los estados posibles de una pantalla (`Idle`, `Loading`, `Success`, `Error`). Vive **junto a la Screen**, no en `viewmodel/`. |
+| **Estado de formulario** | `ui/screens/feature/XxxUiState.kt` | Data class con los campos de un formulario en pantalla. Ej: `RegisterState`. También vive junto a la Screen. |
 
-**Regla:** el ViewModel consume los modelos de `model/` y los mapea a `UiState` antes de exponerlos a la UI. La capa `ui/screens/` nunca accede directamente a los DTOs de red.
+**Regla:** el ViewModel importa el `UiState` desde `ui/screens/`, lo llena con datos de los repositorios y lo expone como `StateFlow`. La capa `ui/screens/` nunca accede directamente a los DTOs de red.
 
 ---
 
@@ -394,7 +394,7 @@ Rutas en `AppNavigation.kt`: `splash`, `onboarding`, `login`, `register`, `home`
 
 ## 5. API Endpoints
 
-Base URL: `https://lendly-api.com/api/`
+Base URL: `https://6d710e79-f4ca-4651-909f-7dd13bd29968.mock.pstmn.io/`
 Headers obligatorios en todas las llamadas: `x-api-key: 123456789` + `Authorization: Bearer <token>` (excepto login y registro).
 
 ### 5.1 Autenticación

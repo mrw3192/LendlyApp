@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.example.lendlyapp.presentation.navigation.AppNavigation
+import com.example.lendlyapp.navigation.AppNavigation
 import com.example.lendlyapp.theme.LendlyAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
