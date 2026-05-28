@@ -25,41 +25,116 @@
 ```
 LendlyApp/
 ├── app/src/main/
-│   ├── assets/                           ← Imágenes y SVGs (ver §2.3)
+│   ├── assets/                     ← Imágenes y SVGs (ver §2.3)
 │   └── java/com/example/lendlyapp/
 │       ├── LendlyApplication.kt
 │       ├── MainActivity.kt
+│       ├── auth/
+│       │   ├── AuthRepository.kt
+│       │   └── AuthRepositoryImpl.kt
+│       ├── core/
+│       │   ├── ApiConfig.kt
+│       │   └── AuthInterceptor.kt
 │       ├── data/
 │       │   ├── local/
-│       │   │   └── UserPreferences.kt    ← DataStore (auth_token, has_seen_onboarding)
-│       │   ├── network/
-│       │   │   ├── AuthApi.kt
-│       │   │   └── model/
+│       │   │   └── UserPreferences.kt
 │       │   └── repository/
-│       ├── domain/
-│       │   ├── model/
-│       │   ├── repository/
-│       │   └── usecase/
-│       ├── presentation/
-│       │   ├── auth/                     ← SplashScreen, LoginScreen, RegisterScreen
-│       │   ├── onboarding/               ← OnboardingScreen
-│       │   ├── dashboard/
-│       │   ├── loans/
-│       │   ├── shop/
-│       │   ├── history/
-│       │   ├── profile/
-│       │   └── navigation/               ← AppNavigation.kt
-│       ├── theme/                        ← Color.kt, Theme.kt, Type.kt
-│       └── di/
+│       │       ├── LoanRepository.kt
+│       │       ├── ProductRepository.kt
+│       │       ├── TransactionRepository.kt
+│       │       └── UserRepository.kt
+│       ├── di/
+│       │   └── AppModule.kt
+│       ├── helpers/
+│       ├── model/
+│       │   ├── AuthResult.kt
+│       │   ├── Loan.kt
+│       │   ├── Product.kt
+│       │   ├── Transaction.kt
+│       │   └── User.kt
+│       ├── navigation/
+│       │   ├── AppNavigation.kt
+│       │   └── NavigationKeys.kt
+│       ├── shared/
+│       │   ├── LendlyAlertDialog.kt
+│       │   ├── LendlyBottomBar.kt
+│       │   ├── LendlyLogo.kt
+│       │   ├── LendlyPhoneInput.kt
+│       │   ├── LendlyTextField.kt
+│       │   ├── LendlyTopAppBar.kt
+│       │   └── OtpInputRow.kt
+│       ├── ui/
+│       │   └── screens/
+│       │       ├── auth/
+│       │       │   ├── SplashScreen.kt
+│       │       │   └── LoginScreen.kt
+│       │       ├── register/
+│       │       │   ├── VerifyPhoneScreen.kt
+│       │       │   ├── SmsVerificationScreen.kt
+│       │       │   ├── ProfileDetailScreen.kt
+│       │       │   ├── CreatePasswordScreen.kt
+│       │       │   └── DoneScreen.kt
+│       │       ├── onboarding/
+│       │       │   └── OnboardingScreen.kt
+│       │       ├── home/
+│       │       ├── loans/
+│       │       ├── shop/
+│       │       ├── history/
+│       │       └── profile/
+│       ├── theme/
+│       │   ├── Color.kt
+│       │   ├── Theme.kt
+│       │   └── Type.kt
+│       └── viewmodel/
+│           ├── SplashViewModel.kt
+│           ├── OnboardingViewModel.kt
+│           ├── LoginViewModel.kt
+│           ├── RegisterViewModel.kt
+│           ├── HomeViewModel.kt
+│           ├── LoanViewModel.kt
+│           ├── ShopViewModel.kt
+│           ├── TransactionHistoryViewModel.kt
+│           └── ProfileViewModel.kt
 ├── docs/
-│   ├── figma.json                        ← Árbol completo del diseño Figma
+│   ├── figma.json                  ← Árbol completo del diseño Figma
 │   ├── SPEC_FUNCIONAL.md
 │   └── SPEC_TECNICO.md
 ```
 
+### Descripción de cada capa
+
+| Carpeta | Qué va acá |
+|---|---|
+| `auth/` | Interfaz `AuthRepository` y su implementación. Todo lo de login/register a nivel de repositorio vive acá porque auth es transversal: toca red, sesión y navegación. |
+| `core/` | Infraestructura técnica compartida: base URL, constantes de red, interceptor de OkHttp que añade los headers `Bearer` y `x-api-key`. Sin UI. |
+| `data/local/` | Persistencia en el dispositivo. `UserPreferences.kt` con DataStore (`auth_token`, `has_seen_onboarding`). En el futuro puede incluir Room. |
+| `data/repository/` | Repositorios de las features (préstamos, productos, usuarios, transacciones). Consumen el API service y exponen `Flow` o `suspend fun` al ViewModel. |
+| `di/` | Módulos Hilt. Solo provee instancias, no contiene lógica de negocio. |
+| `helpers/` | Funciones utilitarias puras: formateo de fechas, validaciones, extensiones de `String`, etc. |
+| `model/` | Entidades del negocio y DTOs de la API. Data classes que Retrofit deserializa con Gson y que los ViewModels consumen para construir el UiState. |
+| `navigation/` | Grafo de navegación (`AppNavigation.kt`) y rutas (`NavigationKeys.kt`). Centraliza toda la lógica de backstack. |
+| `shared/` | Componentes Compose reutilizables entre pantallas. Solo reciben parámetros y emiten eventos via callbacks — sin lógica de negocio. |
+| `ui/screens/` | Pantallas organizadas por feature. Cada `Screen` es un `@Composable` puro que observa el ViewModel y delega acciones. |
+| `theme/` | Design system: tokens de color, tipografía y tema Material 3. Nunca usar hex hardcodeado fuera de este paquete. |
+| `viewmodel/` | Todos los ViewModels. Cada uno expone un `StateFlow<UiState>` con sealed class y recibe dependencias por Hilt. No referencian clases de Android directamente. |
+
 ---
 
-## 2.1 Tokens de Diseño (Color.kt)
+## 2.1 Convenciones de la capa `model/`
+
+Existen tres tipos de "modelo" en el proyecto. Es importante no confundirlos:
+
+| Tipo | Dónde vive | Qué es |
+|---|---|---|
+| **Entidad / DTO** | `model/` | Data class que representa una entidad del negocio o la respuesta cruda de la API. Ejemplo: `User.kt`, `Loan.kt`, `AuthResult.kt`. |
+| **UiState** | Dentro del ViewModel de cada feature | Sealed class que representa los estados posibles de una pantalla (`Idle`, `Loading`, `Success`, `Error`). No va en `model/`. |
+| **Estado de formulario** | Dentro del ViewModel | Data class con los campos del formulario en pantalla. Ejemplo: `RegisterState`. No va en `model/`. |
+
+**Regla:** el ViewModel consume los modelos de `model/` y los mapea a `UiState` antes de exponerlos a la UI. La capa `ui/screens/` nunca accede directamente a los DTOs de red.
+
+---
+
+## 2.2 Tokens de Diseño (Color.kt)
 
 Todos los colores del Figma están mapeados como tokens en `theme/Color.kt`.
 **Regla:** nunca usar hex hardcodeado — siempre el token.
@@ -90,7 +165,7 @@ Todos los colores del Figma están mapeados como tokens en `theme/Color.kt`.
 
 ---
 
-## 2.2 Assets en `app/src/main/assets/`
+## 2.3 Assets en `app/src/main/assets/`
 
 | Archivo | Origen | Usado en |
 |---|---|---|
@@ -102,11 +177,11 @@ Todos los colores del Figma están mapeados como tokens en `theme/Color.kt`.
 | `product_1.png` | imageRef `be53c076...` | Product-card onboarding 2 |
 | `product_2.png` | imageRef `0f92556e...` | Product-card onboarding 2 |
 
-Para agregar nuevas imágenes al proyecto, ver §2.4 (proceso de descarga desde la API de Figma).
+Para agregar nuevas imágenes al proyecto, ver §2.5 (proceso de descarga desde la API de Figma).
 
 ---
 
-## 2.3 Referencia Figma
+## 2.4 Referencia Figma
 
 | Dato | Valor |
 |---|---|
@@ -139,7 +214,7 @@ document → children
 
 ---
 
-## 2.4 Metodología Obligatoria: Figma → Compose
+## 2.5 Metodología Obligatoria: Figma → Compose
 
 > ⚠️ **Esta sección es de cumplimiento obligatorio.** Implementar una pantalla sin seguir estos pasos produce resultados incorrectos (elementos faltantes, posiciones equivocadas, imágenes espejadas, colores y tipografías erróneos).
 
