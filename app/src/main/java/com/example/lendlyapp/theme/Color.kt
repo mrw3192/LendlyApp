@@ -64,3 +64,12 @@ val IllustrationGradientStart = Color(0xFF8FFF85)
 
 /** #39A0FF — Onboarding illustration gradient end */
 val IllustrationGradientEnd = Color(0xFF39A0FF)
+
+/** #BDF0B3 — Done page "All done!" headline */
+val DoneHeadlineGreen = Color(0xFFBDF0B3)
+
+/** #0B390F — Close button background on Done page */
+val CloseButtonBg = Color(0xFF0B390F)
+
+/** #005046 — "Didn't received a code?" link on SMS verification */
+val OtpLinkTeal = Color(0xFF005046)
