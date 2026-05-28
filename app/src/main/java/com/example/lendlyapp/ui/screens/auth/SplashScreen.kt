@@ -18,8 +18,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.lendlyapp.shared.HomeIndicatorBar
 import com.example.lendlyapp.shared.LendlyLogo
-import com.example.lendlyapp.theme.FigmaMintSplash
-import com.example.lendlyapp.theme.LendlyAppTheme
+import com.example.lendlyapp.ui.theme.FigmaMintSplash
+import com.example.lendlyapp.ui.theme.LendlyAppTheme
 import com.example.lendlyapp.viewmodel.SplashViewModel
 import kotlinx.coroutines.delay
 

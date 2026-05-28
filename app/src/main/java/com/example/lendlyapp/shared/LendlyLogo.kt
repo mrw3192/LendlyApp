@@ -18,7 +18,7 @@ import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
-import com.example.lendlyapp.theme.FigmaNeonGreen
+import com.example.lendlyapp.ui.theme.FigmaNeonGreen
 
 // ─── Lendly Logo Composable ───────────────────────────────────────────────────
 //

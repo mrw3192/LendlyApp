@@ -10,8 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
-import com.example.lendlyapp.theme.FigmaDarkBg
-import com.example.lendlyapp.theme.FigmaDarkText
+import com.example.lendlyapp.ui.theme.FigmaDarkBg
+import com.example.lendlyapp.ui.theme.FigmaDarkText
 import com.example.lendlyapp.ui.screens.auth.SplashScreen
 import com.example.lendlyapp.ui.screens.onboarding.OnboardingScreen
 

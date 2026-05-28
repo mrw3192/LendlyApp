@@ -64,27 +64,27 @@ LendlyApp/
 │       │   ├── LendlyTopAppBar.kt
 │       │   └── OtpInputRow.kt
 │       ├── ui/
-│       │   └── screens/
-│       │       ├── auth/
-│       │       │   ├── SplashScreen.kt
-│       │       │   └── LoginScreen.kt
-│       │       ├── register/
-│       │       │   ├── VerifyPhoneScreen.kt
-│       │       │   ├── SmsVerificationScreen.kt
-│       │       │   ├── ProfileDetailScreen.kt
-│       │       │   ├── CreatePasswordScreen.kt
-│       │       │   └── DoneScreen.kt
-│       │       ├── onboarding/
-│       │       │   └── OnboardingScreen.kt
-│       │       ├── home/
-│       │       ├── loans/
-│       │       ├── shop/
-│       │       ├── history/
-│       │       └── profile/
-│       ├── theme/
-│       │   ├── Color.kt
-│       │   ├── Theme.kt
-│       │   └── Type.kt
+│       │   ├── screens/
+│       │   │   ├── auth/
+│       │   │   │   ├── SplashScreen.kt
+│       │   │   │   └── LoginScreen.kt
+│       │   │   ├── register/
+│       │   │   │   ├── VerifyPhoneScreen.kt
+│       │   │   │   ├── SmsVerificationScreen.kt
+│       │   │   │   ├── ProfileDetailScreen.kt
+│       │   │   │   ├── CreatePasswordScreen.kt
+│       │   │   │   └── DoneScreen.kt
+│       │   │   ├── onboarding/
+│       │   │   │   └── OnboardingScreen.kt
+│       │   │   ├── home/
+│       │   │   ├── loans/
+│       │   │   ├── shop/
+│       │   │   ├── history/
+│       │   │   └── profile/
+│       │   └── theme/
+│       │       ├── Color.kt
+│       │       ├── Theme.kt
+│       │       └── Type.kt
 │       └── viewmodel/
 │           ├── SplashViewModel.kt
 │           ├── OnboardingViewModel.kt
@@ -115,7 +115,7 @@ LendlyApp/
 | `navigation/` | Grafo de navegación (`AppNavigation.kt`) y rutas (`NavigationKeys.kt`). Centraliza toda la lógica de backstack. |
 | `shared/` | Componentes Compose reutilizables entre pantallas. Solo reciben parámetros y emiten eventos via callbacks — sin lógica de negocio. |
 | `ui/screens/` | Pantallas organizadas por feature. Cada `Screen` es un `@Composable` puro que observa el ViewModel y delega acciones. |
-| `theme/` | Design system: tokens de color, tipografía y tema Material 3. Nunca usar hex hardcodeado fuera de este paquete. |
+| `ui/theme/` | Design system: tokens de color, tipografía y tema Material 3. Nunca usar hex hardcodeado fuera de este paquete. |
 | `viewmodel/` | Todos los ViewModels. Cada uno expone un `StateFlow<UiState>` con sealed class y recibe dependencias por Hilt. No referencian clases de Android directamente. |
 
 ---
@@ -136,7 +136,7 @@ Existen tres tipos de "modelo" en el proyecto. Es importante no confundirlos:
 
 ## 2.2 Tokens de Diseño (Color.kt)
 
-Todos los colores del Figma están mapeados como tokens en `theme/Color.kt`.
+Todos los colores del Figma están mapeados como tokens en `ui/theme/Color.kt`.
 **Regla:** nunca usar hex hardcodeado — siempre el token.
 
 | Token Kotlin | Hex | Uso |

@@ -1,4 +1,4 @@
-package com.example.lendlyapp.theme
+package com.example.lendlyapp.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
