@@ -2,9 +2,9 @@ package com.example.lendlyapp.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.lendlyapp.data.local.UserPreferences
+import com.example.lendlyapp.auth.AuthRepository
+import com.example.lendlyapp.model.LoginRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,16 +24,11 @@ sealed class LoginUiState {
 // ─── ViewModel ─────────────────────────────────────────────────────────────────
 
 /**
- * Handles login form validation and authentication.
- *
- * API contract (SPEC_TECNICO §5.1):
- *   POST /auth/login  { email, password } → { token, userId, email }
- *
- * Currently mocked: any valid email + non-empty password → success with fake token.
+ * Handles login form validation and authentication using [AuthRepository].
  */
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val userPreferences: UserPreferences,
+    private val authRepository: AuthRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<LoginUiState>(LoginUiState.Idle)
@@ -74,13 +69,15 @@ class LoginViewModel @Inject constructor(
             return
         }
 
-        // Perform login (mocked)
+        // Perform login via repository
         _uiState.value = LoginUiState.Loading
         viewModelScope.launch {
-            delay(800) // Simulate network call
-            val fakeToken = "mock_token_${System.currentTimeMillis()}"
-            userPreferences.saveAuthToken(fakeToken)
-            _uiState.value = LoginUiState.Success(fakeToken)
+            val result = authRepository.login(LoginRequest(currentEmail, currentPassword))
+            result.onSuccess { token ->
+                _uiState.value = LoginUiState.Success(token)
+            }.onFailure { error ->
+                _uiState.value = LoginUiState.Error(error.message ?: "An error occurred during login")
+            }
         }
     }
 

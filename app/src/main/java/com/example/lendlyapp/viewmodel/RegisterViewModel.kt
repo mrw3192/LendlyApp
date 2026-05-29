@@ -2,7 +2,8 @@ package com.example.lendlyapp.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.lendlyapp.data.local.UserPreferences
+import com.example.lendlyapp.auth.AuthRepository
+import com.example.lendlyapp.model.RegisterRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -45,17 +46,11 @@ data class RegisterState(
 // ─── ViewModel ─────────────────────────────────────────────────────────────────
 
 /**
- * Shared ViewModel for the 5-step registration flow.
- *
- * Each screen reads/writes relevant fields in [RegisterState].
- * On final step, calls POST /auth/create (mocked) and saves auth token.
- *
- * API contract (SPEC_TECNICO §5.1):
- *   POST /auth/create { firstName, lastName, dni, email, password } → { status, message }
+ * Shared ViewModel for the 5-step registration flow using [AuthRepository].
  */
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
-    private val userPreferences: UserPreferences,
+    private val authRepository: AuthRepository,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(RegisterState())
@@ -150,20 +145,34 @@ class RegisterViewModel @Inject constructor(
         if (!validatePhone()) return
         _state.update { it.copy(isLoading = true) }
         viewModelScope.launch {
-            delay(600) // Simulate network call
+            delay(600) // Keep simulated network call for OTP (Not mapped in API yet)
             _state.update { it.copy(isLoading = false) }
         }
     }
 
-    // ── Complete Registration (mocked) ─────────────────────────────────────
+    // ── Complete Registration ─────────────────────────────────────
 
     fun completeRegistration() {
         _state.update { it.copy(isLoading = true) }
         viewModelScope.launch {
-            delay(800) // Simulate POST /auth/create
-            val fakeToken = "mock_register_token_${System.currentTimeMillis()}"
-            userPreferences.saveAuthToken(fakeToken)
-            _state.update { it.copy(isLoading = false, isRegistrationComplete = true) }
+            val currentState = _state.value
+            val request = RegisterRequest(
+                firstName = currentState.firstName,
+                lastName = currentState.lastName,
+                dob = "${currentState.dobYear}-${currentState.dobMonth}-${currentState.dobDay}",
+                address = currentState.address,
+                city = currentState.city,
+                postalCode = currentState.postalCode,
+                phone = currentState.countryCode + currentState.phone,
+                password = currentState.password
+            )
+            
+            val result = authRepository.register(request)
+            result.onSuccess {
+                _state.update { it.copy(isLoading = false, isRegistrationComplete = true) }
+            }.onFailure { error ->
+                _state.update { it.copy(isLoading = false, error = error.message ?: "Failed to register") }
+            }
         }
     }
 }
