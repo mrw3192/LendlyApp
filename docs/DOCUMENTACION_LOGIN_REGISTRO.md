@@ -32,14 +32,14 @@ Se ha implementado un sistema robusto de validaciones que evalúa el estado del 
 
 ## 3. Arquitectura y Estructura de Archivos
 
-### Nuevos Componentes Reutilizables (`presentation/components/`)
-* **[LendlyLogo.kt](file:///c:/Users/-Batt0/Desktop/Parcial%20TP3/LendlyApp/app/src/main/java/com/example/lendlyapp/presentation/components/LendlyLogo.kt)**: Renderiza el logo corporativo SVG del proyecto y la barra del indicador del sistema.
-* **[LendlyTopAppBar.kt](file:///c:/Users/-Batt0/Desktop/Parcial%20TP3/LendlyApp/app/src/main/java/com/example/lendlyapp/presentation/components/LendlyTopAppBar.kt)**: Barra de herramientas superior con botones de regreso e información.
-* **[LendlyTextField.kt](file:///c:/Users/-Batt0/Desktop/Parcial%20TP3/LendlyApp/app/src/main/java/com/example/lendlyapp/presentation/components/LendlyTextField.kt)**: Campo de texto de entrada estándar con label, bordes de color del Figma y visibilidad de contraseña opcional.
-* **[LendlyPhoneInput.kt](file:///c:/Users/-Batt0/Desktop/Parcial%20TP3/LendlyApp/app/src/main/java/com/example/lendlyapp/presentation/components/LendlyPhoneInput.kt)**: Entrada combinada para código de país y número de teléfono.
-* **[OtpInputRow.kt](file:///c:/Users/-Batt0/Desktop/Parcial%20TP3/LendlyApp/app/src/main/java/com/example/lendlyapp/presentation/components/OtpInputRow.kt)**: Fila de 6 campos individuales para OTP con avance y retroceso automático del foco.
-* **[LendlyBottomBar.kt](file:///c:/Users/-Batt0/Desktop/Parcial%20TP3/LendlyApp/app/src/main/java/com/example/lendlyapp/presentation/components/LendlyBottomBar.kt)**: Barra inferior con el botón primario ovalado verde y el indicador de inicio.
-* **[LendlyAlertDialog.kt](file:///c:/Users/-Batt0/Desktop/Parcial%20TP3/LendlyApp/app/src/main/java/com/example/lendlyapp/presentation/components/LendlyAlertDialog.kt)**: Cuadro de diálogo de alerta estilizado para informar de fallos en las validaciones.
+### Componentes Reutilizables (`ui/shared/`)
+* **[LendlyLogo.kt](file:///c:/Users/-Batt0/Desktop/Parcial%20TP3/LendlyApp/app/src/main/java/com/example/lendlyapp/ui/shared/LendlyLogo.kt)**: Renderiza el logo corporativo SVG del proyecto y la barra del indicador del sistema.
+* **[LendlyTopAppBar.kt](file:///c:/Users/-Batt0/Desktop/Parcial%20TP3/LendlyApp/app/src/main/java/com/example/lendlyapp/ui/shared/LendlyTopAppBar.kt)**: Barra de herramientas superior con botones de regreso e información.
+* **[LendlyTextField.kt](file:///c:/Users/-Batt0/Desktop/Parcial%20TP3/LendlyApp/app/src/main/java/com/example/lendlyapp/ui/shared/LendlyTextField.kt)**: Campo de texto de entrada estándar con label, bordes de color del Figma y visibilidad de contraseña opcional.
+* **[LendlyPhoneInput.kt](file:///c:/Users/-Batt0/Desktop/Parcial%20TP3/LendlyApp/app/src/main/java/com/example/lendlyapp/ui/shared/LendlyPhoneInput.kt)**: Entrada combinada para código de país y número de teléfono.
+* **[OtpInputRow.kt](file:///c:/Users/-Batt0/Desktop/Parcial%20TP3/LendlyApp/app/src/main/java/com/example/lendlyapp/ui/shared/OtpInputRow.kt)**: Fila de 6 campos individuales para OTP con avance y retroceso automático del foco.
+* **[LendlyBottomBar.kt](file:///c:/Users/-Batt0/Desktop/Parcial%20TP3/LendlyApp/app/src/main/java/com/example/lendlyapp/ui/shared/LendlyBottomBar.kt)**: Barra inferior con el botón primario ovalado verde y el indicador de inicio.
+* **[LendlyAlertDialog.kt](file:///c:/Users/-Batt0/Desktop/Parcial%20TP3/LendlyApp/app/src/main/java/com/example/lendlyapp/ui/shared/LendlyAlertDialog.kt)**: Cuadro de diálogo de alerta estilizado para informar de fallos en las validaciones.
 
 ### Pantallas y Lógica de Negocio
 * **Registro compartido**: Las 5 pantallas de registro se estructuran a través de un único `RegisterViewModel` inyectado a nivel de navegación (`AppNavigation.kt`). Esto permite compartir el estado del formulario (`RegisterState`) durante todo el proceso de registro de manera sencilla y persistente.
