@@ -1,4 +1,4 @@
-package com.example.lendlyapp.presentation.components
+package com.example.lendlyapp.ui.shared
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -14,7 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.lendlyapp.theme.FigmaLightText
+import com.example.lendlyapp.ui.theme.FigmaLightText
 
 @Composable
 fun LendlyTopAppBar(

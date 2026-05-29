@@ -1,4 +1,4 @@
-package com.example.lendlyapp.presentation.components
+package com.example.lendlyapp.ui.shared
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,9 +16,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.lendlyapp.theme.FigmaNeonGreen
-import com.example.lendlyapp.theme.InterFamily
-import com.example.lendlyapp.theme.OnPrimaryGreen
+import com.example.lendlyapp.ui.theme.FigmaNeonGreen
+import com.example.lendlyapp.ui.theme.InterFamily
+import com.example.lendlyapp.ui.theme.OnPrimaryGreen
 
 @Composable
 fun LendlyBottomBar(

@@ -1,4 +1,4 @@
-package com.example.lendlyapp.presentation.auth
+package com.example.lendlyapp.ui.screens.auth
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -37,15 +37,18 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.lendlyapp.presentation.components.HomeIndicatorBar
-import com.example.lendlyapp.presentation.components.LendlyBottomBar
-import com.example.lendlyapp.presentation.components.LendlyLogo
-import com.example.lendlyapp.presentation.components.LendlyTextField
-import com.example.lendlyapp.theme.FigmaLightSurface
-import com.example.lendlyapp.theme.FigmaOliveGreen
-import com.example.lendlyapp.theme.FormLabel
-import com.example.lendlyapp.theme.InterFamily
-import com.example.lendlyapp.theme.SubtitleGray
+import com.example.lendlyapp.ui.shared.HomeIndicatorBar
+import com.example.lendlyapp.ui.shared.LendlyBottomBar
+import com.example.lendlyapp.ui.shared.LendlyLogo
+import com.example.lendlyapp.ui.shared.LendlyTextField
+import com.example.lendlyapp.ui.theme.FigmaLightSurface
+import com.example.lendlyapp.ui.theme.FigmaOliveGreen
+import com.example.lendlyapp.ui.theme.FormLabel
+import com.example.lendlyapp.ui.theme.InterFamily
+import com.example.lendlyapp.ui.theme.SubtitleGray
+import com.example.lendlyapp.ui.theme.FigmaNeonGreen
+import com.example.lendlyapp.viewmodel.LoginViewModel
+import com.example.lendlyapp.viewmodel.LoginUiState
 
 // ─── Login Screen ──────────────────────────────────────────────────────────────
 // Figma node: 196:2165 "Login Page" — 393×1013dp
@@ -189,7 +192,7 @@ fun LoginScreen(
             ) {
                 CircularProgressIndicator(
                     modifier = Modifier.size(48.dp),
-                    color = com.example.lendlyapp.theme.FigmaNeonGreen,
+                    color = FigmaNeonGreen,
                 )
             }
         }
@@ -204,7 +207,7 @@ fun LoginScreen(
                 dismissAction = {
                     Text(
                         text = "Dismiss",
-                        color = com.example.lendlyapp.theme.FigmaNeonGreen,
+                        color = FigmaNeonGreen,
                         modifier = Modifier
                             .clickable { viewModel.clearError() }
                             .padding(8.dp),

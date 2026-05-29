@@ -1,4 +1,4 @@
-package com.example.lendlyapp.presentation.components
+package com.example.lendlyapp.ui.shared
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -18,12 +18,12 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.lendlyapp.theme.FigmaLightSurface
-import com.example.lendlyapp.theme.FigmaNeonGreen
-import com.example.lendlyapp.theme.FigmaLightText
-import com.example.lendlyapp.theme.FormLabel
-import com.example.lendlyapp.theme.SubtitleGray
-import com.example.lendlyapp.theme.InterFamily
+import com.example.lendlyapp.ui.theme.FigmaLightSurface
+import com.example.lendlyapp.ui.theme.FigmaNeonGreen
+import com.example.lendlyapp.ui.theme.FigmaLightText
+import com.example.lendlyapp.ui.theme.FormLabel
+import com.example.lendlyapp.ui.theme.SubtitleGray
+import com.example.lendlyapp.ui.theme.InterFamily
 
 @Composable
 fun LendlyTextField(

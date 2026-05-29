@@ -1,4 +1,4 @@
-package com.example.lendlyapp.presentation.register
+package com.example.lendlyapp.ui.screens.register
 
 import android.net.Uri
 import androidx.compose.foundation.background
@@ -36,15 +36,15 @@ import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
-import com.example.lendlyapp.presentation.components.LendlyBottomBar
-import com.example.lendlyapp.presentation.components.LendlyLogo
-import com.example.lendlyapp.theme.CloseButtonBg
-import com.example.lendlyapp.theme.DoneHeadlineGreen
-import com.example.lendlyapp.theme.FigmaDarkForest
-import com.example.lendlyapp.theme.FigmaMintSplash
-import com.example.lendlyapp.theme.FigmaNeonGreen
-import com.example.lendlyapp.theme.InterFamily
-import com.example.lendlyapp.theme.MontserratFamily
+import com.example.lendlyapp.ui.shared.LendlyBottomBar
+import com.example.lendlyapp.ui.shared.LendlyLogo
+import com.example.lendlyapp.ui.theme.CloseButtonBg
+import com.example.lendlyapp.ui.theme.DoneHeadlineGreen
+import com.example.lendlyapp.ui.theme.FigmaDarkForest
+import com.example.lendlyapp.ui.theme.FigmaMintSplash
+import com.example.lendlyapp.ui.theme.FigmaNeonGreen
+import com.example.lendlyapp.ui.theme.InterFamily
+import com.example.lendlyapp.ui.theme.MontserratFamily
 
 // ─── Done Page ─────────────────────────────────────────────────────────────────
 // Figma node: 181:2290 "done-page" — 393×1068dp

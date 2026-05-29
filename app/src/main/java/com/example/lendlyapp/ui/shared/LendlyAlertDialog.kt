@@ -1,4 +1,4 @@
-package com.example.lendlyapp.presentation.components
+package com.example.lendlyapp.ui.shared
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
@@ -9,11 +9,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.lendlyapp.theme.FigmaLightSurface
-import com.example.lendlyapp.theme.FigmaLightText
-import com.example.lendlyapp.theme.FigmaOliveGreen
-import com.example.lendlyapp.theme.FormLabel
-import com.example.lendlyapp.theme.InterFamily
+import com.example.lendlyapp.ui.theme.FigmaLightSurface
+import com.example.lendlyapp.ui.theme.FigmaLightText
+import com.example.lendlyapp.ui.theme.FigmaOliveGreen
+import com.example.lendlyapp.ui.theme.FormLabel
+import com.example.lendlyapp.ui.theme.InterFamily
 
 @Composable
 fun LendlyAlertDialog(

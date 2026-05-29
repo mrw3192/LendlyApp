@@ -1,4 +1,4 @@
-package com.example.lendlyapp.presentation.register
+package com.example.lendlyapp.ui.screens.register
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -27,18 +27,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.lendlyapp.presentation.components.LendlyAlertDialog
-import com.example.lendlyapp.presentation.components.LendlyBottomBar
-import com.example.lendlyapp.presentation.components.LendlyPhoneInput
-import com.example.lendlyapp.presentation.components.LendlyTextField
-import com.example.lendlyapp.presentation.components.LendlyTopAppBar
-import com.example.lendlyapp.theme.FigmaLightBg
-import com.example.lendlyapp.theme.FigmaLightSurface
-import com.example.lendlyapp.theme.FigmaLightText
-import com.example.lendlyapp.theme.FigmaNeonGreen
-import com.example.lendlyapp.theme.FormLabel
-import com.example.lendlyapp.theme.InterFamily
-import com.example.lendlyapp.theme.SubtitleGray
+import com.example.lendlyapp.ui.shared.LendlyAlertDialog
+import com.example.lendlyapp.ui.shared.LendlyBottomBar
+import com.example.lendlyapp.ui.shared.LendlyPhoneInput
+import com.example.lendlyapp.ui.shared.LendlyTextField
+import com.example.lendlyapp.ui.shared.LendlyTopAppBar
+import com.example.lendlyapp.ui.theme.FigmaLightBg
+import com.example.lendlyapp.ui.theme.FigmaLightSurface
+import com.example.lendlyapp.ui.theme.FigmaLightText
+import com.example.lendlyapp.ui.theme.FigmaNeonGreen
+import com.example.lendlyapp.ui.theme.FormLabel
+import com.example.lendlyapp.ui.theme.InterFamily
+import com.example.lendlyapp.ui.theme.SubtitleGray
+import com.example.lendlyapp.viewmodel.RegisterViewModel
 
 // ─── Profile Detail Form Screen ────────────────────────────────────────────────
 // Figma node: 180:1407 "Profile-detail-form page" — 393×1068dp

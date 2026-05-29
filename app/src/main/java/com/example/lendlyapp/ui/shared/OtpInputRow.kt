@@ -1,4 +1,4 @@
-package com.example.lendlyapp.presentation.components
+package com.example.lendlyapp.ui.shared
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -21,11 +21,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.lendlyapp.theme.FigmaLightSurface
-import com.example.lendlyapp.theme.FigmaLightText
-import com.example.lendlyapp.theme.FigmaNeonGreen
-import com.example.lendlyapp.theme.InterFamily
-import com.example.lendlyapp.theme.SubtitleGray
+import com.example.lendlyapp.ui.theme.FigmaLightSurface
+import com.example.lendlyapp.ui.theme.FigmaLightText
+import com.example.lendlyapp.ui.theme.FigmaNeonGreen
+import com.example.lendlyapp.ui.theme.InterFamily
+import com.example.lendlyapp.ui.theme.SubtitleGray
 
 // ─── OTP Input Row ─────────────────────────────────────────────────────────────
 // Figma: 6 boxes, each 53×56dp, single centered digit
