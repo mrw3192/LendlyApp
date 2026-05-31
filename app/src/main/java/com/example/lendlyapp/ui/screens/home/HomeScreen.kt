@@ -1,19 +1,5 @@
 package com.example.lendlyapp.ui.screens.home
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// HomeScreen — Dashboard principal
-//
-// Figma frame: 'Home screen'  pos=(0,0)  393×917dp  fill=#FFFFFF
-//
-// Secciones (posiciones absolutas del Figma):
-//   App bar          y=44   h=56   (56dp after status bar)
-//   "Account" title  y=132  h=36   28sp fw=600 #171D1E  x=16
-//   Balance card     y=184  h=136  r=16  fill=#FCF8F8  x=16 w=361
-//   "Unpaid Loans"   y=352  h=32   header + "See All"
-//   Loan cards       y=400  h=76   r=12  fill=#FCF8F8  gap=12dp
-//   "Recommended"    y=596  h=32   header + "See All"
-//   Product cards    y=644  h=145  r=12  fill=#FCF8F8  w=132  gap=8dp
-// ═══════════════════════════════════════════════════════════════════════════════
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -82,22 +68,21 @@ import com.example.lendlyapp.ui.theme.SubtitleGray
 import com.example.lendlyapp.viewmodel.HomeViewModel
 import java.util.Locale
 
-// ─── Entry point ───────────────────────────────────────────────────────────────
 
 @Composable
 fun HomeScreen(
+    onNavigateToCashIn: () -> Unit = {},
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
     when (val state = uiState) {
         is HomeUiState.Loading -> HomeLoadingContent()
-        is HomeUiState.Success -> HomeScreenContent(data = state.data)
+        is HomeUiState.Success -> HomeScreenContent(data = state.data, onNavigateToCashIn = onNavigateToCashIn)
         is HomeUiState.Error   -> HomeErrorContent(message = state.message)
     }
 }
 
-// ─── State screens ─────────────────────────────────────────────────────────────
 
 @Composable
 private fun HomeLoadingContent() {
@@ -123,11 +108,10 @@ private fun HomeErrorContent(message: String) {
     }
 }
 
-// ─── Main content ──────────────────────────────────────────────────────────────
-
 @Composable
 private fun HomeScreenContent(
     data: HomeData,
+    onNavigateToCashIn: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -137,13 +121,8 @@ private fun HomeScreenContent(
             .statusBarsPadding()
             .verticalScroll(rememberScrollState()),
     ) {
-        // ── App bar ───────────────────────────────────────────────────────────
-        // Figma: 'App var'  pos=(0,44)  393×56dp
         HomeTopBar()
 
-        // ── "Account" title ───────────────────────────────────────────────────
-        // Figma: 'headline' pos=(0,100)  gap=32dp below app bar
-        // TEXT='Account' 28sp fw=600 #171D1E  x=16
         Spacer(modifier = Modifier.height(32.dp))
         Text(
             text = "Account",
@@ -154,18 +133,15 @@ private fun HomeScreenContent(
             modifier = Modifier.padding(horizontal = 16.dp),
         )
 
-        // ── Balance card ──────────────────────────────────────────────────────
-        // Figma: 'Balance-card'  pos=(16,184)  361×136dp  r=16  fill=#FCF8F8
         Spacer(modifier = Modifier.height(16.dp))
         BalanceCard(
             balance = data.balance,
+            onCashIn = onNavigateToCashIn,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
         )
 
-        // ── Unpaid Loans ──────────────────────────────────────────────────────
-        // Figma: 'Frame 35'  pos=(0,352)  393×212dp
         Spacer(modifier = Modifier.height(32.dp))
         SectionHeader(
             title = "Unpaid Loans",
@@ -181,16 +157,12 @@ private fun HomeScreenContent(
             data.unpaidLoans.forEach { loan -> LoanCard(loan = loan) }
         }
 
-        // ── Recommended For You ───────────────────────────────────────────────
-        // Figma: 'Recommended-SC'  pos=(0,596)  393×193dp
         Spacer(modifier = Modifier.height(32.dp))
         SectionHeader(
             title = "Recommended For You",
             modifier = Modifier.padding(horizontal = 16.dp),
         )
         Spacer(modifier = Modifier.height(16.dp))
-        // Figma: 'Frame 24'  pos=(0,644)  584×145dp (scrolls horizontally)
-        // Cards start at x=16, gap=8dp, each card 132×145dp
         LazyRow(
             contentPadding = PaddingValues(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -204,15 +176,6 @@ private fun HomeScreenContent(
     }
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// App Bar
-// ═══════════════════════════════════════════════════════════════════════════════
-//
-// Figma: 'App var'  pos=(0,44)  393×56dp  fill=#FFFFFF
-//   leading-icon  pos=(4,52)   48×48  → person icon, tint=#171D1E
-//   Frame 134     pos=(167,66) 58×20  → Lendly logo (centered)
-//   trailing-icon pos=(341,52) 48×48  → notifications bell, tint=#1C1B1F
-
 @Composable
 private fun HomeTopBar(modifier: Modifier = Modifier) {
     Row(
@@ -222,7 +185,6 @@ private fun HomeTopBar(modifier: Modifier = Modifier) {
             .padding(horizontal = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        // Person / avatar icon
         IconButton(
             onClick = {},
             modifier = Modifier.size(48.dp),
@@ -235,7 +197,6 @@ private fun HomeTopBar(modifier: Modifier = Modifier) {
             )
         }
 
-        // Logo — centered between the two icons
         Box(
             modifier = Modifier.weight(1f),
             contentAlignment = Alignment.Center,
@@ -243,7 +204,6 @@ private fun HomeTopBar(modifier: Modifier = Modifier) {
             LendlyLogo(size = DpSize(width = 58.dp, height = 20.dp))
         }
 
-        // Notifications bell
         IconButton(
             onClick = {},
             modifier = Modifier.size(48.dp),
@@ -258,18 +218,10 @@ private fun HomeTopBar(modifier: Modifier = Modifier) {
     }
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// Balance Card
-// ═══════════════════════════════════════════════════════════════════════════════
-//
-// Figma: 'Balance-card'  pos=(16,184)  361×136dp  r=16  fill=#FCF8F8
-//   card-content at (32,200) → padding 16dp
-//   Frame 12: 'AVAILABLE BALANCE' label + '+ Cash In' button  h=48dp
-//   '₱ 2,500.00'  32sp fw=600  #102000  below Frame 12 (gap=16dp)
-
 @Composable
 private fun BalanceCard(
     balance: Double,
+    onCashIn: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -284,7 +236,6 @@ private fun BalanceCard(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            // Frame 12: label + Cash In button (h=48dp)
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -292,7 +243,6 @@ private fun BalanceCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                // 'AVAILABLE BALANCE'  12sp fw=500 #454745
                 Text(
                     text = "AVAILABLE BALANCE",
                     fontSize = 12.sp,
@@ -300,10 +250,9 @@ private fun BalanceCard(
                     fontFamily = InterFamily,
                     color = FormLabel,
                 )
-                CashInButton(onClick = {})
+                CashInButton(onClick = onCashIn)
             }
 
-            // Balance amount — 32sp fw=600 #102000
             Text(
                 text = "₱ " + String.format(Locale.US, "%,.2f", balance),
                 fontSize = 32.sp,
@@ -314,10 +263,6 @@ private fun BalanceCard(
         }
     }
 }
-
-// ─── Cash In button ───────────────────────────────────────────────────────────
-// Figma: 'Cash-in BT'  pos=(241,200)  120×48dp  r=100  fill=#7BF179
-//   icon 18×18 + "Cash In" 14sp fw=600 #102000
 
 @Composable
 private fun CashInButton(onClick: () -> Unit) {
@@ -347,14 +292,6 @@ private fun CashInButton(onClick: () -> Unit) {
         )
     }
 }
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// Section Header  (Unpaid Loans / Recommended For You)
-// ═══════════════════════════════════════════════════════════════════════════════
-//
-// Figma: 'headline' row  393×32dp
-//   Left:  title text  22sp fw=600 #171D1E  x=16
-//   Right: 'Input chip' = "See All" + chevron  14sp fw=600 #122300  r=1000
 
 @Composable
 private fun SectionHeader(
@@ -398,14 +335,6 @@ private fun SeeAllChip() {
     }
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// Loan Card
-// ═══════════════════════════════════════════════════════════════════════════════
-//
-// Figma: 'Balance-card' (loan variant)  361×76dp  r=12  fill=#FCF8F8
-//   Left:  avatar (40×40 circle) + company name  16sp fw=600 #171D1E
-//   Right: amount 14sp fw=600 #171D1E + description 12sp fw=500 #6A6C6A
-
 @Composable
 private fun LoanCard(
     loan: Loan,
@@ -426,7 +355,6 @@ private fun LoanCard(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            // Left: avatar + company name
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically,
@@ -451,7 +379,6 @@ private fun LoanCard(
                 )
             }
 
-            // Right: amount + description
             Column(
                 horizontalAlignment = Alignment.End,
                 verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -475,15 +402,6 @@ private fun LoanCard(
     }
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// Product Card
-// ═══════════════════════════════════════════════════════════════════════════════
-//
-// Figma: 'Product-card'  132×145dp  r=12  fill=#FCF8F8
-//   Image  85×65dp  centered horizontally  padding-top=16dp
-//   Name   12sp fw=500  #454745  x=16 (padding-start=16dp)
-//   Price  11sp fw=500  #3C6839  x=16
-
 @Composable
 private fun ProductCard(
     product: Product,
@@ -498,7 +416,6 @@ private fun ProductCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            // Product image — 85×65dp, top-padding=16dp, horizontally centered
             Spacer(modifier = Modifier.height(16.dp))
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
@@ -512,7 +429,6 @@ private fun ProductCard(
                     .align(Alignment.CenterHorizontally),
             )
 
-            // Text area — gap=8dp below image, padding-start=16dp
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = product.name,
@@ -540,9 +456,6 @@ private fun ProductCard(
     }
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// Previews
-// ═══════════════════════════════════════════════════════════════════════════════
 
 @Preview(showBackground = true, widthDp = 393, heightDp = 852)
 @Composable

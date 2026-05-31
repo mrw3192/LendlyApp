@@ -67,3 +67,6 @@ val IllustrationGradientEnd = Color(0xFF39A0FF)
 
 /** #3C6839 — Product price text in shop/home cards */
 val ProductPriceGreen = Color(0xFF3C6839)
+
+/** #1F3701 — Navigation arrow icons in Cash-In option rows */
+val CashInArrowGreen = Color(0xFF1F3701)

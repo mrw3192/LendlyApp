@@ -13,20 +13,9 @@ import androidx.navigation3.ui.NavDisplay
 import com.example.lendlyapp.ui.theme.FigmaDarkBg
 import com.example.lendlyapp.ui.theme.FigmaDarkText
 import com.example.lendlyapp.ui.screens.auth.SplashScreen
+import com.example.lendlyapp.ui.screens.cashin.CashInScreen
 import com.example.lendlyapp.ui.screens.onboarding.OnboardingScreen
 
-/**
- * Root navigation graph for LendlyApp.
- *
- * Start destination: [SplashRoute]
- * Navigation flow (SPEC_TECNICO §4):
- *   Splash ──► Onboarding ──► Login / Register ──► Home
- *           └──────────────────────────────────────────►
- *
- * Back-stack policy: all navigations from Splash / Onboarding clear the
- * entire back-stack before pushing the new destination, so the user can
- * never press Back to return to those screens.
- */
 @Composable
 fun AppNavigation() {
     val backStack = rememberNavBackStack(HomeRoute)
@@ -36,7 +25,6 @@ fun AppNavigation() {
         onBack = { backStack.removeLastOrNull() },
         entryProvider = entryProvider {
 
-            // ── Splash ──────────────────────────────────────────────────────────
             entry<SplashRoute> {
                 SplashScreen(
                     onNavigateToOnboarding = {
@@ -51,7 +39,6 @@ fun AppNavigation() {
                 )
             }
 
-            // ── Onboarding ───────────────────────────────────────────────────────
             entry<OnboardingRoute> {
                 OnboardingScreen(
                     onNavigateToLogin = {
@@ -63,35 +50,29 @@ fun AppNavigation() {
                 )
             }
 
-            // ── Login ────────────────────────────────────────────────────────────
             entry<LoginRoute> {
                 // TODO: Replace with LoginScreen composable once implemented.
                 PlaceholderScreen("Login Screen")
             }
 
-            // ── Register ─────────────────────────────────────────────────────────
             entry<RegisterRoute> {
                 // TODO: Replace with RegisterScreen composable once implemented.
                 PlaceholderScreen("Register Screen")
             }
 
-            // ── Home ─────────────────────────────────────────────────────────────
             entry<HomeRoute> {
-                // TODO: Replace with HomeScreen composable once implemented.
-                MainScaffold()
+                MainScaffold(
+                    onNavigateToCashIn = { backStack.add(CashInRoute) },
+                )
+            }
+
+            entry<CashInRoute> {
+                CashInScreen(onBack = { backStack.removeLastOrNull() })
             }
         },
     )
 }
 
-// ─── Helpers ───────────────────────────────────────────────────────────────────
-
-/**
- * Replaces the entire back-stack with [destination], matching `popUpTo(inclusive=true)` behaviour.
- *
- * Strategy: add the destination first (so NavDisplay never sees an empty list),
- * then remove all previous entries.
- */
 private fun navigateClearingStack(
     backStack: MutableList<androidx.navigation3.runtime.NavKey>,
     destination: androidx.navigation3.runtime.NavKey,
@@ -101,7 +82,6 @@ private fun navigateClearingStack(
     backStack.removeAll(existing.toSet())
 }
 
-/** Temporary screen shown for routes not yet implemented. */
 @Composable
 private fun PlaceholderScreen(label: String) {
     Box(

@@ -2,12 +2,6 @@ package com.example.lendlyapp.model
 
 import com.google.gson.annotations.SerializedName
 
-// GET /products → { "success": true, "products": [ ... ] }
-//
-// API field mapping:
-//   monthlyInstallment → price        (shown as "₱1,200" in the card)
-//   installmentMonths  → installments (shown as "x 24 mo")
-//   image              → imageUrl     (URL — loaded directly by Coil)
 data class Product(
     @SerializedName("id")                  val id: String = "",
     @SerializedName("name")                val name: String = "",

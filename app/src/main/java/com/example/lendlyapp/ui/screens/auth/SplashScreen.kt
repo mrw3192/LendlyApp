@@ -22,17 +22,6 @@ import com.example.lendlyapp.ui.theme.FigmaMintSplash
 import com.example.lendlyapp.ui.theme.LendlyAppTheme
 import com.example.lendlyapp.viewmodel.SplashViewModel
 import kotlinx.coroutines.delay
-
-// ─── Splash Screen ─────────────────────────────────────────────────────────────
-// Figma node: 35:1097 "Splash Screen" — 393×852dp
-// Background: #E5F5EA (FigmaMintSplash)
-// Layout: centered logo + home indicator at bottom
-//
-// Navigation:
-//   LaunchedEffect collects SplashDestination from SplashViewModel.
-//   Once destination is resolved a 1 500 ms delay gives the logo time to render
-//   before the transition fires. This avoids a flash of unstyled content.
-
 private const val SPLASH_DELAY_MS = 1_500L
 
 @Composable
@@ -44,7 +33,6 @@ fun SplashScreen(
 ) {
     val destination by viewModel.destination.collectAsState()
 
-    // Auto-navigate once destination is resolved
     LaunchedEffect(destination) {
         destination?.let { dest ->
             delay(SPLASH_DELAY_MS)
@@ -59,7 +47,6 @@ fun SplashScreen(
     SplashScreenContent()
 }
 
-// ─── Stateless UI ──────────────────────────────────────────────────────────────
 
 @Composable
 private fun SplashScreenContent(modifier: Modifier = Modifier) {
@@ -68,16 +55,11 @@ private fun SplashScreenContent(modifier: Modifier = Modifier) {
             .fillMaxSize()
             .background(FigmaMintSplash),
     ) {
-        // ── Centered Lendly Logo ──────────────────────────────────────────────
-        // Figma Frame 134: pos=(+75,+389) size=242.8×83.3dp on 393×852 screen
-        // The logo is centered both horizontally and vertically.
         LendlyLogo(
             modifier = Modifier.align(Alignment.Center),
             size = DpSize(width = 243.dp, height = 83.dp),
         )
 
-        // ── Home Indicator ───────────────────────────────────────────────────
-        // Figma: pos=(+0,+817) 393×34dp — black pill bar centered at bottom
         HomeIndicatorBar(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -88,7 +70,6 @@ private fun SplashScreenContent(modifier: Modifier = Modifier) {
     }
 }
 
-// ─── Previews ─────────────────────────────────────────────────────────────────
 
 @Preview(showBackground = true, widthDp = 393, heightDp = 852)
 @Composable

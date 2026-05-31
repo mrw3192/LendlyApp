@@ -2,7 +2,6 @@ package com.example.lendlyapp.model
 
 import com.google.gson.annotations.SerializedName
 
-// GET /transactions → { "success": true, "pagination": { ... }, "transactions": [ ... ] }
 data class Transaction(
     @SerializedName("id")              val id: String = "",
     @SerializedName("type")            val type: String = "",
@@ -16,7 +15,6 @@ data class Transaction(
     @SerializedName("loanId")          val loanId: String? = null,
 )
 
-// Wrapper for GET /transactions
 data class TransactionsApiResponse(
     @SerializedName("success")      val success: Boolean = false,
     @SerializedName("transactions") val transactions: List<Transaction> = emptyList(),

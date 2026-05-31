@@ -33,7 +33,7 @@ object AppModule {
             level = HttpLoggingInterceptor.Level.BODY
         }
         return OkHttpClient.Builder()
-            .addInterceptor(AuthInterceptor())   // injects x-api-key on every request
+            .addInterceptor(AuthInterceptor())
             .addInterceptor(logging)
             .build()
     }

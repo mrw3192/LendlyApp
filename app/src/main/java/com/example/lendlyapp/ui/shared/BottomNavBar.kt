@@ -37,12 +37,6 @@ import com.example.lendlyapp.ui.theme.LendlyAppTheme
 import com.example.lendlyapp.ui.theme.OnPrimaryGreen
 import com.example.lendlyapp.ui.theme.SubtitleGray
 
-// ─── Bottom Navigation Bar ─────────────────────────────────────────────────────
-// Figma node: 'Navigation bar' id=71:1884
-// pos=(+0,+819) 393×80dp — fill=#FFFFFF — layout=HORIZONTAL spacing=8dp
-//
-// Active tab  → icon-container fill=#E5F5EA r=16dp; icon+label color=#102000
-// Inactive tab → icon-container transparent;       icon+label color=#6A6C6A
 
 enum class BottomNavTab(
     val label: String,
@@ -101,7 +95,6 @@ private fun BottomNavItem(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        // icon-container: active → mint pill, inactive → transparent
         Box(
             modifier = Modifier
                 .fillMaxWidth()

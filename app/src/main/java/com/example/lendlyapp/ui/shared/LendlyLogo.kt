@@ -20,29 +20,15 @@ import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import com.example.lendlyapp.ui.theme.FigmaNeonGreen
 
-// ─── Lendly Logo Composable ───────────────────────────────────────────────────
-//
-// Loads `logo_lendly.svg` from assets via Coil + SvgDecoder.
-// The SVG was exported from Figma and already contains the exact design colors:
-//   - Front rect : #7BF179 (FigmaNeonGreen), opacity 1.0
-//   - Mid rect   : #7BF179, opacity 0.34
-//   - Back rect  : #163300 (LogoShadow), opacity 1.0
-//
-// `size` scales the SVG proportionally:
-//   - Splash screen  : 243×83dp  (Figma "Frame 134")
-//   - Onboarding bar : 116×40dp
 
 @Composable
 fun LendlyLogo(
     modifier: Modifier = Modifier,
-    // Default = splash size (matches Figma exactly). Pass 116.dp×40.dp for onboarding header.
     size: DpSize = DpSize(width = 243.dp, height = 83.dp),
-    // Unused — kept for API compatibility; colors come from the SVG file itself.
     @Suppress("UNUSED_PARAMETER") color: Color = FigmaNeonGreen,
 ) {
     val context = LocalContext.current
 
-    // Build a Coil ImageLoader that understands SVG files.
     val svgImageLoader = remember(context) {
         ImageLoader.Builder(context)
             .components { add(SvgDecoder.Factory()) }
@@ -59,12 +45,6 @@ fun LendlyLogo(
         modifier = modifier.size(size),
     )
 }
-
-// ─── Home Indicator Bar ────────────────────────────────────────────────────────
-// Figma: INSTANCE 'Home Indicator' — 393×34dp container with a centered pill bar.
-// Color:
-//   Splash     → Color.Black  (on light FigmaMintSplash background)
-//   Onboarding → Color.White  (on dark FigmaDarkForest background)
 
 @Composable
 fun HomeIndicatorBar(
