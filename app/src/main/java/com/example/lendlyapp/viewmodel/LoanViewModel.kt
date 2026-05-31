@@ -12,9 +12,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-/**
- * Representa los diferentes estados de la UI para el módulo de Préstamos.
- */
 sealed class LoanUiState {
     object Loading : LoanUiState()
     data class Success(val loans: List<Loan>) : LoanUiState()
@@ -27,17 +24,37 @@ class LoanViewModel @Inject constructor(
     private val applyForLoanUseCase: ApplyForLoanUseCase
 ) : ViewModel() {
 
-    // El estado es privado para el ViewModel y se expone como inmutable (State)
+    // Estado principal de la UI (Carga, Éxito, Error)
     private val _uiState = mutableStateOf<LoanUiState>(LoanUiState.Loading)
     val uiState: State<LoanUiState> = _uiState
+
+    var amountInput = mutableStateOf("")
+        private set
+    
+    var installmentsInput = mutableStateOf("12")
+        private set
+
+    // Simulación reactiva: se calcula cada vez que cambian los inputs
+    val simulatedMonthlyPayment: Double
+        get() = (amountInput.value.toDoubleOrNull() ?: 0.0) * 1.15 / (installmentsInput.value.toIntOrNull() ?: 1)
+
+    val simulatedTotal: Double
+        get() = (amountInput.value.toDoubleOrNull() ?: 0.0) * 1.15
 
     init {
         fetchLoans()
     }
 
-    /**
-     * Obtiene la información de los préstamos al iniciar.
-     */
+    fun onAmountChange(newValue: String) {
+        if (newValue.all { it.isDigit() }) {
+            amountInput.value = newValue
+        }
+    }
+
+    fun onInstallmentsChange(newValue: String) {
+        installmentsInput.value = newValue
+    }
+
     fun fetchLoans() {
         _uiState.value = LoanUiState.Loading
         viewModelScope.launch(Dispatchers.IO) {
@@ -51,14 +68,19 @@ class LoanViewModel @Inject constructor(
     }
 
     /**
-     * Procesa la solicitud de un nuevo préstamo.
+     * Procesa la solicitud de un nuevo préstamo usando los datos del formulario.
      */
-    fun applyForLoan(amount: Double, installments: Int) {
+    fun applyForLoan() {
+        val amount = amountInput.value.toDoubleOrNull() ?: return
+        val installments = installmentsInput.value.toIntOrNull() ?: return
+
         _uiState.value = LoanUiState.Loading
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val result = applyForLoanUseCase(amount, installments)
                 _uiState.value = LoanUiState.Success(result)
+                // Limpiamos el formulario tras el éxito
+                amountInput.value = ""
             } catch (e: Exception) {
                 _uiState.value = LoanUiState.Error("Error al solicitar el préstamo")
             }
