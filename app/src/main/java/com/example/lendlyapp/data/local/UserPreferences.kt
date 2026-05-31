@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
+import dagger.hilt.android.qualifiers.ApplicationContext
 
 // DataStore instance is created once per application context (top-level extension property).
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "lendly_prefs")
@@ -26,11 +27,12 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
  */
 @Singleton
 class UserPreferences @Inject constructor(
-    private val context: Context,
+    @ApplicationContext private val context: Context,
 ) {
     companion object {
-        val AUTH_TOKEN = stringPreferencesKey("auth_token")
+        val AUTH_TOKEN          = stringPreferencesKey("auth_token")
         val HAS_SEEN_ONBOARDING = booleanPreferencesKey("has_seen_onboarding")
+        val USER_ID             = stringPreferencesKey("user_id")
     }
 
     /** Emits the current auth token, or null if not set. */
@@ -46,6 +48,11 @@ class UserPreferences @Inject constructor(
         prefs[HAS_SEEN_ONBOARDING] ?: false
     }
 
+    /** Emits the stored user ID (from login response), or null if not logged in. */
+    val userId: Flow<String?> = context.dataStore.data.map { prefs ->
+        prefs[USER_ID]
+    }
+
     /** Persists the has-seen-onboarding flag. Called before navigating away from Onboarding. */
     suspend fun setHasSeenOnboarding(seen: Boolean) {
         context.dataStore.edit { prefs ->
@@ -57,6 +64,21 @@ class UserPreferences @Inject constructor(
     suspend fun saveAuthToken(token: String) {
         context.dataStore.edit { prefs ->
             prefs[AUTH_TOKEN] = token
+        }
+    }
+
+    /** Saves the user ID returned by POST /auth/login (user.id as String). */
+    suspend fun saveUserId(userId: String) {
+        context.dataStore.edit { prefs ->
+            prefs[USER_ID] = userId
+        }
+    }
+
+    /** Removes auth token and user ID (used on logout). */
+    suspend fun clearSession() {
+        context.dataStore.edit { prefs ->
+            prefs.remove(AUTH_TOKEN)
+            prefs.remove(USER_ID)
         }
     }
 

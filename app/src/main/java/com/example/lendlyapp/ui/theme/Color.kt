@@ -64,3 +64,6 @@ val IllustrationGradientStart = Color(0xFF8FFF85)
 
 /** #39A0FF — Onboarding illustration gradient end */
 val IllustrationGradientEnd = Color(0xFF39A0FF)
+
+/** #3C6839 — Product price text in shop/home cards */
+val ProductPriceGreen = Color(0xFF3C6839)
