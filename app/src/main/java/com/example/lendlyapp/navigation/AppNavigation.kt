@@ -155,7 +155,7 @@ fun AppNavigation() {
             // ── Home ─────────────────────────────────────────────────────────────
             entry<HomeRoute> {
                 // TODO: Replace with HomeScreen composable once implemented.
-                PlaceholderScreen("Home Screen")
+                MainScaffold()
             }
         },
     )
