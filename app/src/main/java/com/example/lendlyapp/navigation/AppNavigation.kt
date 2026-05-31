@@ -14,6 +14,10 @@ import com.example.lendlyapp.ui.theme.FigmaDarkBg
 import com.example.lendlyapp.ui.theme.FigmaDarkText
 import com.example.lendlyapp.ui.screens.auth.SplashScreen
 import com.example.lendlyapp.ui.screens.onboarding.OnboardingScreen
+import com.example.lendlyapp.ui.screens.loans.LoanInfoScreen
+import com.example.lendlyapp.ui.screens.loans.LoanFormScreen
+import com.example.lendlyapp.viewmodel.LoanViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 
 /**
  * Root navigation graph for LendlyApp.
@@ -79,6 +83,28 @@ fun AppNavigation() {
             entry<HomeRoute> {
                 // TODO: Replace with HomeScreen composable once implemented.
                 PlaceholderScreen("Home Screen")
+            }
+
+            // ── Loans ─────────────────────────────────────────────────────────────
+            entry<LoanInfoRoute> {
+                LoanInfoScreen(
+                    onNavigateToForm = {
+                        backStack.add(LoanFormRoute)
+                    }
+                )
+            }
+
+            entry<LoanFormRoute> {
+                val viewModel: LoanViewModel = hiltViewModel()
+                LoanFormScreen(
+                    viewModel = viewModel,
+                    onBack = { backStack.removeLastOrNull() },
+                    onSuccess = {
+                        // Navegar a éxito (limpiando el stack del formulario)
+                        backStack.removeLastOrNull()
+                        backStack.add(LoanSuccessRoute)
+                    }
+                )
             }
         },
     )

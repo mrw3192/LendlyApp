@@ -34,6 +34,9 @@ class LoanViewModel @Inject constructor(
     var installmentsInput = mutableStateOf("12")
         private set
 
+    var purposeInput = mutableStateOf("Educational")
+        private set
+
     // Simulación reactiva: se calcula cada vez que cambian los inputs
     val simulatedMonthlyPayment: Double
         get() = (amountInput.value.toDoubleOrNull() ?: 0.0) * 1.15 / (installmentsInput.value.toIntOrNull() ?: 1)
@@ -53,6 +56,10 @@ class LoanViewModel @Inject constructor(
 
     fun onInstallmentsChange(newValue: String) {
         installmentsInput.value = newValue
+    }
+
+    fun onPurposeChange(newValue: String) {
+        purposeInput.value = newValue
     }
 
     fun fetchLoans() {

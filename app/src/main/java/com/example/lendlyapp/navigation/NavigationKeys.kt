@@ -22,5 +22,17 @@ import kotlinx.serialization.Serializable
 /** Home / Dashboard screen — post-auth entry point. */
 @Serializable data object HomeRoute : NavKey
 
+/** Loan Module — Information and conditions screen. */
+@Serializable data object LoanInfoRoute : NavKey
+
+/** Loan Module — Request form screen. */
+@Serializable data object LoanFormRoute : NavKey
+
+/** Loan Module — Active loan management screen. */
+@Serializable data object ActiveLoanRoute : NavKey
+
+/** Loan Module — Successful transaction feedback. */
+@Serializable data object LoanSuccessRoute : NavKey
+
 // ─── Legacy key — kept to avoid breaking MainScreen during development ─────────
 @Serializable data object Main : NavKey
