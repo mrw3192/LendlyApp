@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.lendlyapp.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -206,5 +207,13 @@ fun HowItWorkCard(modifier: Modifier, title: String, desc: String) {
             Spacer(modifier = Modifier.height(4.dp))
             Text(desc, fontSize = 10.sp, color = SubtitleGray, lineHeight = 14.sp)
         }
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun LoanInfoScreenPreview() {
+    LendlyAppTheme {
+        LoanInfoScreen(onNavigateToForm = {})
     }
 }

@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+ import androidx.compose.ui.tooling.preview.Preview
 import com.example.lendlyapp.ui.theme.*
 import com.example.lendlyapp.viewmodel.LoanViewModel
 
@@ -174,5 +175,16 @@ fun SummaryRow(label: String, value: String, isBold: Boolean = false) {
     Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), horizontalArrangement = Arrangement.SpaceBetween) {
         Text(label, color = SubtitleGray, fontSize = 14.sp)
         Text(value, fontWeight = if(isBold) FontWeight.Bold else FontWeight.Normal, fontSize = 14.sp)
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun LoanFormScreenPreview() {
+    LendlyAppTheme {
+        LoanFormScreen(
+            onBack = {},
+            onSuccess = {}
+        )
     }
 }
