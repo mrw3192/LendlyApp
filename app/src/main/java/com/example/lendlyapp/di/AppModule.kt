@@ -7,6 +7,7 @@ import com.example.lendlyapp.core.ApiConfig
 import com.example.lendlyapp.core.ApiKeyInterceptor
 import com.example.lendlyapp.core.AuthInterceptor
 import com.example.lendlyapp.data.local.UserPreferences
+import com.example.lendlyapp.data.repository.LendlyApiService
 import com.example.lendlyapp.shared.AuthApi
 import dagger.Module
 import dagger.Provides

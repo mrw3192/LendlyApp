@@ -15,14 +15,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.example.lendlyapp.ui.screens.home.HomeScreen
 import com.example.lendlyapp.ui.screens.history.HistoryScreen
-import com.example.lendlyapp.ui.screens.loans.LoanScreen
+import com.example.lendlyapp.ui.screens.loans.LoanInfoScreen
 import com.example.lendlyapp.ui.screens.profile.ProfileScreen
 import com.example.lendlyapp.ui.screens.shop.ShopScreen
 import com.example.lendlyapp.ui.shared.BottomNavBar
 import com.example.lendlyapp.ui.shared.BottomNavTab
 
 @Composable
-fun MainScaffold() {
+fun MainScaffold(
+    onNavigateToLoanForm: () -> Unit
+) {
     var selectedTab by remember { mutableStateOf(BottomNavTab.Home) }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -31,7 +33,7 @@ fun MainScaffold() {
         Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
             when (selectedTab) {
                 BottomNavTab.Home    -> HomeScreen()
-                BottomNavTab.Loan    -> LoanScreen()
+                BottomNavTab.Loan    -> LoanInfoScreen(onNavigateToForm = onNavigateToLoanForm)
                 BottomNavTab.Shop    -> ShopScreen()
                 BottomNavTab.History -> HistoryScreen()
                 BottomNavTab.Manage  -> ProfileScreen()

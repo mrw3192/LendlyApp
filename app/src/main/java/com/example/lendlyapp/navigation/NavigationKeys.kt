@@ -16,23 +16,9 @@ import kotlinx.serialization.Serializable
 /** Login screen — email + password authentication. */
 @Serializable data object LoginRoute : NavKey
 
-/** Registration screen — create a new account. */
+// ─── Registration Flow ────────────────────────────────────────────────────────
+/** Registration screen — legacy / generic entry point. */
 @Serializable data object RegisterRoute : NavKey
-
-/** Home / Dashboard screen — post-auth entry point. */
-@Serializable data object HomeRoute : NavKey
-
-/** Loan Module — Information and conditions screen. */
-@Serializable data object LoanInfoRoute : NavKey
-
-/** Loan Module — Request form screen. */
-@Serializable data object LoanFormRoute : NavKey
-
-/** Loan Module — Active loan management screen. */
-@Serializable data object ActiveLoanRoute : NavKey
-
-/** Loan Module — Successful transaction feedback. */
-@Serializable data object LoanSuccessRoute : NavKey
 
 /** Registration step 1 — verify phone number. */
 @Serializable data object VerifyPhoneRoute : NavKey
@@ -48,6 +34,23 @@ import kotlinx.serialization.Serializable
 
 /** Registration step 5 — success / done page. */
 @Serializable data object DoneRoute : NavKey
+
+// ─── Main Content ─────────────────────────────────────────────────────────────
+/** Home / Dashboard screen — post-auth entry point. */
+@Serializable data object HomeRoute : NavKey
+
+// ─── Loan Module ──────────────────────────────────────────────────────────────
+/** Loan Module — Information and conditions screen. */
+@Serializable data object LoanInfoRoute : NavKey
+
+/** Loan Module — Request form screen. */
+@Serializable data object LoanFormRoute : NavKey
+
+/** Loan Module — Active loan management screen. */
+@Serializable data object ActiveLoanRoute : NavKey
+
+/** Loan Module — Successful transaction feedback. */
+@Serializable data object LoanSuccessRoute : NavKey
 
 // ─── Legacy key — kept to avoid breaking MainScreen during development ─────────
 @Serializable data object Main : NavKey
