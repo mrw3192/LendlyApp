@@ -37,5 +37,19 @@ import kotlinx.serialization.Serializable
 /** Registration step 5 — success / done page. */
 @Serializable data object DoneRoute : NavKey
 
+// ── KYC / Optional Verification Routes ─────────────────────────────────────────
+
+/** KYC step 1 — Scan ID document. */
+@Serializable data object IdVerificationRoute : NavKey
+
+/** KYC step 2 — Face recognition selfie. */
+@Serializable data object FaceRecognitionRoute : NavKey
+
+/** KYC step 3 — Interactive signature canvas. */
+@Serializable data object SignatureRoute : NavKey
+
+/** KYC step 4 — Identity verified success page. */
+@Serializable data object VerifiedRoute : NavKey
+
 // ─── Legacy key — kept to avoid breaking MainScreen during development ─────────
 @Serializable data object Main : NavKey

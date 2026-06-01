@@ -21,10 +21,13 @@ data class RegisterRequest(
  * {
  *   "success": true,
  *   "message": "User registered successfully.",
- *   "user": { ... }
+ *   "user": { ... },
+ *   "token": "eyJhbGciOiJIUzI1NiIs..."
  * }
  */
 data class RegisterResponse(
     val success: Boolean,
     val message: String?,
+    val user: UserDto? = null,
+    val token: String? = null,
 )

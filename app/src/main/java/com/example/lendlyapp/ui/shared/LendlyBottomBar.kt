@@ -56,6 +56,6 @@ fun LendlyBottomBar(
                 fontSize = 14.sp,
             )
         }
-        HomeIndicatorBar(color = indicatorColor)
+
     }
 }
