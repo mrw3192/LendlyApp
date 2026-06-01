@@ -96,7 +96,7 @@ fun VerifiedScreen(
 
             // Subtitle — 16sp Normal
             Text(
-                text = "We are just a few questions away from opening your own lendly account.",
+                text = "We are just a few questions away from opening your own lendly loan account. Tap the button to continue.",
                 fontFamily = InterFamily,
                 fontWeight = FontWeight.Normal,
                 fontSize = 16.sp,
@@ -131,7 +131,7 @@ fun VerifiedScreen(
 
                     // Card body — 16sp Normal
                     Text(
-                        text = "Our online security feature world-class protection against hackers. Your transactions are safe.",
+                        text = "Our online security feature world-class protection against hackers. It makes them cry and rethink their purpose in life.",
                         fontFamily = InterFamily,
                         fontWeight = FontWeight.Normal,
                         fontSize = 16.sp,
