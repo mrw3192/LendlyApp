@@ -46,6 +46,7 @@ import com.example.lendlyapp.ui.theme.FigmaNeonGreen
 import com.example.lendlyapp.ui.theme.FigmaOliveGreen
 import com.example.lendlyapp.ui.theme.InterFamily
 import com.example.lendlyapp.ui.theme.LendlyAppTheme
+import com.example.lendlyapp.ui.shared.LendlyTopBar
 import com.example.lendlyapp.ui.theme.OnPrimaryGreen
 import com.example.lendlyapp.ui.theme.SectionDividerGray
 import com.example.lendlyapp.ui.theme.SubtitleGray
@@ -63,7 +64,18 @@ fun SuccessfulTransactionScreen(
             .background(FigmaLightBg)
             .statusBarsPadding(),
     ) {
-        SuccessTopBar(onClose = onClose)
+        LendlyTopBar(
+            onNavigationClick = onClose,
+            navigationIcon = Icons.Default.Close,
+            trailingContent = {
+                IconButton(onClick = {}, modifier = Modifier.size(48.dp)) {
+                    Icon(imageVector = Icons.Outlined.Info, contentDescription = null, tint = FigmaLightText, modifier = Modifier.size(24.dp))
+                }
+                IconButton(onClick = {}, modifier = Modifier.size(48.dp)) {
+                    Icon(imageVector = Icons.Default.MoreHoriz, contentDescription = null, tint = FigmaLightText, modifier = Modifier.size(24.dp))
+                }
+            },
+        )
 
         Column(
             modifier = Modifier
@@ -104,45 +116,6 @@ fun SuccessfulTransactionScreen(
                     color = OnPrimaryGreen,
                 )
             }
-        }
-    }
-}
-
-@Composable
-private fun SuccessTopBar(onClose: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(64.dp)
-            .padding(horizontal = 4.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        IconButton(onClick = onClose, modifier = Modifier.size(48.dp)) {
-            Icon(
-                imageVector = Icons.Default.Close,
-                contentDescription = "Close",
-                tint = FigmaLightText,
-                modifier = Modifier.size(24.dp),
-            )
-        }
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        IconButton(onClick = {}, modifier = Modifier.size(48.dp)) {
-            Icon(
-                imageVector = Icons.Outlined.Info,
-                contentDescription = null,
-                tint = FigmaLightText,
-                modifier = Modifier.size(24.dp),
-            )
-        }
-        IconButton(onClick = {}, modifier = Modifier.size(48.dp)) {
-            Icon(
-                imageVector = Icons.Default.MoreHoriz,
-                contentDescription = null,
-                tint = FigmaLightText,
-                modifier = Modifier.size(24.dp),
-            )
         }
     }
 }

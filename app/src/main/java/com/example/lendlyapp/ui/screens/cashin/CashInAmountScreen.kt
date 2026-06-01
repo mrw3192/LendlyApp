@@ -42,6 +42,7 @@ import com.example.lendlyapp.ui.theme.FigmaLightText
 import com.example.lendlyapp.ui.theme.FigmaNeonGreen
 import com.example.lendlyapp.ui.theme.InterFamily
 import com.example.lendlyapp.ui.theme.LendlyAppTheme
+import com.example.lendlyapp.ui.shared.LendlyTopBar
 import com.example.lendlyapp.ui.theme.OnPrimaryGreen
 import com.example.lendlyapp.ui.theme.SectionDividerGray
 import com.example.lendlyapp.ui.theme.SubtitleGray
@@ -60,7 +61,7 @@ fun CashInAmountScreen(
             .background(FigmaLightBg)
             .statusBarsPadding(),
     ) {
-        AmountTopBar(onBack = onBack)
+        LendlyTopBar(onNavigationClick = onBack)
 
         Column(
             modifier = Modifier
@@ -123,28 +124,6 @@ fun CashInAmountScreen(
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun AmountTopBar(onBack: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(64.dp)
-            .padding(horizontal = 4.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        IconButton(onClick = onBack, modifier = Modifier.size(48.dp)) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Back",
-                tint = FigmaLightText,
-                modifier = Modifier.size(24.dp),
-            )
-        }
-        Spacer(modifier = Modifier.weight(1f))
-        Spacer(modifier = Modifier.size(48.dp))
     }
 }
 

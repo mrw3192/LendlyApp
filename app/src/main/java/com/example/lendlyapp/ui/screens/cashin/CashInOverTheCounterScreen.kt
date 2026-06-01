@@ -44,6 +44,7 @@ import com.example.lendlyapp.ui.theme.FigmaLightSurface
 import com.example.lendlyapp.ui.theme.FigmaLightText
 import com.example.lendlyapp.ui.theme.InterFamily
 import com.example.lendlyapp.ui.theme.LendlyAppTheme
+import com.example.lendlyapp.ui.shared.LendlyTopBar
 import com.example.lendlyapp.ui.theme.SubtitleGray
 
 private data class OtcPartner(val name: String, val assetFileName: String)
@@ -66,7 +67,7 @@ fun CashInOverTheCounterScreen(
             .background(FigmaLightBg)
             .statusBarsPadding(),
     ) {
-        OtcTopBar(onBack = onBack)
+        LendlyTopBar(onNavigationClick = onBack, title = "Cash-In")
 
         Column(
             modifier = Modifier
@@ -88,36 +89,6 @@ fun CashInOverTheCounterScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
         }
-    }
-}
-
-@Composable
-private fun OtcTopBar(onBack: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(64.dp)
-            .padding(horizontal = 4.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        IconButton(onClick = onBack, modifier = Modifier.size(48.dp)) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Back",
-                tint = FigmaLightText,
-                modifier = Modifier.size(24.dp),
-            )
-        }
-        Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
-            Text(
-                text = "Cash-In",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-                fontFamily = InterFamily,
-                color = FigmaLightText,
-            )
-        }
-        Spacer(modifier = Modifier.size(48.dp))
     }
 }
 

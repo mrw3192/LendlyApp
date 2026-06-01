@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material.icons.filled.LocationOn
@@ -44,6 +43,7 @@ import com.example.lendlyapp.ui.theme.FigmaLightText
 import com.example.lendlyapp.ui.theme.FigmaMintSplash
 import com.example.lendlyapp.ui.theme.InterFamily
 import com.example.lendlyapp.ui.theme.LendlyAppTheme
+import com.example.lendlyapp.ui.shared.LendlyTopBar
 import com.example.lendlyapp.ui.theme.SubtitleGray
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.Arrangement
@@ -60,7 +60,20 @@ fun CashInScreen(
             .background(FigmaLightBg)
             .statusBarsPadding(),
     ) {
-        CashInTopBar(onBack = onBack)
+        LendlyTopBar(
+            onNavigationClick = onBack,
+            title = "Cash-In",
+            trailingContent = {
+                IconButton(onClick = {}, modifier = Modifier.size(48.dp)) {
+                    Icon(
+                        imageVector = Icons.Outlined.Info,
+                        contentDescription = null,
+                        tint = FigmaLightText,
+                        modifier = Modifier.size(24.dp),
+                    )
+                }
+            },
+        )
 
         // ── Content ───────────────────────────────────────────────────────────
         Spacer(modifier = Modifier.height(16.dp))
@@ -77,54 +90,6 @@ fun CashInScreen(
             onNavigateToOnline = onNavigateToOnline,
             onNavigateToOverTheCounter = onNavigateToOverTheCounter,
         )
-    }
-}
-
-@Composable
-private fun CashInTopBar(onBack: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(64.dp)
-            .padding(horizontal = 4.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        IconButton(
-            onClick = onBack,
-            modifier = Modifier.size(48.dp),
-        ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Back",
-                tint = FigmaLightText,
-                modifier = Modifier.size(24.dp),
-            )
-        }
-
-        Box(
-            modifier = Modifier.weight(1f),
-            contentAlignment = Alignment.Center,
-        ) {
-            Text(
-                text = "Cash-In",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-                fontFamily = InterFamily,
-                color = FigmaLightText,
-            )
-        }
-
-        IconButton(
-            onClick = {},
-            modifier = Modifier.size(48.dp),
-        ) {
-            Icon(
-                imageVector = Icons.Outlined.Info,
-                contentDescription = null,
-                tint = FigmaLightText,
-                modifier = Modifier.size(24.dp),
-            )
-        }
     }
 }
 
