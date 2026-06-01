@@ -22,6 +22,7 @@ import com.example.lendlyapp.ui.screens.register.DoneScreen
 import com.example.lendlyapp.ui.screens.loans.LoanInfoScreen
 import com.example.lendlyapp.ui.screens.loans.LoanFormScreen
 import com.example.lendlyapp.ui.screens.loans.LoanSuccessScreen
+import com.example.lendlyapp.ui.screens.loans.ActiveLoanScreen
 import com.example.lendlyapp.viewmodel.RegisterViewModel
 import com.example.lendlyapp.viewmodel.LoanViewModel
 import com.example.lendlyapp.ui.theme.FigmaDarkBg
@@ -131,6 +132,13 @@ fun AppNavigation() {
                 LoanSuccessScreen(
                     onClose = { navigateClearingStack(backStack, HomeRoute) },
                     onDone = { navigateClearingStack(backStack, HomeRoute) }
+                )
+            }
+
+            // ── Active Loans ─────────────────────────────────────────────────────
+            entry<ActiveLoanRoute> {
+                ActiveLoanScreen(
+                    onBack = { backStack.removeLastOrNull() }
                 )
             }
         },
