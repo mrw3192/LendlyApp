@@ -42,7 +42,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.lendlyapp.ui.shared.HomeIndicatorBar
+
 import com.example.lendlyapp.ui.shared.LendlyBottomBar
 import com.example.lendlyapp.ui.shared.LendlyLogo
 import com.example.lendlyapp.ui.shared.LendlyTextField
@@ -77,6 +77,8 @@ fun LoginScreen(
     val uiState by viewModel.uiState.collectAsState()
     val email by viewModel.email.collectAsState()
     val password by viewModel.password.collectAsState()
+    val emailError by viewModel.emailError.collectAsState()
+    val passwordError by viewModel.passwordError.collectAsState()
     val isReturningUser by viewModel.isReturningUser.collectAsState()
     val rememberedUser by viewModel.rememberedUser.collectAsState()
     var passwordVisible by remember { mutableStateOf(false) }
@@ -131,6 +133,9 @@ fun LoginScreen(
                         value = email,
                         onValueChange = { viewModel.onEmailChange(it) },
                         placeholder = "Enter your email",
+                        isError = emailError != null,
+                        errorMessage = emailError,
+                        onFocusLost = { viewModel.onEmailFocusLost() }
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                 }
@@ -143,6 +148,9 @@ fun LoginScreen(
                     placeholder = "Enter your password",
                     isPassword = true,
                     passwordVisible = passwordVisible,
+                    isError = passwordError != null,
+                    errorMessage = passwordError,
+                    onFocusLost = { viewModel.onPasswordFocusLost() },
                     trailingIcon = {
                         IconButton(onClick = { passwordVisible = !passwordVisible }) {
                             Icon(

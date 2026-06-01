@@ -37,7 +37,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.lendlyapp.ui.shared.HomeIndicatorBar
+
 import com.example.lendlyapp.ui.shared.LendlyTopAppBar
 import com.example.lendlyapp.ui.theme.FigmaLightBg
 import com.example.lendlyapp.ui.theme.FigmaLightText
@@ -230,7 +230,7 @@ fun SignatureScreen(
                 )
             }
 
-            HomeIndicatorBar(color = Color.Black)
+
         }
     }
 }

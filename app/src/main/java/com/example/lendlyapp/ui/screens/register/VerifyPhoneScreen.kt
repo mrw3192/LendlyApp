@@ -95,6 +95,9 @@ fun VerifyPhoneScreen(
                 onCountryCodeChange = { viewModel.onCountryCodeChange(it) },
                 phoneNumber = state.phone,
                 onPhoneNumberChange = { viewModel.onPhoneChange(it) },
+                isError = state.phoneError != null,
+                errorMessage = state.phoneError,
+                onFocusLost = { viewModel.onPhoneFocusLost() }
             )
         }
 

@@ -41,13 +41,21 @@ data class RegisterState(
     val isLoading: Boolean = false,
     val error: String? = null,
     val isRegistrationComplete: Boolean = false,
+    
+    // Inline Errors
+    val phoneError: String? = null,
+    val otpError: String? = null,
+    val firstNameError: String? = null,
+    val lastNameError: String? = null,
+    val dobError: String? = null,
+    val addressError: String? = null,
+    val cityError: String? = null,
+    val postalCodeError: String? = null,
+    val passwordError: String? = null,
 )
 
 // ─── ViewModel ─────────────────────────────────────────────────────────────────
 
-/**
- * Shared ViewModel for the 5-step registration flow using [AuthRepository].
- */
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
     private val authRepository: AuthRepository,
@@ -56,29 +64,109 @@ class RegisterViewModel @Inject constructor(
     private val _state = MutableStateFlow(RegisterState())
     val state: StateFlow<RegisterState> = _state.asStateFlow()
 
+    private val nameRegex = Regex("^[a-zA-ZÀ-ÿ \\-']*$")
+
     // ── Field updaters ─────────────────────────────────────────────────────
 
-    fun onPhoneChange(value: String) { _state.update { it.copy(phone = value) } }
+    fun onPhoneChange(value: String) { 
+        if (value.all { it.isDigit() }) {
+            _state.update { it.copy(phone = value, phoneError = null, error = null) } 
+        }
+    }
     fun onCountryCodeChange(value: String) { _state.update { it.copy(countryCode = value) } }
-    fun onOtpChange(value: String) { _state.update { it.copy(otpCode = value) } }
-    fun onFirstNameChange(value: String) { _state.update { it.copy(firstName = value) } }
-    fun onLastNameChange(value: String) { _state.update { it.copy(lastName = value) } }
-    fun onDobDayChange(value: String) { _state.update { it.copy(dobDay = value.filter { char -> char.isDigit() }.take(2)) } }
-    fun onDobMonthChange(value: String) { _state.update { it.copy(dobMonth = value.filter { char -> char.isDigit() }.take(2)) } }
-    fun onDobYearChange(value: String) { _state.update { it.copy(dobYear = value.filter { char -> char.isDigit() }.take(4)) } }
-    fun onAddressChange(value: String) { _state.update { it.copy(address = value) } }
-    fun onCityChange(value: String) { _state.update { it.copy(city = value) } }
-    fun onPostalCodeChange(value: String) { _state.update { it.copy(postalCode = value) } }
-    fun onPasswordChange(value: String) { _state.update { it.copy(password = value) } }
+    fun onOtpChange(value: String) { _state.update { it.copy(otpCode = value, otpError = null, error = null) } }
+    
+    fun onFirstNameChange(value: String) { 
+        if (value.length <= 50 && value.matches(nameRegex)) {
+            _state.update { it.copy(firstName = value, firstNameError = null, error = null) } 
+        }
+    }
+    fun onLastNameChange(value: String) { 
+        if (value.length <= 50 && value.matches(nameRegex)) {
+            _state.update { it.copy(lastName = value, lastNameError = null, error = null) } 
+        }
+    }
+    fun onDobDayChange(value: String) { _state.update { it.copy(dobDay = value.filter { char -> char.isDigit() }.take(2), dobError = null, error = null) } }
+    fun onDobMonthChange(value: String) { _state.update { it.copy(dobMonth = value.filter { char -> char.isDigit() }.take(2), dobError = null, error = null) } }
+    fun onDobYearChange(value: String) { _state.update { it.copy(dobYear = value.filter { char -> char.isDigit() }.take(4), dobError = null, error = null) } }
+    
+    fun onAddressChange(value: String) { 
+        if (value.length <= 100) _state.update { it.copy(address = value, addressError = null, error = null) } 
+    }
+    fun onCityChange(value: String) { 
+        if (value.length <= 50) _state.update { it.copy(city = value, cityError = null, error = null) } 
+    }
+    fun onPostalCodeChange(value: String) { 
+        if (value.length <= 10) _state.update { it.copy(postalCode = value, postalCodeError = null, error = null) } 
+    }
+    fun onPasswordChange(value: String) { 
+        if (value.length <= 64) _state.update { it.copy(password = value, passwordError = null, error = null) } 
+    }
 
     fun clearError() { _state.update { it.copy(error = null) } }
+
+    // ── Focus Lost Validations ─────────────────────────────────────────────
+
+    fun onPhoneFocusLost() { validatePhone() }
+    fun onOtpFocusLost() { validateOtp() }
+    
+    fun onFirstNameFocusLost() {
+        if (_state.value.firstName.isBlank()) {
+            _state.update { it.copy(firstNameError = "First name is required") }
+        }
+    }
+    
+    fun onLastNameFocusLost() {
+        if (_state.value.lastName.isBlank()) {
+            _state.update { it.copy(lastNameError = "Last name is required") }
+        }
+    }
+    
+    fun onDobFocusLost() {
+        val s = _state.value
+        val day = s.dobDay.toIntOrNull() ?: 0
+        val month = s.dobMonth.toIntOrNull() ?: 0
+        val year = s.dobYear.toIntOrNull() ?: 0
+        
+        if (s.dobDay.isBlank() || s.dobMonth.isBlank() || s.dobYear.isBlank()) {
+            _state.update { it.copy(dobError = "Date of birth is required") }
+        } else if (day !in 1..31) {
+            _state.update { it.copy(dobError = "Day must be between 1 and 31") }
+        } else if (month !in 1..12) {
+            _state.update { it.copy(dobError = "Month must be between 1 and 12") }
+        } else if (year !in 1901..2026) {
+            _state.update { it.copy(dobError = "Year must be between 1901 and 2026") }
+        } else {
+            _state.update { it.copy(dobError = null) }
+        }
+    }
+    
+    fun onAddressFocusLost() {
+        if (_state.value.address.isBlank()) {
+            _state.update { it.copy(addressError = "Address is required") }
+        }
+    }
+    
+    fun onCityFocusLost() {
+        if (_state.value.city.isBlank()) {
+            _state.update { it.copy(cityError = "City is required") }
+        }
+    }
+    
+    fun onPostalCodeFocusLost() {
+        if (_state.value.postalCode.isBlank()) {
+            _state.update { it.copy(postalCodeError = "Postal code is required") }
+        }
+    }
+    
+    fun onPasswordFocusLost() { validatePassword() }
 
     // ── Step validations ───────────────────────────────────────────────────
 
     fun validatePhone(): Boolean {
         val phone = _state.value.phone.trim()
         if (phone.length < 6) {
-            _state.update { it.copy(error = "Please enter a valid phone number") }
+            _state.update { it.copy(phoneError = "Please enter a valid phone number") }
             return false
         }
         return true
@@ -87,70 +175,39 @@ class RegisterViewModel @Inject constructor(
     fun validateOtp(): Boolean {
         val otp = _state.value.otpCode.trim()
         if (otp.length < 6) {
-            _state.update { it.copy(error = "Please enter all 6 digits") }
+            _state.update { it.copy(otpError = "Please enter all 6 digits") }
             return false
         }
         return true
     }
 
     fun validateProfile(): Boolean {
+        onFirstNameFocusLost()
+        onLastNameFocusLost()
+        onDobFocusLost()
+        onAddressFocusLost()
+        onCityFocusLost()
+        onPostalCodeFocusLost()
+        onPhoneFocusLost()
+        
         val s = _state.value
-        if (s.firstName.isBlank()) {
-            _state.update { it.copy(error = "First name is required") }
-            return false
-        }
-        if (s.lastName.isBlank()) {
-            _state.update { it.copy(error = "Last name is required") }
-            return false
-        }
-        if (s.dobDay.isBlank() || s.dobMonth.isBlank() || s.dobYear.isBlank()) {
-            _state.update { it.copy(error = "Date of birth is required") }
-            return false
-        }
-        val day = s.dobDay.toIntOrNull() ?: 0
-        val month = s.dobMonth.toIntOrNull() ?: 0
-        val year = s.dobYear.toIntOrNull() ?: 0
-        if (day !in 1..31) {
-            _state.update { it.copy(error = "Day must be between 1 and 31") }
-            return false
-        }
-        if (month !in 1..12) {
-            _state.update { it.copy(error = "Month must be between 1 and 12") }
-            return false
-        }
-        if (year !in 1901..2026) {
-            _state.update { it.copy(error = "Year must be between 1901 and 2026") }
-            return false
-        }
-        if (s.address.isBlank()) {
-            _state.update { it.copy(error = "Address is required") }
-            return false
-        }
-        if (s.city.isBlank()) {
-            _state.update { it.copy(error = "City is required") }
-            return false
-        }
-        if (s.postalCode.isBlank()) {
-            _state.update { it.copy(error = "Postal code is required") }
-            return false
-        }
-        if (s.phone.isBlank()) {
-            _state.update { it.copy(error = "Phone number is required") }
-            return false
-        }
-        return true
+        return s.firstNameError == null && s.lastNameError == null && 
+               s.dobError == null && s.addressError == null && 
+               s.cityError == null && s.postalCodeError == null && 
+               s.phoneError == null
     }
 
     fun validatePassword(): Boolean {
         val pwd = _state.value.password
         if (pwd.length < 9) {
-            _state.update { it.copy(error = "Password must be at least 9 characters") }
+            _state.update { it.copy(passwordError = "Password must be at least 9 characters") }
             return false
         }
         if (!pwd.any { it.isLetter() } || !pwd.any { it.isDigit() }) {
-            _state.update { it.copy(error = "Password must contain a letter and a number") }
+            _state.update { it.copy(passwordError = "Password must contain a letter and a number") }
             return false
         }
+        _state.update { it.copy(passwordError = null) }
         return true
     }
 
@@ -168,6 +225,8 @@ class RegisterViewModel @Inject constructor(
     // ── Complete Registration ─────────────────────────────────────
 
     fun completeRegistration() {
+        if (!validatePassword()) return
+        
         _state.update { it.copy(isLoading = true) }
         viewModelScope.launch {
             val currentState = _state.value

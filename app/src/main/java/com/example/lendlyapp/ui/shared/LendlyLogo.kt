@@ -71,15 +71,7 @@ fun HomeIndicatorBar(
     modifier: Modifier = Modifier,
     color: Color = Color.Black,
 ) {
-    Box(
-        modifier = modifier
-            .size(width = 393.dp, height = 34.dp),
-        contentAlignment = Alignment.Center,
-    ) {
-        Box(
-            modifier = Modifier
-                .size(width = 134.dp, height = 5.dp)
-                .background(color = color, shape = RoundedCornerShape(100.dp)),
-        )
-    }
+    // Intentionally left empty.
+    // Android automatically renders its own system navigation bar at the bottom.
+    // Our layouts use Modifier.navigationBarsPadding() to provide the correct system spacing.
 }

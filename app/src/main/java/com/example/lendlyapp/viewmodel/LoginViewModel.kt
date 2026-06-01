@@ -65,11 +65,23 @@ class LoginViewModel @Inject constructor(
     private val _email = MutableStateFlow("")
     val email: StateFlow<String> = _email.asStateFlow()
 
+    private val _emailError = MutableStateFlow<String?>(null)
+    val emailError: StateFlow<String?> = _emailError.asStateFlow()
+
     private val _password = MutableStateFlow("")
     val password: StateFlow<String> = _password.asStateFlow()
 
-    fun onEmailChange(value: String) { _email.value = value }
-    fun onPasswordChange(value: String) { _password.value = value }
+    private val _passwordError = MutableStateFlow<String?>(null)
+    val passwordError: StateFlow<String?> = _passwordError.asStateFlow()
+
+    fun onEmailChange(value: String) { 
+        _email.value = value 
+        _emailError.value = null
+    }
+    fun onPasswordChange(value: String) { 
+        _password.value = value 
+        _passwordError.value = null
+    }
 
     // ── Returning user state ───────────────────────────────────────────────
 
@@ -121,6 +133,20 @@ class LoginViewModel @Inject constructor(
         return email.isNotBlank() && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 
+    fun onEmailFocusLost() {
+        if (_email.value.isBlank()) {
+            _emailError.value = "Email is required"
+        } else if (!isEmailValid(_email.value)) {
+            _emailError.value = "Please enter a valid email address"
+        }
+    }
+
+    fun onPasswordFocusLost() {
+        if (_password.value.isEmpty()) {
+            _passwordError.value = "Password cannot be empty"
+        }
+    }
+
     // ── Login action ───────────────────────────────────────────────────────
 
     fun login() {
@@ -133,13 +159,17 @@ class LoginViewModel @Inject constructor(
 
         // Validate email
         if (!isEmailValid(currentEmail)) {
-            _uiState.value = LoginUiState.Error("Please enter a valid email address")
+            if (_isReturningUser.value) {
+                _uiState.value = LoginUiState.Error("Invalid remembered email")
+            } else {
+                _emailError.value = "Please enter a valid email address"
+            }
             return
         }
 
         // Validate password
         if (currentPassword.isEmpty()) {
-            _uiState.value = LoginUiState.Error("Password cannot be empty")
+            _passwordError.value = "Password cannot be empty"
             return
         }
 

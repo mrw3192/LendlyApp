@@ -115,7 +115,17 @@ fun SmsVerificationScreen(
             OtpInputRow(
                 otpValue = state.otpCode,
                 onOtpChange = { viewModel.onOtpChange(it) },
+                isError = state.otpError != null,
             )
+            if (state.otpError != null) {
+                Text(
+                    text = state.otpError!!,
+                    color = androidx.compose.ui.graphics.Color.Red,
+                    fontSize = 12.sp,
+                    fontFamily = InterFamily,
+                    modifier = Modifier.padding(top = 4.dp, start = 8.dp)
+                )
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
