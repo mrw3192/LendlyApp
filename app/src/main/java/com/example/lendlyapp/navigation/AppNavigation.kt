@@ -22,7 +22,7 @@ import com.example.lendlyapp.ui.screens.onboarding.OnboardingScreen
 
 @Composable
 fun AppNavigation() {
-    val backStack = rememberNavBackStack(HomeRoute)
+    val backStack = rememberNavBackStack(SplashRoute)
 
     NavDisplay(
         backStack = backStack,
