@@ -17,6 +17,8 @@ import com.example.lendlyapp.ui.screens.home.HomeScreen
 import com.example.lendlyapp.ui.screens.history.HistoryScreen
 import com.example.lendlyapp.ui.screens.loans.LoanScreen
 import com.example.lendlyapp.ui.screens.profile.ProfileScreen
+import com.example.lendlyapp.model.Product
+import com.example.lendlyapp.ui.screens.shop.ProductDetailScreen
 import com.example.lendlyapp.ui.screens.shop.ShopScreen
 import com.example.lendlyapp.ui.shared.BottomNavBar
 import com.example.lendlyapp.ui.shared.BottomNavTab
@@ -24,6 +26,7 @@ import com.example.lendlyapp.ui.shared.BottomNavTab
 @Composable
 fun MainScaffold() {
     var selectedTab by remember { mutableStateOf(BottomNavTab.Home) }
+    var shopSelectedProduct by remember { mutableStateOf<Product?>(null) }
 
     Column(modifier = Modifier.fillMaxSize()) {
 
@@ -32,7 +35,17 @@ fun MainScaffold() {
             when (selectedTab) {
                 BottomNavTab.Home    -> HomeScreen()
                 BottomNavTab.Loan    -> LoanScreen()
-                BottomNavTab.Shop    -> ShopScreen()
+                BottomNavTab.Shop    -> {
+                    val selected = shopSelectedProduct
+                    if (selected != null) {
+                        ProductDetailScreen(
+                            product = selected,
+                            onBack = { shopSelectedProduct = null },
+                        )
+                    } else {
+                        ShopScreen(onProductClick = { shopSelectedProduct = it })
+                    }
+                }
                 BottomNavTab.History -> HistoryScreen()
                 BottomNavTab.Manage  -> ProfileScreen()
             }

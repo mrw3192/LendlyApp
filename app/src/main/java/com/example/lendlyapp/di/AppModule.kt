@@ -7,7 +7,10 @@ import com.example.lendlyapp.core.ApiConfig
 import com.example.lendlyapp.core.ApiKeyInterceptor
 import com.example.lendlyapp.core.AuthInterceptor
 import com.example.lendlyapp.data.local.UserPreferences
+import com.example.lendlyapp.data.repository.ProductRepository
+import com.example.lendlyapp.data.repository.ProductRepositoryImpl
 import com.example.lendlyapp.shared.AuthApi
+import com.example.lendlyapp.shared.LendlyApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -68,5 +71,19 @@ object AppModule {
         userPreferences: UserPreferences
     ): AuthRepository {
         return AuthRepositoryImpl(api, userPreferences)
+    }
+
+    @Provides
+    @Singleton
+    fun provideLendlyApiService(retrofit: Retrofit): LendlyApiService {
+        return retrofit.create(LendlyApiService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideProductRepository(
+        api: LendlyApiService,
+    ): ProductRepository {
+        return ProductRepositoryImpl(api)
     }
 }
