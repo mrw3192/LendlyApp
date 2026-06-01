@@ -170,21 +170,21 @@ fun SignatureScreen(
                         .padding(8.dp)
                         .size(40.dp),
                 )
-            }
 
-            // ── Canvas hint label ──────────────────────────────────────────
-            // 14sp Medium, centered
-            Text(
-                text = "Sign here (same signature as with the document you provided)",
-                fontFamily = InterFamily,
-                fontWeight = FontWeight.Medium,
-                fontSize = 14.sp,
-                color = SubtitleGray,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
-            )
+                // ── Canvas hint label (centered inside the canvas) ─────────
+                // 14sp Medium, centered — matches Figma positioning
+                Text(
+                    text = "Sign here\n(same signature as with the\ndocument you provided)",
+                    fontFamily = InterFamily,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 14.sp,
+                    color = SubtitleGray,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(horizontal = 32.dp),
+                )
+            }
         }
 
         // ── Bottom section with legal text + button ────────────────────────
