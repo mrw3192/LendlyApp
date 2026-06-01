@@ -25,6 +25,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.camera.core.CameraSelector
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.core.content.ContextCompat
+import com.example.lendlyapp.ui.shared.CameraPreview
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -49,6 +60,27 @@ fun IdVerificationScreen(
     onBackClick: () -> Unit,
 ) {
     val context = LocalContext.current
+
+    var hasCameraPermission by remember {
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED
+        )
+    }
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        hasCameraPermission = isGranted
+    }
+
+    LaunchedEffect(Unit) {
+        if (!hasCameraPermission) {
+            permissionLauncher.launch(Manifest.permission.CAMERA)
+        }
+    }
 
     // Load asset images asynchronously to prevent blocking the main thread (ANR)
     val backgroundBitmap by produceState<androidx.compose.ui.graphics.ImageBitmap?>(initialValue = null) {
@@ -127,13 +159,19 @@ fun IdVerificationScreen(
                     .height(357.dp),
                 contentAlignment = Alignment.Center,
             ) {
-                if (backgroundBitmap != null) {
-                    Image(
-                        bitmap = backgroundBitmap!!,
-                        contentDescription = "Camera preview background",
+                if (hasCameraPermission) {
+                    CameraPreview(
                         modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop,
+                        lensFacing = CameraSelector.LENS_FACING_BACK
                     )
+                } else {
+                    Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
+                        Text(
+                            text = "Camera permission required",
+                            color = Color.White,
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                    }
                 }
 
                 // Scan target frame — white rounded rectangle border
@@ -148,14 +186,6 @@ fun IdVerificationScreen(
                         ),
                     contentAlignment = Alignment.Center,
                 ) {
-                    if (idCardBitmap != null) {
-                        Image(
-                            bitmap = idCardBitmap!!,
-                            contentDescription = "ID card",
-                            modifier = Modifier.size(width = 297.dp, height = 187.dp),
-                            contentScale = ContentScale.Fit,
-                        )
-                    }
                 }
             }
         }

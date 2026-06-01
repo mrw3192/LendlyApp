@@ -24,6 +24,18 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.camera.core.CameraSelector
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.core.content.ContextCompat
+import com.example.lendlyapp.ui.shared.CameraPreview
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -51,14 +63,24 @@ fun FaceRecognitionScreen(
 ) {
     val context = LocalContext.current
 
-    val backgroundBitmap by produceState<androidx.compose.ui.graphics.ImageBitmap?>(initialValue = null) {
-        value = withContext(Dispatchers.IO) {
-            try {
-                val options = BitmapFactory.Options().apply { inSampleSize = 4 }
-                context.assets.open("img_ec4b2d5a8922c8f2.png").use { stream ->
-                    BitmapFactory.decodeStream(stream, null, options)?.asImageBitmap()
-                }
-            } catch (e: Exception) { null }
+    var hasCameraPermission by remember {
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED
+        )
+    }
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        hasCameraPermission = isGranted
+    }
+
+    LaunchedEffect(Unit) {
+        if (!hasCameraPermission) {
+            permissionLauncher.launch(Manifest.permission.CAMERA)
         }
     }
 
@@ -116,13 +138,19 @@ fun FaceRecognitionScreen(
                     .height(357.dp),
                 contentAlignment = Alignment.Center,
             ) {
-                if (backgroundBitmap != null) {
-                    Image(
-                        bitmap = backgroundBitmap!!,
-                        contentDescription = "Camera preview background",
+                if (hasCameraPermission) {
+                    CameraPreview(
                         modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop,
+                        lensFacing = CameraSelector.LENS_FACING_FRONT
                     )
+                } else {
+                    Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
+                        Text(
+                            text = "Camera permission required",
+                            color = Color.White,
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                    }
                 }
 
                 // Oval face frame — 150×190dp, white border, no fill
