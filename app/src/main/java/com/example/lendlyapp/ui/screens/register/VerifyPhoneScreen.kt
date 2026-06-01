@@ -79,7 +79,7 @@ fun VerifyPhoneScreen(
 
             // Subtitle — 16sp, Normal, FormLabel
             Text(
-                text = "We will send you a One-Time-Password (OTP) to confirm you number.",
+                text = "We will send you a One-Time-Password (OTP) to confirm your number.",
                 fontFamily = InterFamily,
                 fontWeight = FontWeight.Normal,
                 fontSize = 16.sp,

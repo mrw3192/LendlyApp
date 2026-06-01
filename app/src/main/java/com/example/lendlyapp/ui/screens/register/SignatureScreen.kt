@@ -99,7 +99,7 @@ fun SignatureScreen(
 
                 // Subtitle — 16sp Normal
                 Text(
-                    text = "You can use your finger or a compatible stylus to write you signature",
+                    text = "You can use your finger or a compatible stylus to write your signature",
                     fontFamily = InterFamily,
                     fontWeight = FontWeight.Normal,
                     fontSize = 16.sp,

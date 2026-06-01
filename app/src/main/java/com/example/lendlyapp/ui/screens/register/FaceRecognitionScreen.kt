@@ -97,7 +97,7 @@ fun FaceRecognitionScreen(
 
                 // Subtitle — 16sp Normal
                 Text(
-                    text = "Follow these instruction, and let us get you onboarded.",
+                    text = "Follow these instructions, and let us get you onboarded.",
                     fontFamily = InterFamily,
                     fontWeight = FontWeight.Normal,
                     fontSize = 16.sp,

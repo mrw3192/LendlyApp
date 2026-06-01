@@ -131,7 +131,7 @@ fun SmsVerificationScreen(
 
             // "Didn't received a code?" link — teal color (#005046), centered + underlined
             Text(
-                text = "Didn't received a code?",
+                text = "Didn't receive a code?",
                 fontFamily = InterFamily,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 14.sp,
