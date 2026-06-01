@@ -14,6 +14,7 @@ import com.example.lendlyapp.ui.theme.FigmaDarkBg
 import com.example.lendlyapp.ui.theme.FigmaDarkText
 import com.example.lendlyapp.ui.screens.auth.SplashScreen
 import com.example.lendlyapp.ui.screens.cashin.CashInOnlineScreen
+import com.example.lendlyapp.ui.screens.cashin.CashInOverTheCounterScreen
 import com.example.lendlyapp.ui.screens.cashin.CashInScreen
 import com.example.lendlyapp.ui.screens.onboarding.OnboardingScreen
 
@@ -71,11 +72,16 @@ fun AppNavigation() {
                 CashInScreen(
                     onBack = { backStack.removeLastOrNull() },
                     onNavigateToOnline = { backStack.add(CashInOnlineRoute) },
+                    onNavigateToOverTheCounter = { backStack.add(CashInOverTheCounterRoute) },
                 )
             }
 
             entry<CashInOnlineRoute> {
                 CashInOnlineScreen(onBack = { backStack.removeLastOrNull() })
+            }
+
+            entry<CashInOverTheCounterRoute> {
+                CashInOverTheCounterScreen(onBack = { backStack.removeLastOrNull() })
             }
         },
     )

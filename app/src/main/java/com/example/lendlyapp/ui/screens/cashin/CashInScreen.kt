@@ -52,6 +52,7 @@ import androidx.compose.foundation.layout.Arrangement
 fun CashInScreen(
     onBack: () -> Unit = {},
     onNavigateToOnline: () -> Unit = {},
+    onNavigateToOverTheCounter: () -> Unit = {},
 ) {
     Column(
         modifier = Modifier
@@ -72,7 +73,10 @@ fun CashInScreen(
             modifier = Modifier.padding(horizontal = 16.dp),
         )
         Spacer(modifier = Modifier.height(32.dp))
-        CashInOptionsCard(onNavigateToOnline = onNavigateToOnline)
+        CashInOptionsCard(
+            onNavigateToOnline = onNavigateToOnline,
+            onNavigateToOverTheCounter = onNavigateToOverTheCounter,
+        )
     }
 }
 
@@ -125,7 +129,10 @@ private fun CashInTopBar(onBack: () -> Unit) {
 }
 
 @Composable
-private fun CashInOptionsCard(onNavigateToOnline: () -> Unit = {}) {
+private fun CashInOptionsCard(
+    onNavigateToOnline: () -> Unit = {},
+    onNavigateToOverTheCounter: () -> Unit = {},
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -151,11 +158,12 @@ private fun CashInOptionsCard(onNavigateToOnline: () -> Unit = {}) {
                 icon = Icons.Filled.LocationOn,
                 title = "Over-the-counter",
                 subtitle = "Pay in cash",
-                onClick = {},
+                onClick = onNavigateToOverTheCounter,
             )
         }
     }
 }
+
 @Composable
 private fun CashInOptionRow(
     icon: ImageVector,
