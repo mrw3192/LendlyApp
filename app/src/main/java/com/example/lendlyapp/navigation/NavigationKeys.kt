@@ -15,4 +15,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable data object CashInRoute : NavKey
 
+@Serializable data object CashInOnlineRoute : NavKey
+
 @Serializable data object Main : NavKey

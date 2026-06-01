@@ -13,6 +13,7 @@ import androidx.navigation3.ui.NavDisplay
 import com.example.lendlyapp.ui.theme.FigmaDarkBg
 import com.example.lendlyapp.ui.theme.FigmaDarkText
 import com.example.lendlyapp.ui.screens.auth.SplashScreen
+import com.example.lendlyapp.ui.screens.cashin.CashInOnlineScreen
 import com.example.lendlyapp.ui.screens.cashin.CashInScreen
 import com.example.lendlyapp.ui.screens.onboarding.OnboardingScreen
 
@@ -67,7 +68,14 @@ fun AppNavigation() {
             }
 
             entry<CashInRoute> {
-                CashInScreen(onBack = { backStack.removeLastOrNull() })
+                CashInScreen(
+                    onBack = { backStack.removeLastOrNull() },
+                    onNavigateToOnline = { backStack.add(CashInOnlineRoute) },
+                )
+            }
+
+            entry<CashInOnlineRoute> {
+                CashInOnlineScreen(onBack = { backStack.removeLastOrNull() })
             }
         },
     )
@@ -81,7 +89,6 @@ private fun navigateClearingStack(
     backStack.add(destination)
     backStack.removeAll(existing.toSet())
 }
-
 @Composable
 private fun PlaceholderScreen(label: String) {
     Box(

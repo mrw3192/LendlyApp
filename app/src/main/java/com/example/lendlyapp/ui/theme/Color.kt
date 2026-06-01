@@ -70,3 +70,9 @@ val ProductPriceGreen = Color(0xFF3C6839)
 
 /** #1F3701 — Navigation arrow icons in Cash-In option rows */
 val CashInArrowGreen = Color(0xFF1F3701)
+
+/** #ADAAAA — Search bar border (Online Cash-In) */
+val SearchBorderGray = Color(0xFFADAAAA)
+
+/** #E5E2E1 — Divider between BANKS / E-WALLETS sections */
+val SectionDividerGray = Color(0xFFE5E2E1)

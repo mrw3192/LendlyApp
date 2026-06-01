@@ -1,7 +1,7 @@
 package com.example.lendlyapp.ui.screens.cashin
 
-
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -48,9 +48,11 @@ import com.example.lendlyapp.ui.theme.SubtitleGray
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.Arrangement
 
-
 @Composable
-fun CashInScreen(onBack: () -> Unit = {}) {
+fun CashInScreen(
+    onBack: () -> Unit = {},
+    onNavigateToOnline: () -> Unit = {},
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -59,6 +61,7 @@ fun CashInScreen(onBack: () -> Unit = {}) {
     ) {
         CashInTopBar(onBack = onBack)
 
+        // ── Content ───────────────────────────────────────────────────────────
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = "Cash-In Options",
@@ -69,7 +72,7 @@ fun CashInScreen(onBack: () -> Unit = {}) {
             modifier = Modifier.padding(horizontal = 16.dp),
         )
         Spacer(modifier = Modifier.height(32.dp))
-        CashInOptionsCard()
+        CashInOptionsCard(onNavigateToOnline = onNavigateToOnline)
     }
 }
 
@@ -122,7 +125,7 @@ private fun CashInTopBar(onBack: () -> Unit) {
 }
 
 @Composable
-private fun CashInOptionsCard() {
+private fun CashInOptionsCard(onNavigateToOnline: () -> Unit = {}) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -142,26 +145,29 @@ private fun CashInOptionsCard() {
                 icon = Icons.Filled.AccountBalanceWallet,
                 title = "Online Banking",
                 subtitle = "Pay via other banks or e-wallet",
+                onClick = onNavigateToOnline,
             )
             CashInOptionRow(
                 icon = Icons.Filled.LocationOn,
                 title = "Over-the-counter",
                 subtitle = "Pay in cash",
+                onClick = {},
             )
         }
     }
 }
-
 @Composable
 private fun CashInOptionRow(
     icon: ImageVector,
     title: String,
     subtitle: String,
+    onClick: () -> Unit = {},
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(52.dp)
+            .clickable(onClick = onClick)
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
