@@ -50,7 +50,7 @@ import com.example.lendlyapp.ui.theme.SubtitleGray
 fun CashInAmountScreen(
     bankName: String,
     onBack: () -> Unit = {},
-    onNext: () -> Unit = {},
+    onNext: (amount: String) -> Unit = {},
 ) {
     var amount by remember { mutableStateOf("") }
 
@@ -107,7 +107,7 @@ fun CashInAmountScreen(
                 .padding(horizontal = 16.dp, vertical = 24.dp),
         ) {
             Button(
-                onClick = onNext,
+                onClick = { onNext(amount) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),

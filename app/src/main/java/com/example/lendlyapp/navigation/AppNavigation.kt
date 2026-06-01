@@ -17,6 +17,7 @@ import com.example.lendlyapp.ui.screens.cashin.CashInAmountScreen
 import com.example.lendlyapp.ui.screens.cashin.CashInOnlineScreen
 import com.example.lendlyapp.ui.screens.cashin.CashInOverTheCounterScreen
 import com.example.lendlyapp.ui.screens.cashin.CashInScreen
+import com.example.lendlyapp.ui.screens.cashin.SuccessfulTransactionScreen
 import com.example.lendlyapp.ui.screens.onboarding.OnboardingScreen
 
 @Composable
@@ -95,6 +96,16 @@ fun AppNavigation() {
                 CashInAmountScreen(
                     bankName = route.bankName,
                     onBack = { backStack.removeLastOrNull() },
+                    onNext = { amount -> backStack.add(SuccessfulTransactionRoute(route.bankName, amount)) },
+                )
+            }
+
+            entry<SuccessfulTransactionRoute> { route ->
+                SuccessfulTransactionScreen(
+                    partnerName = route.partnerName,
+                    amount = route.amount,
+                    onClose = { navigateClearingStack(backStack, HomeRoute) },
+                    onDone = { navigateClearingStack(backStack, HomeRoute) },
                 )
             }
         },
@@ -105,9 +116,8 @@ private fun navigateClearingStack(
     backStack: MutableList<androidx.navigation3.runtime.NavKey>,
     destination: androidx.navigation3.runtime.NavKey,
 ) {
-    val existing = backStack.toList()
     backStack.add(destination)
-    backStack.removeAll(existing.toSet())
+    backStack.subList(0, backStack.size - 1).clear()
 }
 @Composable
 private fun PlaceholderScreen(label: String) {
