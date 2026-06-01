@@ -202,6 +202,7 @@ fun SignatureScreen(
                 fontSize = 16.sp,
                 lineHeight = 24.sp,
                 color = FormLabel,
+                textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
