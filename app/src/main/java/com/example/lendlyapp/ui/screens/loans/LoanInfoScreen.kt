@@ -10,6 +10,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.outlined.Alarm
+import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -19,10 +22,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
+import com.example.lendlyapp.ui.shared.LendlyLogo
 import com.example.lendlyapp.ui.theme.*
 
 // ─── Assets (Figma URLs) ──────────────────────────────────────────────────────
@@ -45,6 +50,7 @@ fun LoanInfoScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
+            .statusBarsPadding()
             .verticalScroll(rememberScrollState())
     ) {
         // App Bar
@@ -110,23 +116,24 @@ private fun LoanTopAppBar() {
     ) {
         IconButton(onClick = {}) {
             Icon(
-                imageVector = Icons.Default.Person,
+                imageVector = Icons.Outlined.Person,
                 contentDescription = "Profile",
-                tint = Color.Black
+                modifier = Modifier.size(24.dp), // Width 24px, Height 24px
+                tint = Color(0xFF1C1B1F) // Color #1C1B1F (No es negro puro)
             )
         }
-        // Logo placeholder
-        Text(
-            text = "Rayland",
-            fontWeight = FontWeight.Bold,
-            fontSize = 16.sp,
-            color = FigmaOliveGreen
+        
+        // Logo center - Frame 133: 58.26px x 20px
+        LendlyLogo(
+            size = DpSize(width = 58.dp, height = 20.dp)
         )
+
         IconButton(onClick = {}) {
             Icon(
-                imageVector = Icons.Default.Notifications,
+                imageVector = Icons.Outlined.Notifications,
                 contentDescription = "Notifications",
-                tint = Color.Black
+                modifier = Modifier.size(width = 15.dp, height = 19.dp), // Width 15px, Height 19.19px
+                tint = Color(0xFF1C1B1F) // Color #1C1B1F
             )
         }
     }
@@ -141,14 +148,14 @@ private fun LoanBannerCard(modifier: Modifier = Modifier) {
             .clip(RoundedCornerShape(16.dp))
             .background(FigmaNeonGreen)
     ) {
-        // Imagen de fondo (persona)
+        // Imagen de fondo (persona) con zoom ajustado para que no se corte la frente y llegue al fondo
         AsyncImage(
             model = IMG_BANNER,
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
-                .fillMaxHeight()
-                .align(Alignment.CenterEnd)
+                .size(275.dp)
+                .offset(x = 165.dp, y = 18.dp) // Bajamos (y=18) y movemos a la derecha (x=165)
         )
         // Texto superpuesto
         Column(
@@ -165,13 +172,42 @@ private fun LoanBannerCard(modifier: Modifier = Modifier) {
                     .padding(horizontal = 10.dp, vertical = 6.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                AsyncImage(model = IMG_ALARM, contentDescription = null, modifier = Modifier.size(16.dp))
+                Icon(
+                    imageVector = Icons.Outlined.Alarm,
+                    contentDescription = null,
+                    modifier = Modifier.size(16.dp),
+                    tint = OnPrimaryGreen
+                )
                 Spacer(Modifier.width(4.dp))
-                Text("Limited Time Offer", fontSize = 12.sp, fontWeight = FontWeight.Medium, color = OnPrimaryGreen)
+                Text(
+                    text = "Limited Time Offer",
+                    fontFamily = InterFamily,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium,
+                    lineHeight = 16.sp,
+                    letterSpacing = 0.5.sp,
+                    color = OnPrimaryGreen
+                )
             }
             Spacer(Modifier.height(12.dp))
-            Text("Safe and\nsecure loans", fontSize = 28.sp, fontWeight = FontWeight.SemiBold, color = OnPrimaryGreen, lineHeight = 36.sp)
-            Text("All here in Rayland", fontSize = 14.sp, color = OnPrimaryGreen.copy(alpha = 0.8f))
+            Text(
+                text = "Safe and\nsecure loans",
+                fontFamily = MontserratFamily,
+                fontSize = 28.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = OnPrimaryGreen,
+                lineHeight = 36.sp,
+                letterSpacing = 0.sp
+            )
+            Text(
+                text = "All here in Rayland",
+                fontFamily = InterFamily,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Normal,
+                lineHeight = 20.sp,
+                letterSpacing = 0.25.sp,
+                color = OnPrimaryGreen.copy(alpha = 0.8f)
+            )
         }
     }
 }

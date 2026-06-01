@@ -64,6 +64,12 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideLendlyApiService(retrofit: Retrofit): LendlyApiService {
+        return retrofit.create(LendlyApiService::class.java)
+    }
+
+    @Provides
+    @Singleton
     fun provideAuthRepository(
         api: AuthApi,
         userPreferences: UserPreferences
