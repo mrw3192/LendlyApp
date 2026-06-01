@@ -13,6 +13,7 @@ import androidx.navigation3.ui.NavDisplay
 import com.example.lendlyapp.ui.theme.FigmaDarkBg
 import com.example.lendlyapp.ui.theme.FigmaDarkText
 import com.example.lendlyapp.ui.screens.auth.SplashScreen
+import com.example.lendlyapp.ui.screens.cashin.CashInAmountScreen
 import com.example.lendlyapp.ui.screens.cashin.CashInOnlineScreen
 import com.example.lendlyapp.ui.screens.cashin.CashInOverTheCounterScreen
 import com.example.lendlyapp.ui.screens.cashin.CashInScreen
@@ -77,11 +78,24 @@ fun AppNavigation() {
             }
 
             entry<CashInOnlineRoute> {
-                CashInOnlineScreen(onBack = { backStack.removeLastOrNull() })
+                CashInOnlineScreen(
+                    onBack = { backStack.removeLastOrNull() },
+                    onNavigateToAmount = { bankName -> backStack.add(CashInAmountRoute(bankName)) },
+                )
             }
 
             entry<CashInOverTheCounterRoute> {
-                CashInOverTheCounterScreen(onBack = { backStack.removeLastOrNull() })
+                CashInOverTheCounterScreen(
+                    onBack = { backStack.removeLastOrNull() },
+                    onNavigateToAmount = { partnerName -> backStack.add(CashInAmountRoute(partnerName)) },
+                )
+            }
+
+            entry<CashInAmountRoute> { route ->
+                CashInAmountScreen(
+                    bankName = route.bankName,
+                    onBack = { backStack.removeLastOrNull() },
+                )
             }
         },
     )

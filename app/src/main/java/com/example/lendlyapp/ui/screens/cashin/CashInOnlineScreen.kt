@@ -1,6 +1,7 @@
 package com.example.lendlyapp.ui.screens.cashin
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -74,7 +75,10 @@ private val eWallets = listOf(
 )
 
 @Composable
-fun CashInOnlineScreen(onBack: () -> Unit = {}) {
+fun CashInOnlineScreen(
+    onBack: () -> Unit = {},
+    onNavigateToAmount: (String) -> Unit = {},
+) {
     var query by remember { mutableStateOf("") }
 
     val filteredBanks   = banks.filter   { it.name.contains(query, ignoreCase = true) }
@@ -116,6 +120,7 @@ fun CashInOnlineScreen(onBack: () -> Unit = {}) {
             OptionsCard(
                 banks = filteredBanks,
                 wallets = filteredWallets,
+                onNavigateToAmount = onNavigateToAmount,
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -185,6 +190,7 @@ private fun OnlineSearchBar(
 private fun OptionsCard(
     banks: List<PaymentOption>,
     wallets: List<PaymentOption>,
+    onNavigateToAmount: (String) -> Unit = {},
 ) {
     Card(
         modifier = Modifier
@@ -199,7 +205,7 @@ private fun OptionsCard(
                 SectionLabel(text = "BANKS")
                 banks.forEach { option ->
                     Spacer(modifier = Modifier.height(16.dp))
-                    PaymentOptionRow(option = option)
+                    PaymentOptionRow(option = option, onClick = { onNavigateToAmount(option.name) })
                 }
             }
 
@@ -213,7 +219,7 @@ private fun OptionsCard(
                 SectionLabel(text = "E-WALLETS")
                 wallets.forEach { option ->
                     Spacer(modifier = Modifier.height(16.dp))
-                    PaymentOptionRow(option = option)
+                    PaymentOptionRow(option = option, onClick = { onNavigateToAmount(option.name) })
                 }
             }
         }
@@ -232,9 +238,12 @@ private fun SectionLabel(text: String) {
 }
 
 @Composable
-private fun PaymentOptionRow(option: PaymentOption) {
+private fun PaymentOptionRow(option: PaymentOption, onClick: () -> Unit = {}) {
     Row(
-        modifier = Modifier.fillMaxWidth().height(48.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(48.dp)
+            .clickable(onClick = onClick),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         AsyncImage(

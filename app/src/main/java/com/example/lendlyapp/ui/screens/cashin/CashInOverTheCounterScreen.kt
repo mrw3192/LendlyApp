@@ -1,6 +1,7 @@
 package com.example.lendlyapp.ui.screens.cashin
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -55,7 +56,10 @@ private val otcPartners = listOf(
 )
 
 @Composable
-fun CashInOverTheCounterScreen(onBack: () -> Unit = {}) {
+fun CashInOverTheCounterScreen(
+    onBack: () -> Unit = {},
+    onNavigateToAmount: (String) -> Unit = {},
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -80,7 +84,7 @@ fun CashInOverTheCounterScreen(onBack: () -> Unit = {}) {
             )
 
             Spacer(modifier = Modifier.height(32.dp))
-            OtcPartnersCard()
+            OtcPartnersCard(onNavigateToAmount = onNavigateToAmount)
 
             Spacer(modifier = Modifier.height(24.dp))
         }
@@ -118,7 +122,7 @@ private fun OtcTopBar(onBack: () -> Unit) {
 }
 
 @Composable
-private fun OtcPartnersCard() {
+private fun OtcPartnersCard(onNavigateToAmount: (String) -> Unit = {}) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -134,18 +138,19 @@ private fun OtcPartnersCard() {
         ) {
             otcPartners.forEachIndexed { index, partner ->
                 if (index > 0) Spacer(modifier = Modifier.height(16.dp))
-                OtcPartnerRow(partner = partner)
+                OtcPartnerRow(partner = partner, onClick = { onNavigateToAmount(partner.name) })
             }
         }
     }
 }
 
 @Composable
-private fun OtcPartnerRow(partner: OtcPartner) {
+private fun OtcPartnerRow(partner: OtcPartner, onClick: () -> Unit = {}) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(52.dp),
+            .height(52.dp)
+            .clickable(onClick = onClick),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         AsyncImage(

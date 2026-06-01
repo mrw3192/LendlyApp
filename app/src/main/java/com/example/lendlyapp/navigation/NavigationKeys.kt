@@ -19,5 +19,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable data object CashInOverTheCounterRoute : NavKey
 
+@Serializable data class CashInAmountRoute(val bankName: String) : NavKey
+
 
 @Serializable data object Main : NavKey
