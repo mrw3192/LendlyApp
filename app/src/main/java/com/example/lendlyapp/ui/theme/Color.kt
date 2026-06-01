@@ -73,3 +73,12 @@ val CloseButtonBg = Color(0xFF0B390F)
 
 /** #005046 — "Didn't received a code?" link on SMS verification */
 val OtpLinkTeal = Color(0xFF005046)
+
+// ─── KYC / Verification screen tokens ───────────────────────────────────────────
+
+/** #1D1B20 — AppBar headline on KYC screens */
+val AppBarHeadline = Color(0xFF1D1B20)
+
+/** #E8F5E9 — Light green tint for the verified card background */
+val VerifiedCardBg = Color(0xFFE8F5E9)
+

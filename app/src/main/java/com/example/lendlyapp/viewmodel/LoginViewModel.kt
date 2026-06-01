@@ -3,11 +3,13 @@ package com.example.lendlyapp.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.lendlyapp.auth.AuthRepository
+import com.example.lendlyapp.data.local.UserPreferences
 import com.example.lendlyapp.model.LoginRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,14 +23,38 @@ sealed class LoginUiState {
     data class Error(val message: String) : LoginUiState()
 }
 
+/**
+ * Holds the remembered / returning-user profile retrieved from DataStore.
+ */
+data class RememberedUser(
+    val name: String,
+    val phone: String,
+    val email: String,
+    val avatar: String?,
+) {
+    /** Two-letter initials, e.g. "John Doe" → "JD". */
+    val initials: String
+        get() = name.split(" ")
+            .filter { it.isNotBlank() }
+            .take(2)
+            .joinToString("") { it.first().uppercaseChar().toString() }
+}
+
 // ─── ViewModel ─────────────────────────────────────────────────────────────────
 
 /**
  * Handles login form validation and authentication using [AuthRepository].
+ *
+ * Supports two modes:
+ *  - **Standard login**: email + password fields.
+ *  - **Returning user**: shows the saved user card (name, phone, initials)
+ *    and only requires the password. The user can switch to standard login
+ *    via [changeUser].
  */
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val authRepository: AuthRepository,
+    private val userPreferences: UserPreferences,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<LoginUiState>(LoginUiState.Idle)
@@ -45,6 +71,50 @@ class LoginViewModel @Inject constructor(
     fun onEmailChange(value: String) { _email.value = value }
     fun onPasswordChange(value: String) { _password.value = value }
 
+    // ── Returning user state ───────────────────────────────────────────────
+
+    private val _isReturningUser = MutableStateFlow(false)
+    val isReturningUser: StateFlow<Boolean> = _isReturningUser.asStateFlow()
+
+    private val _rememberedUser = MutableStateFlow<RememberedUser?>(null)
+    val rememberedUser: StateFlow<RememberedUser?> = _rememberedUser.asStateFlow()
+
+    init {
+        loadRememberedUser()
+    }
+
+    /** Checks DataStore for a remembered user profile. */
+    private fun loadRememberedUser() {
+        viewModelScope.launch {
+            val name = userPreferences.rememberedName.first()
+            val phone = userPreferences.rememberedPhone.first()
+            val email = userPreferences.rememberedEmail.first()
+            val avatar = userPreferences.rememberedAvatar.first()
+
+            if (!name.isNullOrBlank() && !email.isNullOrBlank()) {
+                _rememberedUser.value = RememberedUser(
+                    name = name,
+                    phone = phone ?: "",
+                    email = email,
+                    avatar = avatar,
+                )
+                _isReturningUser.value = true
+                // Pre-fill email from remembered user for the login request
+                _email.value = email
+            }
+        }
+    }
+
+    /**
+     * Switches from "returning user" mode to standard login.
+     * Called when the user taps the "Change" button on the returning-user card.
+     */
+    fun changeUser() {
+        _isReturningUser.value = false
+        _email.value = ""
+        _password.value = ""
+    }
+
     // ── Validation ─────────────────────────────────────────────────────────
 
     private fun isEmailValid(email: String): Boolean {
@@ -54,7 +124,11 @@ class LoginViewModel @Inject constructor(
     // ── Login action ───────────────────────────────────────────────────────
 
     fun login() {
-        val currentEmail = _email.value.trim()
+        val currentEmail = if (_isReturningUser.value) {
+            _rememberedUser.value?.email?.trim() ?: _email.value.trim()
+        } else {
+            _email.value.trim()
+        }
         val currentPassword = _password.value
 
         // Validate email

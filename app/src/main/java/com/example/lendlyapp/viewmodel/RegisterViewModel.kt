@@ -63,9 +63,9 @@ class RegisterViewModel @Inject constructor(
     fun onOtpChange(value: String) { _state.update { it.copy(otpCode = value) } }
     fun onFirstNameChange(value: String) { _state.update { it.copy(firstName = value) } }
     fun onLastNameChange(value: String) { _state.update { it.copy(lastName = value) } }
-    fun onDobDayChange(value: String) { _state.update { it.copy(dobDay = value) } }
-    fun onDobMonthChange(value: String) { _state.update { it.copy(dobMonth = value) } }
-    fun onDobYearChange(value: String) { _state.update { it.copy(dobYear = value) } }
+    fun onDobDayChange(value: String) { _state.update { it.copy(dobDay = value.filter { char -> char.isDigit() }.take(2)) } }
+    fun onDobMonthChange(value: String) { _state.update { it.copy(dobMonth = value.filter { char -> char.isDigit() }.take(2)) } }
+    fun onDobYearChange(value: String) { _state.update { it.copy(dobYear = value.filter { char -> char.isDigit() }.take(4)) } }
     fun onAddressChange(value: String) { _state.update { it.copy(address = value) } }
     fun onCityChange(value: String) { _state.update { it.copy(city = value) } }
     fun onPostalCodeChange(value: String) { _state.update { it.copy(postalCode = value) } }
@@ -105,6 +105,21 @@ class RegisterViewModel @Inject constructor(
         }
         if (s.dobDay.isBlank() || s.dobMonth.isBlank() || s.dobYear.isBlank()) {
             _state.update { it.copy(error = "Date of birth is required") }
+            return false
+        }
+        val day = s.dobDay.toIntOrNull() ?: 0
+        val month = s.dobMonth.toIntOrNull() ?: 0
+        val year = s.dobYear.toIntOrNull() ?: 0
+        if (day !in 1..31) {
+            _state.update { it.copy(error = "Day must be between 1 and 31") }
+            return false
+        }
+        if (month !in 1..12) {
+            _state.update { it.copy(error = "Month must be between 1 and 12") }
+            return false
+        }
+        if (year !in 1901..2026) {
+            _state.update { it.copy(error = "Year must be between 1901 and 2026") }
             return false
         }
         if (s.address.isBlank()) {

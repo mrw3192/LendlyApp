@@ -102,7 +102,7 @@ fun SmsVerificationScreen(
 
             // Label
             Text(
-                text = "Your Phone Number",
+                text = "Enter the code you received here",
                 fontFamily = InterFamily,
                 fontWeight = FontWeight.Medium,
                 fontSize = 14.sp,

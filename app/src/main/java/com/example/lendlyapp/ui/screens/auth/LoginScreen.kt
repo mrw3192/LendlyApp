@@ -13,10 +13,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.DpSize
@@ -41,7 +46,9 @@ import com.example.lendlyapp.ui.shared.HomeIndicatorBar
 import com.example.lendlyapp.ui.shared.LendlyBottomBar
 import com.example.lendlyapp.ui.shared.LendlyLogo
 import com.example.lendlyapp.ui.shared.LendlyTextField
+import com.example.lendlyapp.ui.theme.FigmaLightBg
 import com.example.lendlyapp.ui.theme.FigmaLightSurface
+import com.example.lendlyapp.ui.theme.FigmaLightText
 import com.example.lendlyapp.ui.theme.FigmaOliveGreen
 import com.example.lendlyapp.ui.theme.FormLabel
 import com.example.lendlyapp.ui.theme.InterFamily
@@ -49,16 +56,17 @@ import com.example.lendlyapp.ui.theme.SubtitleGray
 import com.example.lendlyapp.ui.theme.FigmaNeonGreen
 import com.example.lendlyapp.viewmodel.LoginViewModel
 import com.example.lendlyapp.viewmodel.LoginUiState
+import com.example.lendlyapp.viewmodel.RememberedUser
 
 // ─── Login Screen ──────────────────────────────────────────────────────────────
 // Figma node: 196:2165 "Login Page" — 393×1013dp
 // Background: #FFFFFF (FigmaLightSurface)
 //
-// Layout:
-//   Centered Lendly Logo → email field → password field → "Log In" button
+// Supports two variants:
+//   A) First-time login: email + password fields
+//   B) Returning user (Figma "List item 1"): user card with initials + password
 //
-// API: POST /auth/login { email, password } → { token, userId, email }
-// Currently mocked — any valid email + non-empty password → success.
+// API: POST /auth/login { email, password } → { token, userId, email, user }
 
 @Composable
 fun LoginScreen(
@@ -69,6 +77,8 @@ fun LoginScreen(
     val uiState by viewModel.uiState.collectAsState()
     val email by viewModel.email.collectAsState()
     val password by viewModel.password.collectAsState()
+    val isReturningUser by viewModel.isReturningUser.collectAsState()
+    val rememberedUser by viewModel.rememberedUser.collectAsState()
     var passwordVisible by remember { mutableStateOf(false) }
 
     // Navigate on success
@@ -107,17 +117,25 @@ fun LoginScreen(
                     .weight(1f)
                     .padding(horizontal = 16.dp),
             ) {
-                // Email field
-                LendlyTextField(
-                    label = "Email",
-                    value = email,
-                    onValueChange = { viewModel.onEmailChange(it) },
-                    placeholder = "Enter your email",
-                )
+                if (isReturningUser && rememberedUser != null) {
+                    // ── Variant B: Returning User Card ──────────────────────
+                    ReturningUserCard(
+                        user = rememberedUser!!,
+                        onChangeUser = { viewModel.changeUser() },
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
+                } else {
+                    // ── Variant A: Email field ──────────────────────────────
+                    LendlyTextField(
+                        label = "Email",
+                        value = email,
+                        onValueChange = { viewModel.onEmailChange(it) },
+                        placeholder = "Enter your email",
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
 
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Password field
+                // Password field (both variants)
                 LendlyTextField(
                     label = "Password",
                     value = password,
@@ -216,6 +234,77 @@ fun LoginScreen(
             ) {
                 Text(text = (uiState as LoginUiState.Error).message)
             }
+        }
+    }
+}
+
+// ─── Returning User Card ───────────────────────────────────────────────────────
+// Figma: "List item 1" inside 196:2165 — avatar circle with initials, name,
+// phone, and a "Change" link.
+
+@Composable
+private fun ReturningUserCard(
+    user: RememberedUser,
+    onChangeUser: () -> Unit,
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = FigmaLightBg),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            // Avatar circle with initials
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(CircleShape)
+                    .background(FigmaNeonGreen),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = user.initials,
+                    fontFamily = InterFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    color = FigmaLightText,
+                )
+            }
+
+            Spacer(modifier = Modifier.width(12.dp))
+
+            // Name and phone
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = user.name,
+                    fontFamily = InterFamily,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 16.sp,
+                    color = FigmaLightText,
+                )
+                Text(
+                    text = user.phone,
+                    fontFamily = InterFamily,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 14.sp,
+                    color = SubtitleGray,
+                )
+            }
+
+            // "Change" link
+            Text(
+                text = "Change",
+                fontFamily = InterFamily,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 14.sp,
+                color = FigmaOliveGreen,
+                modifier = Modifier.clickable { onChangeUser() },
+            )
         }
     }
 }

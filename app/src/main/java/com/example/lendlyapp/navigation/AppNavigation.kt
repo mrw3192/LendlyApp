@@ -20,6 +20,10 @@ import com.example.lendlyapp.ui.screens.register.SmsVerificationScreen
 import com.example.lendlyapp.ui.screens.register.ProfileDetailScreen
 import com.example.lendlyapp.ui.screens.register.CreatePasswordScreen
 import com.example.lendlyapp.ui.screens.register.DoneScreen
+import com.example.lendlyapp.ui.screens.register.IdVerificationScreen
+import com.example.lendlyapp.ui.screens.register.FaceRecognitionScreen
+import com.example.lendlyapp.ui.screens.register.SignatureScreen
+import com.example.lendlyapp.ui.screens.register.VerifiedScreen
 import com.example.lendlyapp.viewmodel.RegisterViewModel
 import com.example.lendlyapp.ui.theme.FigmaDarkBg
 import com.example.lendlyapp.ui.theme.FigmaDarkText
@@ -33,7 +37,8 @@ import com.example.lendlyapp.ui.theme.FigmaDarkText
  *           └──────────────────────────────────────────►
  *
  * Registration flow:
- *   VerifyPhone → SmsVerification → ProfileDetail → CreatePassword → Done → Home
+ *   VerifyPhone → SmsVerification → ProfileDetail → CreatePassword
+ *     → IdVerification → FaceRecognition → Signature → Verified → Done → Home
  *
  * Back-stack policy: all navigations from Splash / Onboarding clear the
  * entire back-stack before pushing the new destination, so the user can
@@ -131,10 +136,59 @@ fun AppNavigation() {
             }
 
             // ── Register Step 4: Create Password ─────────────────────────────────
+            // Now navigates to the KYC flow (IdVerification) instead of Done.
             entry<CreatePasswordRoute> {
                 CreatePasswordScreen(
                     viewModel = registerViewModel,
                     onNavigateToDone = {
+                        backStack.add(IdVerificationRoute)
+                    },
+                    onBackClick = {
+                        backStack.removeLastOrNull()
+                    },
+                )
+            }
+
+            // ── KYC Step 1: ID Verification ──────────────────────────────────────
+            entry<IdVerificationRoute> {
+                IdVerificationScreen(
+                    onNextClick = {
+                        backStack.add(FaceRecognitionRoute)
+                    },
+                    onBackClick = {
+                        backStack.removeLastOrNull()
+                    },
+                )
+            }
+
+            // ── KYC Step 2: Face Recognition ─────────────────────────────────────
+            entry<FaceRecognitionRoute> {
+                FaceRecognitionScreen(
+                    onNextClick = {
+                        backStack.add(SignatureRoute)
+                    },
+                    onBackClick = {
+                        backStack.removeLastOrNull()
+                    },
+                )
+            }
+
+            // ── KYC Step 3: Signature ────────────────────────────────────────────
+            entry<SignatureRoute> {
+                SignatureScreen(
+                    onNextClick = {
+                        backStack.add(VerifiedRoute)
+                    },
+                    onBackClick = {
+                        backStack.removeLastOrNull()
+                    },
+                )
+            }
+
+            // ── KYC Step 4: Verified ─────────────────────────────────────────────
+            entry<VerifiedRoute> {
+                VerifiedScreen(
+                    onNextClick = {
                         backStack.add(DoneRoute)
                     },
                     onBackClick = {
