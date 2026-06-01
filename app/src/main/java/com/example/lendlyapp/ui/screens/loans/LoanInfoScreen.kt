@@ -148,14 +148,14 @@ private fun LoanBannerCard(modifier: Modifier = Modifier) {
             .clip(RoundedCornerShape(16.dp))
             .background(FigmaNeonGreen)
     ) {
-        // Imagen de fondo (persona) con zoom ajustado para que no se corte la frente y llegue al fondo
+        // Imagen de fondo (persona)
         AsyncImage(
             model = IMG_BANNER,
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(275.dp)
-                .offset(x = 165.dp, y = 18.dp) // Bajamos (y=18) y movemos a la derecha (x=165)
+                .offset(x = 160.dp, y = 18.dp)
         )
         // Texto superpuesto
         Column(

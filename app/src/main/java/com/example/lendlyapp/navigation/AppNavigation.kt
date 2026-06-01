@@ -131,7 +131,11 @@ fun AppNavigation() {
             entry<LoanSuccessRoute> {
                 LoanSuccessScreen(
                     onClose = { navigateClearingStack(backStack, HomeRoute) },
-                    onDone = { navigateClearingStack(backStack, HomeRoute) }
+                    onDone = {
+                        // Flujo para el profe: Éxito ──► Préstamo Activo
+                        backStack.removeLastOrNull()
+                        backStack.add(ActiveLoanRoute)
+                    }
                 )
             }
 
