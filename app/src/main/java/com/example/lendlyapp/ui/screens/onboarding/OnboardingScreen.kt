@@ -33,16 +33,19 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.border
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -139,10 +142,10 @@ private fun OnboardingPageContent(
         // gap=32dp between illustration section and content section (Figma "Onboarding X-content")
         verticalArrangement = Arrangement.spacedBy(32.dp),
     ) {
-        // ── Upper illustration area (weight=1f adapts to screen height) ───────
+        // ── Upper illustration area (Figma Frame 232: FIXED 481dp) ──────────
         Box(
             modifier = Modifier
-                .weight(1f)
+                .height(481.dp)
                 .fillMaxWidth()
                 .clipToBounds(),  // clips the 698dp-wide inner content to the 393dp screen
         ) {
@@ -182,17 +185,31 @@ private fun OnboardingIllustration(
     Box(modifier = modifier.fillMaxSize()) {
 
         // ── Gradient backdrop ────────────────────────────────────────────────
-        // Figma node 121:1322 "Rectangle 4" — 674×333dp at offset(24, 148).
-        // gradientHandlePositions [0,0.5]→[1,0.5] = horizontal (left→right).
-        // stroke: white opacity=0.41, strokeWeight=0.43
-        // effects: BACKGROUND_BLUR radius=5.48 → Modifier.blur(5.dp) approximation
+        // Figma node 121:1322 "Rectangle 4" — VECTOR (parallelogram), 674×271dp at offset(24, 210).
+        // absoluteBoundingBox: 674×271. absoluteRenderBounds: 365.61×271.
+        // Shift = 674 - 365.61 = 308.39dp → parallelogram wider at bottom-left.
+        // Vertices (local coords): TL=(308.39,0), TR=(674,0), BR=(365.61,271), BL=(0,271)
+        // Same shape on all 3 onboarding pages.
+        val gradientShape = object : Shape {
+            override fun createOutline(size: Size, layoutDirection: LayoutDirection, density: Density): Outline {
+                val shift = size.height * (308.39f / 271f)
+                // TL=(0,0), TR=(width-shift,0), BR=(width,height), BL=(shift,height)
+                // Visible in screen: wide at top (365dp), narrow at bottom (61dp)
+                return Outline.Generic(Path().apply {
+                    moveTo(shift, 0f)
+                    lineTo(size.width, 0f)
+                    lineTo(size.width - shift, size.height)
+                    lineTo(0f, size.height)
+                    close()
+                })
+            }
+        }
         Box(
             modifier = Modifier
-                .offset(x = 24.dp, y = 148.dp)
+                .offset(x = 24.dp, y = 210.dp)
                 .width(674.dp)
-                .height(333.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .blur(5.dp)
+                .height(271.dp)
+                .clip(gradientShape)
                 .background(
                     brush = Brush.horizontalGradient(
                         colors = listOf(IllustrationGradientStart, IllustrationGradientEnd),
@@ -201,7 +218,7 @@ private fun OnboardingIllustration(
                 .border(
                     width = 0.43.dp,
                     color = Color.White.copy(alpha = 0.41f),
-                    shape = RoundedCornerShape(12.dp),
+                    shape = gradientShape,
                 ),
         )
 
@@ -243,19 +260,18 @@ private fun OnboardingIllustration(
         // These are visually representative placements on top of the hero image.
         FloatingDecorations(page = page, pageIndex = pageIndex)
 
-        // ── Green icon circle badge ──────────────────────────────────────────
-        // Figma: 'Balance-card' fill=#7BF179 r=1000 → circle with icon
-        // Positioned bottom-right of the visible illustration area
-        val badgeIcon: ImageVector = when (pageIndex) {
+        // ── Green badge icon ─────────────────────────────────────────────────
+        // Figma Balance-card id=189:3718 — 40×40dp at offset(16, 210) relative to Frame 232
+        // fill=#7BF179, cornerRadius=1000, child: "payments" group 24×24dp
+        val badgeIcon = when (pageIndex) {
             0    -> Icons.Default.Payments
             1    -> Icons.Default.LocalMall
             else -> Icons.Default.DateRange
         }
         Box(
             modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(end = 24.dp, bottom = 16.dp)
-                .size(40.dp)                          // Figma: 40×40dp (era 44dp)
+                .offset(x = 16.dp, y = 210.dp)
+                .size(40.dp)
                 .background(color = FigmaNeonGreen, shape = CircleShape),
             contentAlignment = Alignment.Center,
         ) {
@@ -268,15 +284,16 @@ private fun OnboardingIllustration(
         }
 
         // ── Status bar + Logo overlay ────────────────────────────────────────
-        // Figma Frame 229/230/231 (393×116dp) — overlaid at top of illustration
-        Column(
+        // Figma Frame 229: 393×116dp, counterAxisAlignItems=CENTER, itemSpacing=32dp
+        // Children: Status Bar (44dp) + gap (32dp) + Logo (40dp) = 116dp
+        // Logo centered at x=244.24 in 393dp frame = 196.5dp from left = centered
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(116.dp)
-                .padding(top = 44.dp, start = 16.dp),   // 44dp = status bar height
-            verticalArrangement = Arrangement.spacedBy(32.dp),
+                .padding(top = 76.dp),  // 44dp status bar + 32dp gap (Figma itemSpacing)
+            contentAlignment = Alignment.TopCenter,
         ) {
-            // Lendly Logo — small variant (116×40dp per Figma)
             LendlyLogo(
                 size = DpSize(width = 116.dp, height = 40.dp),
                 color = FigmaNeonGreen,
@@ -309,22 +326,19 @@ private fun FloatingDecorations(
     modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier.fillMaxSize()) {
-        // Emoji reaction bubble #1 — upper right quadrant
+        // Emoji reaction bubbles — posiciones exactas del Figma (relativas a Frame 232)
+        // Balance-card 189:3753 (👏): absolute (229,-138), Frame232 (106,-313) → x=123, y=175
+        // Balance-card 189:3710 (😄): absolute (154,24),   Frame232 (106,-313) → x=48,  y=337
         if (page.emojiCards.isNotEmpty()) {
             EmojiBubble(
-                emoji = page.emojiCards[0],
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(top = 100.dp, end = 32.dp),
+                emoji = page.emojiCards[1],   // 👏 — arriba
+                modifier = Modifier.offset(x = 123.dp, y = 175.dp),
             )
         }
-        // Emoji reaction bubble #2 — mid right
         if (page.emojiCards.size >= 2) {
             EmojiBubble(
-                emoji = page.emojiCards[1],
-                modifier = Modifier
-                    .align(Alignment.CenterEnd)
-                    .padding(end = 16.dp, top = 60.dp),
+                emoji = page.emojiCards[0],   // 😄 — abajo
+                modifier = Modifier.offset(x = 48.dp, y = 337.dp),
             )
         }
 
@@ -332,11 +346,9 @@ private fun FloatingDecorations(
         when (pageIndex) {
             0 -> {
                 // Figma Frame 227 (189:3701): dos instancias de LoanSuccessCard apiladas
-                // 189:3693 at y≈-66, 189:3673 at y≈-28 (gap ≈ 8dp entre tarjetas)
+                // absolute (130,-66), Frame 232 top-left (106,-313) → relative x=24, y=247
                 Column(
-                    modifier = Modifier
-                        .align(Alignment.CenterStart)
-                        .padding(start = 16.dp, bottom = 32.dp),
+                    modifier = Modifier.offset(x = 24.dp, y = 247.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     LoanSuccessCard()
@@ -401,13 +413,13 @@ private fun EmojiBubble(
 
 @Composable
 private fun LoanSuccessCard(modifier: Modifier = Modifier) {
-    // Figma nodos 189:3693 / 189:3673 — Frame 19 (hijo):
-    //   backgroundColor=rgba(1,1,1,0.27), cornerRadius=6.24dp, padding=8.32dp
-    //   Frame 18 (HORIZONTAL): itemSpacing=3.12dp
-    //   stroke: white opacity=0.51, weight=0.52
-    //   Hijos: avatar (d6c8be → avatar.png) + "Loan Successful" (#E5F5EA) + "+ ₱ 2,000.00" (verde)
+    // Figma nodos 189:3693 / 189:3673 — width=157dp, height=29.64dp, cornerRadius=6.24dp
+    // Frame 18 (HORIZONTAL): itemSpacing=4.16dp
+    // Avatar (189:3696): visible=false → no renderizar
+    // stroke: white opacity=0.51, weight=0.52, padding=8.32dp
     Row(
         modifier = modifier
+            .width(157.dp)
             .background(
                 color = Color.White.copy(alpha = 0.27f),
                 shape = RoundedCornerShape(6.dp),
@@ -418,28 +430,18 @@ private fun LoanSuccessCard(modifier: Modifier = Modifier) {
                 shape = RoundedCornerShape(6.dp),
             )
             .padding(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(3.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data("file:///android_asset/avatar.png")
-                .build(),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(16.dp)
-                .clip(CircleShape),
-        )
         Text(
             text = "Loan Successful",
             fontSize = 8.sp,
             fontFamily = InterFamily,
             fontWeight = FontWeight.SemiBold,
-            color = FigmaMintSplash,     // Figma: rgba(0.898,0.961,0.918) = #E5F5EA
+            color = FigmaMintSplash,
         )
         Text(
-            text = "+ ₱ 2,000.00",
+            text = "+ ₱ 2000.00",
             fontSize = 8.sp,
             fontFamily = InterFamily,
             fontWeight = FontWeight.SemiBold,
@@ -678,11 +680,11 @@ fun OnboardingTitle(
     modifier: Modifier = Modifier,
 ) {
     Text(
-        text = text,
+        text = text.uppercase(),
         fontFamily = MontserratFamily,
         fontWeight = FontWeight.ExtraBold,
         fontSize = 32.sp,
-        lineHeight = 36.sp,
+        lineHeight = 40.sp,
         color = OnboardingTitleGreen,
         textAlign = TextAlign.Center,
         modifier = modifier.fillMaxWidth(),
