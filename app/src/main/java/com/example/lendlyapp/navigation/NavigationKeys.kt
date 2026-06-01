@@ -34,5 +34,20 @@ import kotlinx.serialization.Serializable
 /** Loan Module — Successful transaction feedback. */
 @Serializable data object LoanSuccessRoute : NavKey
 
+/** Registration step 1 — verify phone number. */
+@Serializable data object VerifyPhoneRoute : NavKey
+
+/** Registration step 2 — SMS OTP verification. */
+@Serializable data object SmsVerificationRoute : NavKey
+
+/** Registration step 3 — personal details form. */
+@Serializable data object ProfileDetailRoute : NavKey
+
+/** Registration step 4 — create password. */
+@Serializable data object CreatePasswordRoute : NavKey
+
+/** Registration step 5 — success / done page. */
+@Serializable data object DoneRoute : NavKey
+
 // ─── Legacy key — kept to avoid breaking MainScreen during development ─────────
 @Serializable data object Main : NavKey
