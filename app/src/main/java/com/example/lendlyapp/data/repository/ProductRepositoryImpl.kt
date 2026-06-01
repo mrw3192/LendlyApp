@@ -2,6 +2,9 @@ package com.example.lendlyapp.data.repository
 
 import com.example.lendlyapp.model.Product
 import com.example.lendlyapp.model.ProductResponse
+import com.example.lendlyapp.model.ShopBrand
+import com.example.lendlyapp.model.ShopCategory
+import com.example.lendlyapp.model.ShopData
 import com.example.lendlyapp.shared.LendlyApiService
 import javax.inject.Inject
 
@@ -9,43 +12,48 @@ class ProductRepositoryImpl @Inject constructor(
     private val api: LendlyApiService,
 ) : ProductRepository {
 
-    override suspend fun getProducts(): Result<List<Product>> {
+    override suspend fun getShopData(): Result<ShopData> {
         return try {
-            val response = api.getProducts()
+            val response = api.getShopData()
             if (response.isSuccessful) {
                 val body = response.body()
-                if (!body.isNullOrEmpty()) {
-                    Result.success(body.map { it.toDomain() })
-                } else {
-                    Result.success(mockProducts)
-                }
+                    ?: return Result.failure(Exception("Empty response"))
+                Result.success(
+                    ShopData(
+                        featured   = body.featured.map { it.toDomain() },
+                        products   = body.products.map { it.toDomain() },
+                        categories = body.categories.map { ShopCategory(it.id, it.name, it.icon) },
+                        brands     = body.brands.map { ShopBrand(it.id, it.name, it.logo) },
+                    )
+                )
             } else {
-                Result.success(mockProducts)
+                Result.failure(Exception("Error ${response.code()}"))
             }
         } catch (e: Exception) {
-            Result.success(mockProducts)
+            Result.failure(e)
         }
     }
 
     private fun ProductResponse.toDomain() = Product(
-        id = id,
-        name = name,
-        shortName = name.take(14),
-        imageAsset = "img_1d9e70f017321361.png",
-        monthlyPayment = monthlyPayment,
-        totalPrice = totalPrice,
-        category = category,
-        brand = brand,
+        id                = id,
+        name              = name,
+        shortName         = name.take(14),
+        imageAsset        = image,
+        monthlyPayment    = monthlyInstallment,
+        totalPrice        = price,
+        category          = category,
+        brand             = brand,
+        installmentMonths = installmentMonths,
+        currency          = currencySymbol(currency),
+        isAvailable       = isAvailable,
+        description       = description ?: "",
+        rating            = rating,
+        reviewCount       = reviewCount,
     )
+
+    private fun currencySymbol(code: String) = when (code.uppercase()) {
+        "PHP" -> "₱"
+        "USD" -> "$"
+        else  -> code
+    }
 }
-
-// ─── Static mock fallback (Figma asset-backed) ────────────────────────────────
-
-val mockProducts: List<Product> = listOf(
-    Product("1", "Apple iPhone 12 Pro Max", "iPhone 12 Pro...", "img_1d9e70f017321361.png", 1200.0, 28800.0, "Phone", "Apple"),
-    Product("2", "Apple iPhone 12 Pro", "iPhone 12 Pro...", "img_f4ce8621a75bef92.png", 1200.0, 28800.0, "Phone", "Apple"),
-    Product("3", "Apple iPhone 12", "iPhone 12 Pro...", "img_4212ff9d8c27fb90.png", 1200.0, 28800.0, "Phone", "Apple"),
-    Product("4", "Surface Laptop", "Surface Laptop", "product_1.png", 1200.0, 28800.0, "Electronics", "Microsoft"),
-    Product("5", "Apple iPhone 12 Pro", "iPhone 12 Pro...", "img_84afada02ee9075f.png", 1200.0, 28800.0, "Phone", "Apple"),
-    Product("6", "PS4 PlayStation", "PS4 Play Stati...", "img_0feafd9ff159fc89.png", 1200.0, 28800.0, "Gaming", "Sony"),
-)

@@ -1,9 +1,5 @@
 package com.example.lendlyapp.model
 
-/**
- * Domain entity for a loanable product shown in the Shop catalog.
- * [imageAsset] is the filename inside app/src/main/assets/.
- */
 data class Product(
     val id: String,
     val name: String,
@@ -13,4 +9,10 @@ data class Product(
     val totalPrice: Double,
     val category: String,
     val brand: String,
+    val installmentMonths: Int,
+    val currency: String,
+    val isAvailable: Boolean,
+    val description: String,
+    val rating: Double,
+    val reviewCount: Int,
 )

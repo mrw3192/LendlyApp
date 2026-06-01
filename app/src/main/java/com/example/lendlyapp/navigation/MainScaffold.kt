@@ -19,6 +19,7 @@ import com.example.lendlyapp.ui.screens.loans.LoanScreen
 import com.example.lendlyapp.ui.screens.profile.ProfileScreen
 import com.example.lendlyapp.model.Product
 import com.example.lendlyapp.ui.screens.shop.ProductDetailScreen
+import com.example.lendlyapp.ui.screens.shop.SearchScreen
 import com.example.lendlyapp.ui.screens.shop.ShopScreen
 import com.example.lendlyapp.ui.shared.BottomNavBar
 import com.example.lendlyapp.ui.shared.BottomNavTab
@@ -27,6 +28,7 @@ import com.example.lendlyapp.ui.shared.BottomNavTab
 fun MainScaffold() {
     var selectedTab by remember { mutableStateOf(BottomNavTab.Home) }
     var shopSelectedProduct by remember { mutableStateOf<Product?>(null) }
+    var shopShowSearch by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.fillMaxSize()) {
 
@@ -37,13 +39,18 @@ fun MainScaffold() {
                 BottomNavTab.Loan    -> LoanScreen()
                 BottomNavTab.Shop    -> {
                     val selected = shopSelectedProduct
-                    if (selected != null) {
-                        ProductDetailScreen(
+                    when {
+                        selected != null -> ProductDetailScreen(
                             product = selected,
                             onBack = { shopSelectedProduct = null },
                         )
-                    } else {
-                        ShopScreen(onProductClick = { shopSelectedProduct = it })
+                        shopShowSearch -> SearchScreen(
+                            onBack = { shopShowSearch = false },
+                        )
+                        else -> ShopScreen(
+                            onProductClick = { shopSelectedProduct = it },
+                            onSearchClick = { shopShowSearch = true },
+                        )
                     }
                 }
                 BottomNavTab.History -> HistoryScreen()
@@ -59,7 +66,13 @@ fun MainScaffold() {
         ) {
             BottomNavBar(
                 selectedTab = selectedTab,
-                onTabSelected = { selectedTab = it },
+                onTabSelected = { tab ->
+                    if (tab != BottomNavTab.Shop) {
+                        shopShowSearch = false
+                        shopSelectedProduct = null
+                    }
+                    selectedTab = tab
+                },
             )
         }
     }

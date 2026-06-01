@@ -3,20 +3,16 @@ package com.example.lendlyapp.ui.screens.auth
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.lendlyapp.ui.shared.HomeIndicatorBar
 import com.example.lendlyapp.ui.shared.LendlyLogo
 import com.example.lendlyapp.ui.theme.FigmaMintSplash
 import com.example.lendlyapp.ui.theme.LendlyAppTheme
@@ -76,15 +72,6 @@ private fun SplashScreenContent(modifier: Modifier = Modifier) {
             size = DpSize(width = 243.dp, height = 83.dp),
         )
 
-        // ── Home Indicator ───────────────────────────────────────────────────
-        // Figma: pos=(+0,+817) 393×34dp — black pill bar centered at bottom
-        HomeIndicatorBar(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .navigationBarsPadding()
-                .padding(bottom = 8.dp),
-            color = Color.Black,
-        )
     }
 }
 

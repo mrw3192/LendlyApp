@@ -30,9 +30,9 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.foundation.border
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.foundation.border
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Brush
@@ -54,18 +54,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import android.app.Activity
+import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.lendlyapp.ui.shared.HomeIndicatorBar
 import com.example.lendlyapp.ui.shared.LendlyLogo
 import com.example.lendlyapp.ui.theme.FigmaDarkForest
+import com.example.lendlyapp.ui.theme.IllustrationGradientEnd
+import com.example.lendlyapp.ui.theme.IllustrationGradientStart
 import com.example.lendlyapp.ui.theme.FigmaLightSurface
 import com.example.lendlyapp.ui.theme.FigmaMintSplash
 import com.example.lendlyapp.ui.theme.FigmaNeonGreen
 import com.example.lendlyapp.ui.theme.FormLabel
-import com.example.lendlyapp.ui.theme.IllustrationGradientEnd
-import com.example.lendlyapp.ui.theme.IllustrationGradientStart
 import com.example.lendlyapp.ui.theme.InterFamily
 import com.example.lendlyapp.ui.theme.MontserratFamily
 import com.example.lendlyapp.ui.theme.OnPrimaryGreen
@@ -94,6 +98,14 @@ fun OnboardingScreen(
     onNavigateToRegister: () -> Unit,
     viewModel: OnboardingViewModel = hiltViewModel(),
 ) {
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as Activity).window
+            WindowInsetsControllerCompat(window, view).isAppearanceLightStatusBars = false
+        }
+    }
+
     val pagerState = rememberPagerState(pageCount = { onboardingPages.size })
     val scope = rememberCoroutineScope()
 
@@ -170,12 +182,6 @@ private fun OnboardingPageContent(
 // ═══════════════════════════════════════════════════════════════════════════════
 // Illustration Area
 // ═══════════════════════════════════════════════════════════════════════════════
-//
-// Figma structure (all pages share the same skeleton):
-//   Frame 237/238/239  698×481dp  ← wider than screen, crops at 393dp
-//     Frame 219  674×333dp  at offset (24, 148) ← gradient + hero image
-//     Frame 229/230/231  393×116dp  at offset (0, 0) ← status bar + logo overlay
-
 @Composable
 private fun OnboardingIllustration(
     page: OnboardingPage,
@@ -184,61 +190,38 @@ private fun OnboardingIllustration(
 ) {
     Box(modifier = modifier.fillMaxSize()) {
 
-        // ── Gradient backdrop ────────────────────────────────────────────────
-        // Figma node 121:1322 "Rectangle 4" — VECTOR (parallelogram), 674×271dp at offset(24, 210).
-        // absoluteBoundingBox: 674×271. absoluteRenderBounds: 365.61×271.
-        // Shift = 674 - 365.61 = 308.39dp → parallelogram wider at bottom-left.
-        // Vertices (local coords): TL=(308.39,0), TR=(674,0), BR=(365.61,271), BL=(0,271)
-        // Same shape on all 3 onboarding pages.
-        val gradientShape = object : Shape {
-            override fun createOutline(size: Size, layoutDirection: LayoutDirection, density: Density): Outline {
-                val shift = size.height * (308.39f / 271f)
-                // TL=(0,0), TR=(width-shift,0), BR=(width,height), BL=(shift,height)
-                // Visible in screen: wide at top (365dp), narrow at bottom (61dp)
+        // ── Triangle backdrop ────────────────────────────────────────────────
+        val triangleShape = object : Shape {
+            override fun createOutline(
+                size: Size,
+                layoutDirection: LayoutDirection,
+                density: Density,
+            ): Outline {
+                val shiftLeft = with(density) { 5.dp.toPx() }
                 return Outline.Generic(Path().apply {
-                    moveTo(shift, 0f)
-                    lineTo(size.width, 0f)
-                    lineTo(size.width - shift, size.height)
-                    lineTo(0f, size.height)
+                    moveTo(-shiftLeft, size.height)                  // desplazado 60dp a la izquierda
+                    lineTo(size.width, size.height * (260f / 481f))  // actual — llega hasta ~30% desde arriba
+                    lineTo(size.width, size.height)                  // (393, 481) bottom-right
                     close()
                 })
             }
         }
+
         Box(
             modifier = Modifier
-                .offset(x = 24.dp, y = 210.dp)
-                .width(674.dp)
-                .height(271.dp)
-                .clip(gradientShape)
+                .fillMaxSize()
+                .clip(triangleShape)
                 .background(
                     brush = Brush.horizontalGradient(
                         colors = listOf(IllustrationGradientStart, IllustrationGradientEnd),
                     ),
-                )
-                .border(
-                    width = 0.43.dp,
-                    color = Color.White.copy(alpha = 0.41f),
-                    shape = gradientShape,
                 ),
         )
 
         // ── Hero image ───────────────────────────────────────────────────────
-        // Loaded from assets/ via Coil.  Falls back to gradient background if missing.
-        // Positions per page (Figma absolute → relative to screen):
-        //   Page 0: offset(82,148) size=359×333
-        //   Page 1: offset(104,148) size=299×333
-        //   Page 2: offset(91,133) size=409×409
-        val (imgOffsetX, imgOffsetY, imgW, imgH) = when (pageIndex) {
-            0    -> Quad(82.dp,  148.dp, 359.dp, 333.dp)
-            1    -> Quad(104.dp, 148.dp, 299.dp, 333.dp)
-            else -> Quad(91.dp,  133.dp, 409.dp, 409.dp)
-        }
+        val (imgOffsetX, imgOffsetY, imgW, imgH) = Quad(91.dp, 133.dp, 409.dp, 409.dp)
 
-        // Figma node 121:1461: rotation=180°, filters={saturation:-1, contrast:-0.13} (page 0 only)
-        val heroColorFilter = if (pageIndex == 0) {
-            ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(0f) })
-        } else null
-
+        val heroColorFilter = ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(0f) })
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data("file:///android_asset/${page.imageAsset}")
@@ -251,47 +234,38 @@ private fun OnboardingIllustration(
                 .offset(x = imgOffsetX, y = imgOffsetY)
                 .size(width = imgW, height = imgH)
                 .clip(RoundedCornerShape(8.dp))
-                .then(if (pageIndex == 0) Modifier.graphicsLayer { scaleX = -1f } else Modifier),
+                .then(
+                    if (pageIndex == 0)
+                        Modifier.graphicsLayer { scaleX = -1f }
+                    else Modifier
+                ),
         )
 
-        // ── Floating decorative elements ──────────────────────────────────────
-        // Approximated positions — exact canvas offsets not extractable without
-        // downloading the Figma layout tree for sub-frame absolute positions.
-        // These are visually representative placements on top of the hero image.
+        // ── Floating decorative elements ─────────────────────────────────────
         FloatingDecorations(page = page, pageIndex = pageIndex)
 
         // ── Green badge icon ─────────────────────────────────────────────────
-        // Figma Balance-card id=189:3718 — 40×40dp at offset(16, 210) relative to Frame 232
-        // fill=#7BF179, cornerRadius=1000, child: "payments" group 24×24dp
-        val badgeIcon = when (pageIndex) {
-            0    -> Icons.Default.Payments
-            1    -> Icons.Default.LocalMall
-            else -> Icons.Default.DateRange
-        }
         Box(
             modifier = Modifier
-                .offset(x = 16.dp, y = 210.dp)
+                .offset(x = page.badgeOffset.x, y = page.badgeOffset.y)
                 .size(40.dp)
                 .background(color = FigmaNeonGreen, shape = CircleShape),
             contentAlignment = Alignment.Center,
         ) {
             Icon(
-                imageVector = badgeIcon,
+                imageVector = page.badgeIcon,
                 contentDescription = null,
                 tint = OnPrimaryGreen,
                 modifier = Modifier.size(24.dp),
             )
         }
 
-        // ── Status bar + Logo overlay ────────────────────────────────────────
-        // Figma Frame 229: 393×116dp, counterAxisAlignItems=CENTER, itemSpacing=32dp
-        // Children: Status Bar (44dp) + gap (32dp) + Logo (40dp) = 116dp
-        // Logo centered at x=244.24 in 393dp frame = 196.5dp from left = centered
+        // ── Status bar + Logo overlay ───────────────────────────────────────
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(116.dp)
-                .padding(top = 76.dp),  // 44dp status bar + 32dp gap (Figma itemSpacing)
+                .padding(top = 76.dp),
             contentAlignment = Alignment.TopCenter,
         ) {
             LendlyLogo(
@@ -326,29 +300,24 @@ private fun FloatingDecorations(
     modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier.fillMaxSize()) {
-        // Emoji reaction bubbles — posiciones exactas del Figma (relativas a Frame 232)
-        // Balance-card 189:3753 (👏): absolute (229,-138), Frame232 (106,-313) → x=123, y=175
-        // Balance-card 189:3710 (😄): absolute (154,24),   Frame232 (106,-313) → x=48,  y=337
-        if (page.emojiCards.isNotEmpty()) {
+        if (page.emojiCards.isNotEmpty() && page.emojiOffsets.isNotEmpty()) {
             EmojiBubble(
-                emoji = page.emojiCards[1],   // 👏 — arriba
-                modifier = Modifier.offset(x = 123.dp, y = 175.dp),
+                emoji = page.emojiCards[1],
+                modifier = Modifier.offset(x = page.emojiOffsets[0].x, y = page.emojiOffsets[0].y),
             )
         }
-        if (page.emojiCards.size >= 2) {
+        if (page.emojiCards.size >= 2 && page.emojiOffsets.size >= 2) {
             EmojiBubble(
-                emoji = page.emojiCards[0],   // 😄 — abajo
-                modifier = Modifier.offset(x = 48.dp, y = 337.dp),
+                emoji = page.emojiCards[0],
+                modifier = Modifier.offset(x = page.emojiOffsets[1].x, y = page.emojiOffsets[1].y),
             )
         }
 
         // ── Page-specific floating card decorations ────────────────────────
         when (pageIndex) {
             0 -> {
-                // Figma Frame 227 (189:3701): dos instancias de LoanSuccessCard apiladas
-                // absolute (130,-66), Frame 232 top-left (106,-313) → relative x=24, y=247
                 Column(
-                    modifier = Modifier.offset(x = 24.dp, y = 247.dp),
+                    modifier = Modifier.offset(x = 35.dp, y = 180.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     LoanSuccessCard()
@@ -356,20 +325,20 @@ private fun FloatingDecorations(
                 }
             }
             1 -> {
-                // Product price card — left/center area
-                ProductPriceCard(
-                    modifier = Modifier
-                        .align(Alignment.CenterStart)
-                        .padding(start = 16.dp, top = 48.dp),
+                ProductCardRow(
+                    modifier = Modifier.offset(x = 44.dp, y = 159.dp),
                 )
             }
             2 -> {
-                // Nike transaction card — center area
-                TransactionCard(
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .padding(start = 16.dp),
-                )
+                Column(
+                    modifier = Modifier.offset(x = 20.dp, y = 247.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ){ // Nike transaction card — center area
+                    TransactionCard(
+                        modifier = Modifier
+                            .padding(start = 2.dp),
+                    )
+                }
             }
         }
     }
@@ -382,55 +351,44 @@ private fun EmojiBubble(
     emoji: String,
     modifier: Modifier = Modifier,
 ) {
-    // Figma nodes 189:3710 / 189:3753:
-    //   size=30×30dp, cornerRadius=38.99 (≈ full pill)
-    //   backgroundColor=rgba(1,1,1,0.27) — frosted glass semi-transparent
-    //   stroke: white opacity=0.51, weight=0.39
-    //   BACKGROUND_BLUR 5.85 — omitted (Modifier.blur blurs texto también)
-    //   emoji font: Montserrat SemiBold 18sp
     Box(
         modifier = modifier
-            .size(30.dp)
+            .size(38.dp)
             .background(
                 color = Color.White.copy(alpha = 0.27f),
                 shape = RoundedCornerShape(100.dp),
             )
             .border(
-                width = 0.39.dp,
-                color = Color.White.copy(alpha = 0.51f),
+                width = 0.dp,
+                color = Color.White.copy(alpha = 0.1f),
                 shape = RoundedCornerShape(100.dp),
             ),
         contentAlignment = Alignment.Center,
     ) {
         Text(
             text = emoji,
-            fontSize = 14.sp,
-            fontFamily = MontserratFamily,
-            fontWeight = FontWeight.SemiBold,
+            fontSize = 18.sp,
         )
     }
 }
 
 @Composable
 private fun LoanSuccessCard(modifier: Modifier = Modifier) {
-    // Figma nodos 189:3693 / 189:3673 — width=157dp, height=29.64dp, cornerRadius=6.24dp
-    // Frame 18 (HORIZONTAL): itemSpacing=4.16dp
-    // Avatar (189:3696): visible=false → no renderizar
-    // stroke: white opacity=0.51, weight=0.52, padding=8.32dp
     Row(
         modifier = modifier
             .width(157.dp)
+            .height(24.dp)
             .background(
                 color = Color.White.copy(alpha = 0.27f),
                 shape = RoundedCornerShape(6.dp),
             )
             .border(
-                width = 0.52.dp,
+                width = 0.1.dp,
                 color = Color.White.copy(alpha = 0.51f),
                 shape = RoundedCornerShape(6.dp),
             )
-            .padding(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
+            .padding(horizontal = 8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
@@ -451,70 +409,85 @@ private fun LoanSuccessCard(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun ProductPriceCard(modifier: Modifier = Modifier) {
-    // Figma nodo Product-card (189:3734): frosted glass, r≈4dp, padding≈6dp, itemSpacing≈3dp
-    // stroke: white opacity=0.51, backgroundColor=rgba(1,1,1,0.27)
-    Column(
-        modifier = modifier
-            .width(80.dp)
-            .background(
-                color = Color.White.copy(alpha = 0.27f),
-                shape = RoundedCornerShape(4.dp),
-            )
-            .border(
-                width = 0.52.dp,
-                color = Color.White.copy(alpha = 0.51f),
-                shape = RoundedCornerShape(4.dp),
-            )
-            .padding(6.dp),
-        verticalArrangement = Arrangement.spacedBy(3.dp),
+private fun ProductCardRow(modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Text(
-            text = "iPhone 12 Pro",
-            fontSize = 7.sp,
-            fontFamily = InterFamily,
-            fontWeight = FontWeight.Medium,
-            color = FigmaMintSplash,     // Figma: texto label claro sobre fondo oscuro
+        ProductCard(imageAsset = "product_1.png")
+        ProductCard(imageAsset = "product_2.png")
+    }
+}
+
+@Composable
+private fun ProductCard(imageAsset: String) {
+    Column(
+        modifier = Modifier
+            .size(width = 90.dp, height = 78.dp)
+            .background(Color.White.copy(alpha = 0.27f), RoundedCornerShape(4.dp))
+            .border(0.1.dp, Color.White.copy(alpha = 0.51f), RoundedCornerShape(4.dp))
+            .padding(horizontal = 4.dp, vertical = 3.dp),
+        verticalArrangement = Arrangement.spacedBy(2.dp),
+    ) {
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data("file:///android_asset/$imageAsset")
+                .build(),
+            contentDescription = null,
+            contentScale = ContentScale.Fit,
+            modifier = Modifier.fillMaxWidth().height(54.dp),
         )
-        Text(
-            text = "₱1,200 x 24 mo",
-            fontSize = 7.sp,
-            fontFamily = InterFamily,
-            fontWeight = FontWeight.Medium,
-            color = FigmaNeonGreen,
-        )
+        Text(text = "iPhone 12 Pro...", fontSize = 9.sp, fontFamily = InterFamily, color = FigmaMintSplash, maxLines = 1)
+        Text(text = "₱1,200 x 24 mo", fontSize = 9.sp, fontFamily = InterFamily, color = FigmaNeonGreen, maxLines = 1)
     }
 }
 
 @Composable
 private fun TransactionCard(modifier: Modifier = Modifier) {
-    // Figma nodo 189:3792 — size=197×49dp, frosted glass
-    // backgroundColor=rgba(1,1,1,0.27), r=6dp, padding=8dp
-    // stroke: white opacity=0.51, itemSpacing=2dp
     Row(
         modifier = modifier
             .width(197.dp)
-            .height(49.dp)
-            .background(
-                color = Color.White.copy(alpha = 0.27f),
-                shape = RoundedCornerShape(6.dp),
-            )
-            .border(
-                width = 0.52.dp,
-                color = Color.White.copy(alpha = 0.51f),
-                shape = RoundedCornerShape(6.dp),
-            )
-            .padding(8.dp),
+            .height(47.dp)
+            .background(Color.White.copy(alpha = 0.27f), RoundedCornerShape(6.dp))
+            .border(0.1.dp, Color.White.copy(alpha = 0.51f), RoundedCornerShape(6.dp))
+            .padding(horizontal = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        // Left — logo circular + nombre
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data("file:///android_asset/avatar.png")
+                    .build(),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(25.dp)
+                    .clip(CircleShape),
+            )
             Text(
                 text = "Nike Inc.",
                 fontSize = 11.sp,
                 fontFamily = InterFamily,
                 fontWeight = FontWeight.SemiBold,
                 color = FigmaMintSplash,
+            )
+        }
+        // Right — precio + subtítulo
+        Column(
+            horizontalAlignment = Alignment.End,
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
+            Text(
+                text = "₱400.00",
+                fontSize = 10.sp,
+                fontFamily = InterFamily,
+                fontWeight = FontWeight.SemiBold,
+                color = FigmaNeonGreen,
             )
             Text(
                 text = "Fees of February",
@@ -524,13 +497,6 @@ private fun TransactionCard(modifier: Modifier = Modifier) {
                 color = FigmaMintSplash,
             )
         }
-        Text(
-            text = "₱400.00",
-            fontSize = 10.sp,
-            fontFamily = InterFamily,
-            fontWeight = FontWeight.SemiBold,
-            color = FigmaNeonGreen,
-        )
     }
 }
 
@@ -555,11 +521,6 @@ private fun OnboardingBottomContent(
     when (val layout = page.layout) {
 
         // ── Pages 0 & 1 : single CTA ────────────────────────────────────────
-        // Figma structure (Frame 233 / Frame 234):
-        //   Column gap=[outerGap]
-        //     Frame 169 (title + subtitle, gap=20dp)
-        //     Frame 223/224 (indicators + button + home, gap=16dp)
-        //       Frame 221/222 (indicators + button, gap=[innerGap])
         is OnboardingLayout.SingleCta -> {
             Column(
                 modifier = modifier,
@@ -596,23 +557,11 @@ private fun OnboardingBottomContent(
                         )
                     }
 
-                    HomeIndicatorBar(
-                        color = Color.White,
-                        modifier = Modifier.navigationBarsPadding(),
-                    )
                 }
             }
         }
 
         // ── Page 2 : double CTA ──────────────────────────────────────────────
-        // Figma structure (Frame 235):
-        //   Column gap=[outerGap]
-        //     TEXT "Track & Pay Easily"   ← directly in Frame 235 (no Frame 169 wrapper)
-        //     Frame 226 (indicators + button group + home, gap=24dp)
-        //       Frame 9 (dots)
-        //       Frame 225 (buttons + home, gap=16dp)
-        //         Frame 220 (two buttons, gap=16dp)
-        //         Home Indicator
         is OnboardingLayout.DoubleCta -> {
             Column(
                 modifier = modifier,
@@ -656,10 +605,6 @@ private fun OnboardingBottomContent(
                             )
                         }
 
-                        HomeIndicatorBar(
-                            color = Color.White,
-                            modifier = Modifier.navigationBarsPadding(),
-                        )
                     }
                 }
             }
@@ -670,10 +615,6 @@ private fun OnboardingBottomContent(
 // ═══════════════════════════════════════════════════════════════════════════════
 // Reusable UI Components
 // ═══════════════════════════════════════════════════════════════════════════════
-
-// ─── Onboarding Title ─────────────────────────────────────────────────────────
-// Figma: Montserrat ExtraBold 32sp, lineHeight 35–40sp, color #B1D18A, CENTER aligned
-
 @Composable
 fun OnboardingTitle(
     text: String,
@@ -692,8 +633,6 @@ fun OnboardingTitle(
 }
 
 // ─── Onboarding Subtitle ──────────────────────────────────────────────────────
-// Figma: Inter Regular 22sp, lineHeight 28sp, color #E5F5EA, CENTER aligned
-
 @Composable
 fun OnboardingSubtitle(
     text: String,
@@ -712,9 +651,6 @@ fun OnboardingSubtitle(
 }
 
 // ─── Page Indicator Dots ──────────────────────────────────────────────────────
-// Figma "Frame 9": 52×12dp container, 3 ellipses 12×12dp, gap=8dp between edges
-// Active: #7BF179 opacity=1.0   Inactive: #EADDFF opacity=0.16
-
 @Composable
 fun PageIndicatorDots(
     currentPage: Int,
@@ -742,10 +678,6 @@ fun PageIndicatorDots(
 }
 
 // ─── Primary CTA Button ───────────────────────────────────────────────────────
-// Figma: fill=#7BF179, cornerRadius=100dp (full pill), text=#102000
-// Width: 361dp (parent provides fillMaxWidth with 16dp horizontal padding)
-// Height: 48dp
-
 @Composable
 fun LendlyPrimaryButton(
     text: String,
@@ -772,9 +704,6 @@ fun LendlyPrimaryButton(
 }
 
 // ─── Secondary CTA Button (Log In) ────────────────────────────────────────────
-// Figma: no fill (transparent background), 1dp border, text=#FFFFFF
-// Width: 361dp, Height: 48dp, cornerRadius=100dp
-
 @Composable
 fun LendlySecondaryButton(
     text: String,
@@ -807,7 +736,6 @@ fun LendlySecondaryButton(
 // ═══════════════════════════════════════════════════════════════════════════════
 // Previews
 // ═══════════════════════════════════════════════════════════════════════════════
-
 @Preview(showBackground = true, widthDp = 393, heightDp = 852)
 @Composable
 private fun OnboardingPage0Preview() {

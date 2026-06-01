@@ -41,7 +41,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -57,6 +56,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.text.PlatformTextStyle
+import androidx.compose.ui.zIndex
 import com.example.lendlyapp.viewmodel.ShopViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -73,42 +77,20 @@ import com.example.lendlyapp.ui.theme.OnPrimaryGreen
 import com.example.lendlyapp.ui.theme.ShopPriceGreen
 import com.example.lendlyapp.ui.theme.SubtitleGray
 
-// ─── Static editorial data ────────────────────────────────────────────────────
-
-private data class ShopCategory(val label: String, val imageAsset: String)
-private data class Brand(val name: String, val imageAsset: String)
-
-private val shopCategories = listOf(
-    ShopCategory("Phone",      "img_1d9e70f017321361.png"),
-    ShopCategory("Headphones", "img_093dff6624fbadb3.png"),
-    ShopCategory("Apparel",    "img_b7610e68381ed2f1.png"),
-)
-
-private val popularBrands = listOf(
-    Brand("Apple", "img_c6d61f7f62e4010f.png"),
-    Brand("Jordan", "img_a2fef0980c1cf4a7.png"),
-    Brand("Adidas", "img_34bbdb89fdac37a8.png"),
-)
-
 // ─── Screen ───────────────────────────────────────────────────────────────────
 
 @Composable
 fun ShopScreen(
     onProductClick: (Product) -> Unit = {},
+    onSearchClick: () -> Unit = {},
     viewModel: ShopViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val allProducts = when (val s = uiState) {
-        is ShopUiState.Success -> s.products
-        else -> emptyList()
-    }
-    var searchQuery by remember { mutableStateOf("") }
-    val products = if (searchQuery.isBlank()) allProducts
-    else allProducts.filter {
-        it.name.contains(searchQuery, ignoreCase = true) ||
-            it.brand.contains(searchQuery, ignoreCase = true) ||
-            it.category.contains(searchQuery, ignoreCase = true)
-    }
+    val s = uiState as? ShopUiState.Success
+    val featured    = s?.featured    ?: emptyList()
+    val bestSellers = s?.bestSellers ?: emptyList()
+    val categories  = s?.categories  ?: emptyList()
+    val brands      = s?.brands      ?: emptyList()
 
     LazyColumn(
         modifier = Modifier
@@ -119,55 +101,72 @@ fun ShopScreen(
     ) {
         item {
             Column {
-                ShopAppBar()
+                ShopAppBar(onSearchClick = onSearchClick)
                 Spacer(Modifier.height(16.dp))
                 Column(
                     modifier = Modifier.padding(horizontal = 16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
-                    ShopSearchBar(query = searchQuery, onQueryChange = { searchQuery = it })
+                    ShopSearchBar(onBarClick = onSearchClick)
                     PromotionalCard()
                 }
             }
         }
-        item { CategorySection() }
-        item { BrandsSection() }
-        if (searchQuery.isNotBlank() && products.isEmpty()) {
+        if (categories.isNotEmpty()) item { CategorySection(categories) }
+        if (brands.isNotEmpty()) item { BrandsSection(brands) }
+        if (featured.isNotEmpty()) {
+            item { ProductSection(title = "Recommended For You", products = featured, onProductClick = onProductClick) }
+        }
+        if (bestSellers.isNotEmpty()) {
+            item { ProductSection(title = "Best Sellers", products = bestSellers, onProductClick = onProductClick) }
+        }
+        if (uiState is ShopUiState.Loading) {
             item {
                 Box(
                     modifier = Modifier.fillMaxWidth().padding(32.dp),
                     contentAlignment = Alignment.Center,
                 ) {
-                    Text(text = "No products found for \"$searchQuery\"", color = SubtitleGray, fontSize = 14.sp)
-                }
-            }
-        } else if (products.isNotEmpty()) {
-            item {
-                ProductSection(
-                    title = if (searchQuery.isBlank()) "Recommended For You" else "Results",
-                    products = products.take(3),
-                    onProductClick = onProductClick,
-                )
-            }
-            if (searchQuery.isBlank()) {
-                item {
-                    ProductSection(
-                        title = "Best Sellers",
-                        products = products.drop(3),
-                        onProductClick = onProductClick,
-                    )
+                    CircularProgressIndicator(color = FigmaNeonGreen)
                 }
             }
         }
-        if (uiState is ShopUiState.Loading) {
+        if (uiState is ShopUiState.Error) {
             item {
-                Box(
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(32.dp),
-                    contentAlignment = Alignment.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
-                    CircularProgressIndicator(color = FigmaNeonGreen)
+                    Text(
+                        text = "No se pudo cargar la tienda",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = InterFamily,
+                        color = FigmaLightText,
+                    )
+                    Text(
+                        text = (uiState as ShopUiState.Error).message,
+                        fontSize = 13.sp,
+                        fontFamily = InterFamily,
+                        color = SubtitleGray,
+                    )
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(100.dp))
+                            .background(FigmaNeonGreen)
+                            .clickable { viewModel.retry() }
+                            .padding(horizontal = 24.dp, vertical = 12.dp),
+                    ) {
+                        Text(
+                            text = "Reintentar",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            fontFamily = InterFamily,
+                            color = OnPrimaryGreen,
+                        )
+                    }
                 }
             }
         }
@@ -177,7 +176,7 @@ fun ShopScreen(
 // ─── AppBar ───────────────────────────────────────────────────────────────────
 
 @Composable
-private fun ShopAppBar() {
+private fun ShopAppBar(onSearchClick: () -> Unit = {}) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -197,12 +196,12 @@ private fun ShopAppBar() {
         Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
             LendlyLogo(size = DpSize(58.dp, 20.dp))
         }
-        listOf(Icons.Default.Search, Icons.Default.Favorite, Icons.Default.ShoppingCart).forEach { icon ->
+        listOf(Icons.Default.Search, Icons.Default.Favorite, Icons.Default.ShoppingCart).forEachIndexed { index, icon ->
             Box(
                 modifier = Modifier
                     .size(48.dp)
                     .clip(CircleShape)
-                    .clickable { },
+                    .clickable { if (index == 0) onSearchClick() },
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(imageVector = icon, contentDescription = null, tint = FigmaLightText)
@@ -214,47 +213,47 @@ private fun ShopAppBar() {
 // ─── Search Bar ───────────────────────────────────────────────────────────────
 
 @Composable
-private fun ShopSearchBar(query: String, onQueryChange: (String) -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(56.dp)
-            .clip(RoundedCornerShape(8.dp))
-            .border(1.dp, Color(0xFFE5E2E1), RoundedCornerShape(8.dp))
-            .background(Color.White),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Icon(
-            imageVector = Icons.Default.Search,
-            contentDescription = null,
-            tint = SubtitleGray,
-            modifier = Modifier.padding(start = 16.dp),
-        )
-        BasicTextField(
-            value = query,
-            onValueChange = onQueryChange,
-            singleLine = true,
-            textStyle = TextStyle(color = FigmaLightText, fontSize = 16.sp),
+private fun ShopSearchBar(onBarClick: () -> Unit = {}) {
+    Box {
+        Row(
             modifier = Modifier
-                .weight(1f)
-                .padding(horizontal = 12.dp),
-            decorationBox = { innerTextField ->
-                if (query.isEmpty()) {
-                    Text(text = "Search for product", color = SubtitleGray, fontSize = 16.sp)
-                }
-                innerTextField()
-            },
-        )
+                .fillMaxWidth()
+                .height(56.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .border(1.dp, Color(0xFFE5E2E1), RoundedCornerShape(8.dp))
+                .background(Color.White),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = null,
+                tint = SubtitleGray,
+                modifier = Modifier.padding(start = 16.dp),
+            )
+            Text(
+                text = "Search for product",
+                color = SubtitleGray,
+                fontSize = 16.sp,
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 12.dp),
+            )
+            Box(
+                modifier = Modifier
+                    .padding(end = 4.dp)
+                    .size(48.dp)
+                    .clip(RoundedCornerShape(4.dp))
+                    .background(FigmaNeonGreen),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(imageVector = Icons.Default.FilterList, contentDescription = null, tint = OnPrimaryGreen)
+            }
+        }
         Box(
             modifier = Modifier
-                .padding(end = 4.dp)
-                .size(48.dp)
-                .clip(RoundedCornerShape(4.dp))
-                .background(FigmaNeonGreen),
-            contentAlignment = Alignment.Center,
-        ) {
-            Icon(imageVector = Icons.Default.FilterList, contentDescription = null, tint = OnPrimaryGreen)
-        }
+                .matchParentSize()
+                .clickable(onClick = onBarClick),
+        )
     }
 }
 
@@ -266,84 +265,54 @@ private fun PromotionalCard() {
             .fillMaxWidth()
             .height(230.dp)
             .clip(RoundedCornerShape(16.dp))
-            .background(OnPrimaryGreen),
+            .background(OnPrimaryGreen)
     ) {
 
-        // Green block
+        // ─────────────────────────────
+        // RECTÁNGULO VERDE + ELIPSE (MISMA CAPA)
+        // ─────────────────────────────
         Box(
             modifier = Modifier
-                .size(105.dp)
+                .size(width = 120.dp, height = 95.dp)
                 .align(Alignment.BottomEnd)
-                .drawBehind {
-                    drawRect(
-                        color = FigmaNeonGreen.copy(alpha = 0.15f)
+        ) {
+
+            // Rectángulo verde
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .background(
+                        color = FigmaNeonGreen,
+                        shape = RoundedCornerShape(
+                            topStart = 19.dp,
+                            topEnd = 0.dp,
+                            bottomEnd = 0.dp,
+                            bottomStart = 0.dp
+                        )
                     )
-                }
-                .background(FigmaNeonGreen)
-        )
+            )
+        }
 
-        // Top shoe
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data("file:///android_asset/img_87cc7e6ae36438af.png")
-                .build(),
-            contentDescription = null,
-            contentScale = ContentScale.Fit,
-            modifier = Modifier
-                .size(
-                    width = 120.dp,
-                    height = 90.dp
-                )
-                .align(Alignment.CenterEnd)
-                .offset(
-                    x = (-10).dp,
-                    y = (-18).dp
-                )
-                .graphicsLayer {
-                    rotationZ = 8f
-                }
-        )
-
-        // Bottom shoe
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data("file:///android_asset/img_87cc7e6ae36438af.png")
-                .build(),
-            contentDescription = null,
-            contentScale = ContentScale.Fit,
-            modifier = Modifier
-                .size(
-                    width = 140.dp,
-                    height = 100.dp
-                )
-                .align(Alignment.BottomCenter)
-                .offset(
-                    x = 10.dp,
-                    y = 26.dp
-                )
-                .graphicsLayer {
-                    rotationZ = -18f
-                }
-        )
-
+        // ─────────────────────────────
+        // CONTENIDO TEXTO
+        // ─────────────────────────────
         Column(
             modifier = Modifier
                 .align(Alignment.TopStart)
-                .padding(
-                    start = 22.dp,
-                    top = 24.dp,
-                    end = 165.dp
-                ),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+                .width(260.dp)
+                .padding(start = 22.dp, top = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
 
             Text(
                 text = "The New Shoes",
-                color = Color.White,
-                fontSize = 30.sp,
-                lineHeight = 34.sp,
-                fontWeight = FontWeight.Bold,
-                fontFamily = MontserratFamily,
+                style = TextStyle(
+                    fontFamily = MontserratFamily,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 28.sp,
+                    lineHeight = 36.sp
+                ),
+                color = Color.White
             )
 
             Text(
@@ -352,83 +321,96 @@ private fun PromotionalCard() {
                 fontSize = 14.sp,
                 lineHeight = 20.sp,
                 fontWeight = FontWeight.Medium,
-                fontFamily = InterFamily,
+                fontFamily = InterFamily
             )
 
-            Spacer(modifier = Modifier.height(2.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             Box(
                 modifier = Modifier
+                    .width(118.dp)
+                    .height(32.dp)
                     .clip(RoundedCornerShape(8.dp))
-                    .background(FigmaNeonGreen)
-                    .padding(
-                        horizontal = 22.dp,
-                        vertical = 10.dp
-                    )
+                    .background(FigmaNeonGreen),
+                contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = "Shop Now",
                     color = OnPrimaryGreen,
                     fontSize = 15.sp,
                     fontWeight = FontWeight.SemiBold,
-                    fontFamily = InterFamily,
+                    fontFamily = InterFamily
                 )
             }
         }
 
+        // ─────────────────────────────
+        // SHOES (ENCIMA DE TODO)
+        // ─────────────────────────────
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data("file:///android_asset/img_87cc7e6ae36438af.png")
+                .build(),
+            contentDescription = null,
+            contentScale = ContentScale.Fit,
+            modifier = Modifier
+                .width(360.dp)
+                .graphicsLayer {
+                    scaleX = -1.1f
+                    scaleY = 1.1f
+                }
+                .align(Alignment.BottomEnd)
+                .offset(x = (-45).dp, y = 40.dp)
+                .zIndex(2f)
+        )
+
+        // ─────────────────────────────
+        // INDICADORES
+        // ─────────────────────────────
         Row(
             modifier = Modifier
                 .align(Alignment.BottomStart)
-                .padding(
-                    start = 22.dp,
-                    bottom = 18.dp
-                ),
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
+                .padding(start = 22.dp, bottom = 18.dp)
+                .zIndex(1f),
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
         ) {
 
             Box(
                 modifier = Modifier
                     .size(6.dp)
-                    .background(
-                        Color.White,
-                        CircleShape
-                    )
+                    .background(Color.White, CircleShape)
             )
 
             Box(
                 modifier = Modifier
                     .size(6.dp)
-                    .background(
-                        Color.White.copy(alpha = 0.45f),
-                        CircleShape
-                    )
+                    .background(Color.White.copy(alpha = 0.45f), CircleShape)
             )
 
             Box(
                 modifier = Modifier
                     .size(6.dp)
-                    .background(
-                        Color.White.copy(alpha = 0.45f),
-                        CircleShape
-                    )
+                    .background(Color.White.copy(alpha = 0.45f), CircleShape)
             )
         }
     }
 }
-
 // ─── Category Section ─────────────────────────────────────────────────────────
 
 @Composable
-private fun CategorySection() {
+private fun CategorySection(categories: List<com.example.lendlyapp.model.ShopCategory>) {
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         SectionHeader(title = "Shop By Category")
         LazyRow(
             contentPadding = PaddingValues(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            items(shopCategories) { category ->
+            items(categories) { category ->
                 Column(
-                    modifier = Modifier.width(100.dp),
+                    modifier = Modifier
+                        .width(100.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .clickable { },
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
@@ -439,17 +421,10 @@ private fun CategorySection() {
                             .background(FigmaLightBg),
                         contentAlignment = Alignment.Center,
                     ) {
-                        AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data("file:///android_asset/${category.imageAsset}")
-                                .build(),
-                            contentDescription = category.label,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier.fillMaxSize(),
-                        )
+                        Text(text = category.icon, fontSize = 36.sp)
                     }
                     Text(
-                        text = category.label,
+                        text = category.name,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.SemiBold,
                         fontFamily = InterFamily,
@@ -465,23 +440,24 @@ private fun CategorySection() {
 // ─── Brands Section ───────────────────────────────────────────────────────────
 
 @Composable
-private fun BrandsSection() {
+private fun BrandsSection(brands: List<com.example.lendlyapp.model.ShopBrand>) {
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         SectionHeader(title = "Popular Brands")
         LazyRow(
             contentPadding = PaddingValues(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            items(popularBrands) { brand ->
+            items(brands) { brand ->
                 Column(
                     modifier = Modifier
                         .width(150.dp)
                         .clip(RoundedCornerShape(12.dp))
-                        .background(FigmaLightBg),
+                        .background(FigmaLightBg)
+                        .clickable { },
                 ) {
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
-                            .data("file:///android_asset/${brand.imageAsset}")
+                            .data(brand.logoUrl)
                             .build(),
                         contentDescription = brand.name,
                         contentScale = ContentScale.Crop,
@@ -529,7 +505,7 @@ private fun ProductSection(
                 ) {
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
-                            .data("file:///android_asset/${product.imageAsset}")
+                            .data(product.imageAsset)
                             .build(),
                         contentDescription = product.name,
                         contentScale = ContentScale.Fit,
@@ -546,7 +522,7 @@ private fun ProductSection(
                         maxLines = 1,
                     )
                     Text(
-                        text = "₱%,.0f × 24 mo".format(product.monthlyPayment),
+                        text = "${product.currency}%,.0f × ${product.installmentMonths} mo".format(product.monthlyPayment),
                         fontSize = 11.sp,
                         fontFamily = InterFamily,
                         color = SubtitleGray,
@@ -578,6 +554,7 @@ private fun SectionHeader(title: String) {
         )
         Row(
             verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.clickable { },
         ) {
             Text(
                 text = "See All",
