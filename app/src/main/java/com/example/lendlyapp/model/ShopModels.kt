@@ -44,16 +44,6 @@ data class BrandResponse(
     val logo: String,
 )
 
-data class PurchaseRequest(
-    @SerializedName("productId") val productId: String,
-    val installments: Int,
-)
-
-data class PurchaseResponse(
-    @SerializedName("purchaseId") val purchaseId: String,
-    val status: String,
-)
-
 // ─── Domain models ────────────────────────────────────────────────────────────
 
 data class ShopCategory(val id: String, val name: String, val icon: String)
