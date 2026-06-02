@@ -3,7 +3,6 @@ package com.example.lendlyapp.di
 import android.content.Context
 import com.example.lendlyapp.core.ApiConfig
 import com.example.lendlyapp.core.AuthInterceptor
-import com.example.lendlyapp.data.local.UserPreferences
 import com.example.lendlyapp.shared.LendlyApiService
 import dagger.Module
 import dagger.Provides
@@ -19,13 +18,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-
-    @Provides
-    @Singleton
-    fun provideUserPreferences(
-        @ApplicationContext context: Context,
-    ): UserPreferences = UserPreferences(context)
-
     @Provides
     @Singleton
     fun provideOkHttpClient(): OkHttpClient {

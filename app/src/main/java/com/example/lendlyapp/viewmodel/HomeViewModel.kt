@@ -2,7 +2,6 @@ package com.example.lendlyapp.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.lendlyapp.data.local.UserPreferences
 import com.example.lendlyapp.shared.LendlyApiService
 import com.example.lendlyapp.ui.screens.home.HomeData
 import com.example.lendlyapp.ui.screens.home.HomeUiState
@@ -15,12 +14,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-// Cambiar el "1" hardcodeado con el user id despues de implementar login
-
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val apiService: LendlyApiService,
-    private val userPreferences: UserPreferences,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
@@ -34,7 +30,8 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = HomeUiState.Loading
             try {
-                val userId = userPreferences.userId ?: "1"
+                // Cambiar el "1" hardcodeado con el user id despues de implementar login
+                val userId = "1"
 
                 coroutineScope {
                     val userDef     = async { apiService.getUser(userId) }
