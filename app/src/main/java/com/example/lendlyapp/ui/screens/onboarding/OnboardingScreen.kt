@@ -1,7 +1,9 @@
 package com.example.lendlyapp.ui.screens.onboarding
 
+import android.app.Activity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,7 +11,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -19,77 +20,59 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.LocalMall
-import androidx.compose.material.icons.filled.Payments
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.foundation.border
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import android.app.Activity
-import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.example.lendlyapp.ui.shared.HomeIndicatorBar
 import com.example.lendlyapp.ui.shared.LendlyLogo
 import com.example.lendlyapp.ui.theme.FigmaDarkForest
-import com.example.lendlyapp.ui.theme.IllustrationGradientEnd
-import com.example.lendlyapp.ui.theme.IllustrationGradientStart
-import com.example.lendlyapp.ui.theme.FigmaLightSurface
 import com.example.lendlyapp.ui.theme.FigmaMintSplash
 import com.example.lendlyapp.ui.theme.FigmaNeonGreen
-import com.example.lendlyapp.ui.theme.FormLabel
+import com.example.lendlyapp.ui.theme.IllustrationGradientEnd
+import com.example.lendlyapp.ui.theme.IllustrationGradientStart
 import com.example.lendlyapp.ui.theme.InterFamily
+import com.example.lendlyapp.ui.theme.LendlyAppTheme
 import com.example.lendlyapp.ui.theme.MontserratFamily
 import com.example.lendlyapp.ui.theme.OnPrimaryGreen
 import com.example.lendlyapp.ui.theme.OnboardingDotInactive
 import com.example.lendlyapp.ui.theme.OnboardingTitleGreen
-import com.example.lendlyapp.ui.theme.LendlyAppTheme
 import com.example.lendlyapp.viewmodel.OnboardingViewModel
 import kotlinx.coroutines.launch
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // OnboardingScreen — HorizontalPager wrapping all three onboarding pages
-//
-// Figma nodes:
-//   Page 0 → id=121:1311  "Onboarding 1"  (Quick loans)
-//   Page 1 → id=189:3550  "Onboarding 2"  (Loan Product In-App)
-//   Page 2 → id=189:3591  "Onboarding 3"  (Track & Pay Easily)
-//
-// Screen spec: 393×852dp, background #002203
-// Illustration area: 698×481dp (clipped to 393dp screen width)
-// Content area: 393×339dp, starts at y=513dp
 // ═══════════════════════════════════════════════════════════════════════════════
 
 @Composable
@@ -199,9 +182,9 @@ private fun OnboardingIllustration(
             ): Outline {
                 val shiftLeft = with(density) { 5.dp.toPx() }
                 return Outline.Generic(Path().apply {
-                    moveTo(-shiftLeft, size.height)                  // desplazado 60dp a la izquierda
-                    lineTo(size.width, size.height * (260f / 481f))  // actual — llega hasta ~30% desde arriba
-                    lineTo(size.width, size.height)                  // (393, 481) bottom-right
+                    moveTo(-shiftLeft, size.height)
+                    lineTo(size.width, size.height * (260f / 481f))
+                    lineTo(size.width, size.height)
                     close()
                 })
             }
