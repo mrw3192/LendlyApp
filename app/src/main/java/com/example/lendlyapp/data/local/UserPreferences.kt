@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
+import dagger.hilt.android.qualifiers.ApplicationContext
 
 // DataStore instance is created once per application context (top-level extension property).
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "lendly_prefs")
@@ -26,7 +27,7 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
  */
 @Singleton
 class UserPreferences @Inject constructor(
-    private val context: Context,
+    @ApplicationContext private val context: Context
 ) {
     companion object {
         val AUTH_TOKEN = stringPreferencesKey("auth_token")

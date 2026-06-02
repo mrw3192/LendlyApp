@@ -13,7 +13,6 @@ coroutines = "1.10.2"
 junit = "4.13.2"
 kotlin = "2.1.0"
 ksp = "2.1.0-1.0.29"
-navigationCompose = "2.7.7"
 navCompose = "2.8.5"
 hilt = "2.51.1"
 hiltNav = "1.2.0"
@@ -21,8 +20,10 @@ retrofit = "2.11.0"
 okhttp = "4.12.0"
 room = "2.6.1"
 coil = "2.6.0"
+datastore = "1.1.1"
 
 [libraries]
+datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "camerax" }
 androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "camerax" }
 androidx-camera-view = { module = "androidx.camera:camera-view", version.ref = "camerax" }
@@ -44,7 +45,6 @@ androidx-test-espresso-core = { module = "androidx.test.espresso:espresso-core",
 androidx-test-runner = { module = "androidx.test:runner", version.ref = "androidxTestRunner" }
 junit = { module = "junit:junit", version.ref = "junit" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
-androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navCompose" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }

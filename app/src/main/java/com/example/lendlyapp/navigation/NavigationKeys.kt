@@ -18,4 +18,13 @@ sealed class AppDestination(val route: String) {
         fun createRoute(partnerName: String, amount: String) =
             "successful_transaction/${Uri.encode(partnerName)}/${Uri.encode(amount)}"
     }
+    data object VerifyPhone : AppDestination("verifyPhone")
+    data object SmsVerification : AppDestination("smsVerification")
+    data object ProfileDetail : AppDestination("profileDetail")
+    data object CreatePassword : AppDestination("createPassword")
+    data object Done : AppDestination("done")
+    data object IdVerification : AppDestination("idVerification")
+    data object FaceRecognition : AppDestination("faceRecognition")
+    data object Signature : AppDestination("signature")
+    data object Verified : AppDestination("verified")
 }
