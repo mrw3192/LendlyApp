@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
  * Data Transfer Object for POST /auth/login request.
  */
 data class LoginRequest(
-    @SerializedName("email") val email: String,
+    @SerializedName("phone") val phone: String,
     @SerializedName("password") val password: String,
 )
 
@@ -53,5 +53,14 @@ data class LoginResponse(
     @SerializedName("token") val token: String?,
     @SerializedName("user") val user: UserDto? = null,
     // Optional error message if the API returns one on failure
+    @SerializedName("message") val message: String? = null,
+)
+
+/**
+ * Data Transfer Object for GET /users/{id} response.
+ */
+data class UserResponse(
+    @SerializedName("success") val success: Boolean,
+    @SerializedName("user") val user: UserDto? = null,
     @SerializedName("message") val message: String? = null,
 )

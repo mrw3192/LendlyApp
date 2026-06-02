@@ -21,4 +21,9 @@ interface AuthRepository {
      * @return Result containing Unit on success, or an Exception on failure.
      */
     suspend fun register(request: RegisterRequest): Result<Unit>
+
+    /**
+     * Attempts to fetch a user by their ID (uses Room cache if network fails).
+     */
+    suspend fun getUser(id: Int): Result<com.example.lendlyapp.model.UserDto>
 }
