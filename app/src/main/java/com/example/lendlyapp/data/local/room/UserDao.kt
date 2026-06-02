@@ -11,9 +11,6 @@ interface UserDao {
     @Query("SELECT * FROM users WHERE id = :userId LIMIT 1")
     suspend fun getUserById(userId: Int): UserEntity?
 
-    @Query("SELECT * FROM users WHERE id = :userId LIMIT 1")
-    fun observeUserById(userId: Int): Flow<UserEntity?>
-
     @Query("SELECT * FROM users ORDER BY id DESC LIMIT 1")
     fun observeCurrentUser(): Flow<UserEntity?>
 
