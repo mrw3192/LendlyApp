@@ -73,9 +73,3 @@ data class ShopCategory(val id: String, val name: String, val icon: String)
 
 data class ShopBrand(val id: String, val name: String, val logoUrl: String)
 
-data class ShopData(
-    val featured: List<Product>,
-    val products: List<Product>,
-    val categories: List<ShopCategory>,
-    val brands: List<ShopBrand>,
-)
