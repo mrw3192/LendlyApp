@@ -5,8 +5,6 @@ import com.example.lendlyapp.model.LoanApplyRequest
 import com.example.lendlyapp.model.LoginRequest
 import com.example.lendlyapp.model.LoginResponse
 import com.example.lendlyapp.model.LoansApiResponse
-import com.example.lendlyapp.model.PurchaseRequest
-import com.example.lendlyapp.model.PurchaseResponse
 import com.example.lendlyapp.model.RegisterRequest
 import com.example.lendlyapp.model.RegisterResponse
 import com.example.lendlyapp.model.ShopResponse
