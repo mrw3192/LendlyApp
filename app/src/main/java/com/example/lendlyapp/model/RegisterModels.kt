@@ -1,17 +1,19 @@
 package com.example.lendlyapp.model
 
+import com.google.gson.annotations.SerializedName
+
 /**
  * Data Transfer Object for POST /auth/create request.
  */
 data class RegisterRequest(
-    val firstName: String,
-    val lastName: String,
-    val dob: String, // format YYYY-MM-DD
-    val address: String,
-    val city: String,
-    val postalCode: String,
-    val phone: String,
-    val password: String,
+    @SerializedName("firstName") val firstName: String,
+    @SerializedName("lastName") val lastName: String,
+    @SerializedName("dob") val dob: String, // format YYYY-MM-DD
+    @SerializedName("address") val address: String,
+    @SerializedName("city") val city: String,
+    @SerializedName("postalCode") val postalCode: String,
+    @SerializedName("phone") val phone: String,
+    @SerializedName("password") val password: String,
 )
 
 /**
@@ -26,8 +28,8 @@ data class RegisterRequest(
  * }
  */
 data class RegisterResponse(
-    val success: Boolean,
-    val message: String?,
-    val user: UserDto? = null,
-    val token: String? = null,
+    @SerializedName("success") val success: Boolean,
+    @SerializedName("message") val message: String?,
+    @SerializedName("user") val user: UserDto? = null,
+    @SerializedName("token") val token: String? = null,
 )
