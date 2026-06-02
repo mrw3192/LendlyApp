@@ -28,6 +28,7 @@ import com.example.lendlyapp.ui.theme.InterFamily
 fun LendlyTopBar(
     onNavigationClick: () -> Unit,
     navigationIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
+    navigationIconContent: (@Composable () -> Unit)? = null,
     title: String = "",
     centerContent: (@Composable BoxScope.() -> Unit)? = null,
     trailingContent: @Composable RowScope.() -> Unit = { Spacer(Modifier.size(48.dp)) },
@@ -40,12 +41,16 @@ fun LendlyTopBar(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         IconButton(onClick = onNavigationClick, modifier = Modifier.size(48.dp)) {
-            Icon(
-                imageVector = navigationIcon,
-                contentDescription = null,
-                tint = FigmaLightText,
-                modifier = Modifier.size(24.dp),
-            )
+            if (navigationIconContent != null) {
+                navigationIconContent()
+            } else {
+                Icon(
+                    imageVector = navigationIcon,
+                    contentDescription = null,
+                    tint = FigmaLightText,
+                    modifier = Modifier.size(24.dp),
+                )
+            }
         }
 
         Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {

@@ -6,20 +6,30 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import com.example.lendlyapp.viewmodel.MainViewModel
 import com.example.lendlyapp.model.Product
 import com.example.lendlyapp.ui.screens.history.HistoryScreen
 import com.example.lendlyapp.ui.screens.home.HomeScreen
@@ -35,7 +45,11 @@ import com.example.lendlyapp.ui.shared.LendlyTopBar
 import com.example.lendlyapp.ui.theme.FigmaLightText
 
 @Composable
-fun MainScaffold(onNavigateToCashIn: () -> Unit = {}) {
+fun MainScaffold(
+    onNavigateToCashIn: () -> Unit = {},
+    viewModel: MainViewModel = hiltViewModel(),
+) {
+    val avatarUrl by viewModel.avatarUrl.collectAsState()
     var selectedTab by remember { mutableStateOf(BottomNavTab.Home) }
     var shopSelectedProduct by remember { mutableStateOf<Product?>(null) }
     var shopShowSearch by remember { mutableStateOf(false) }
@@ -48,6 +62,19 @@ fun MainScaffold(onNavigateToCashIn: () -> Unit = {}) {
             LendlyTopBar(
                 onNavigationClick = {},
                 navigationIcon = Icons.Outlined.Person,
+                navigationIconContent = if (avatarUrl != null) {
+                    {
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(avatarUrl)
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.size(28.dp).clip(CircleShape),
+                        )
+                    }
+                } else null,
                 centerContent = { LendlyLogo(size = DpSize(58.dp, 20.dp)) },
                 trailingContent = {
                     Icon(
