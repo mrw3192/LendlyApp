@@ -1,10 +1,9 @@
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.hilt)
-    id("org.jetbrains.kotlin.android")
-    alias(libs.plugins.ksp)
+  alias(libs.plugins.android.application)
+  alias(libs.plugins.compose.compiler)
+  alias(libs.plugins.hilt)
+  id("org.jetbrains.kotlin.android")
+  alias(libs.plugins.ksp)
 }
 
 android {
@@ -36,9 +35,12 @@ android {
     }
 
     packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
+      resources {
+        excludes += "/META-INF/{AL2.0,LGPL2.1}"
+      }
+        jniLibs {
+        useLegacyPackaging = false
+    }
     }
 }
 
@@ -102,6 +104,10 @@ dependencies {
     // Compose Foundation (HorizontalPager, explicit)
     implementation("androidx.compose.foundation:foundation")
 
-    // Material Icons Extended (payment, shopping, calendar icons)
-    implementation("androidx.compose.material:material-icons-extended")
+  // Material Icons Extended (payment, shopping, calendar icons)
+  implementation("androidx.compose.material:material-icons-extended")
+  // CameraX
+  implementation(libs.androidx.camera.camera2)
+  implementation(libs.androidx.camera.lifecycle)
+  implementation(libs.androidx.camera.view)
 }

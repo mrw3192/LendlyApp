@@ -51,7 +51,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.example.lendlyapp.ui.shared.HomeIndicatorBar
+
 import com.example.lendlyapp.ui.shared.LendlyLogo
 import com.example.lendlyapp.ui.theme.FigmaDarkForest
 import com.example.lendlyapp.ui.theme.FigmaLightSurface
@@ -488,11 +488,6 @@ private fun OnboardingBottomContent(
                             modifier = Modifier.fillMaxWidth(),
                         )
                     }
-
-                    HomeIndicatorBar(
-                        color = Color.White,
-                        modifier = Modifier.navigationBarsPadding(),
-                    )
                 }
             }
         }
@@ -533,11 +528,6 @@ private fun OnboardingBottomContent(
                                 modifier = Modifier.fillMaxWidth(),
                             )
                         }
-
-                        HomeIndicatorBar(
-                            color = Color.White,
-                            modifier = Modifier.navigationBarsPadding(),
-                        )
                     }
                 }
             }

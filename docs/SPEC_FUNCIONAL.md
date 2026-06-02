@@ -45,7 +45,7 @@ La aplicación reemplaza procesos manuales y simulaciones externas mediante una 
 
 | Módulo            | Descripción                             |
 | ----------------- | --------------------------------------- |
-| Onboarding & Auth | Splash, onboarding, login y registro    |
+| Onboarding & Auth | Splash, onboarding, login y registro (incluyendo captura simulada de firma, ID y biometría) |
 | Home              | Dashboard principal y accesos rápidos   |
 | Préstamos         | Simulación y solicitud de préstamos     |
 | Shop              | Catálogo de productos financiables      |
@@ -60,9 +60,9 @@ La aplicación reemplaza procesos manuales y simulaciones externas mediante una 
 * Pasarelas de pago reales.
 * Transferencias bancarias.
 * Emisión de tarjetas físicas.
-* Verificación por SMS o WhatsApp.
+* Verificación por SMS o WhatsApp (envío real de mensajes).
 * Sistema antifraude avanzado.
-* Firma digital legal.
+* Firma digital con validez legal (la firma se captura de manera puramente visual).
 
 ---
 
@@ -239,8 +239,17 @@ Permitir creación de cuenta.
 | Apellido           | Obligatorio         |
 | DNI                | Numérico            |
 | Email              | Formato válido      |
-| Password           | Mínimo 6 caracteres |
+| Password           | Mínimo 9 caracteres (1 letra y 1 número) |
 | Confirmar password | Debe coincidir      |
+
+---
+
+## Pasos de verificación adicionales (Mock)
+
+Durante el flujo de registro, se presentan pasos adicionales obligatorios/opcionales para fines de UX:
+1. **Firma Digital**: Pantalla tipo canvas para que el usuario dibuje su firma.
+2. **Escaneo de ID**: Utiliza la cámara (CameraX) trasera para simular el escaneo del documento en un marco específico.
+3. **Reconocimiento Facial**: Utiliza la cámara frontal (CameraX) en un marco ovalado para simular la verificación biométrica.
 
 ---
 
