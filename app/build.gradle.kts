@@ -1,7 +1,6 @@
 plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.compose.compiler)
-  alias(libs.plugins.kotlin.serialization)
   alias(libs.plugins.hilt)
   id("org.jetbrains.kotlin.android")
   alias(libs.plugins.ksp)
@@ -81,10 +80,7 @@ dependencies {
   androidTestImplementation(libs.androidx.test.espresso.core)
 
   // Navigation
-  implementation(libs.androidx.navigation3.ui)
-  implementation(libs.androidx.navigation3.runtime)
-  implementation(libs.androidx.lifecycle.viewmodel.navigation3)
-  implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+  implementation(libs.androidx.navigation.compose)
 
   // Dependencias Añadidas
   implementation(libs.hilt.android)
@@ -108,4 +104,8 @@ dependencies {
 
   // Material Icons Extended (payment, shopping, calendar icons)
   implementation("androidx.compose.material:material-icons-extended")
+  // CameraX
+  implementation(libs.androidx.camera.camera2)
+  implementation(libs.androidx.camera.lifecycle)
+  implementation(libs.androidx.camera.view)
 }

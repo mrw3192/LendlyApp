@@ -38,6 +38,7 @@ fun OtpInputRow(
     otpValue: String,
     onOtpChange: (String) -> Unit,
     modifier: Modifier = Modifier,
+    isError: Boolean = false,
 ) {
     val focusRequesters = remember { List(OTP_LENGTH) { FocusRequester() } }
 
@@ -100,6 +101,7 @@ fun OtpInputRow(
                     focusedContainerColor = FigmaLightSurface,
                     unfocusedContainerColor = FigmaLightSurface,
                 ),
+                isError = isError,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             )
         }

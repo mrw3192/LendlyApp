@@ -16,7 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.lendlyapp.ui.shared.HomeIndicatorBar
+
 import com.example.lendlyapp.ui.shared.LendlyLogo
 import com.example.lendlyapp.ui.theme.FigmaMintSplash
 import com.example.lendlyapp.ui.theme.LendlyAppTheme
@@ -76,15 +76,7 @@ private fun SplashScreenContent(modifier: Modifier = Modifier) {
             size = DpSize(width = 243.dp, height = 83.dp),
         )
 
-        // ── Home Indicator ───────────────────────────────────────────────────
-        // Figma: pos=(+0,+817) 393×34dp — black pill bar centered at bottom
-        HomeIndicatorBar(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .navigationBarsPadding()
-                .padding(bottom = 8.dp),
-            color = Color.Black,
-        )
+        // Removed HomeIndicatorBar
     }
 }
 

@@ -19,6 +19,15 @@ class AuthRepositoryImpl @Inject constructor(
                 if (body != null && body.success && !body.token.isNullOrEmpty()) {
                     // Save token locally
                     userPreferences.saveAuthToken(body.token)
+                    // Save returning-user profile for next Login screen visit
+                    body.user?.let { user ->
+                        userPreferences.saveRememberedUser(
+                            name = user.fullName,
+                            phone = user.phone,
+                            email = user.email,
+                            avatar = user.avatar,
+                        )
+                    }
                     Result.success(body.token)
                 } else {
                     Result.failure(Exception(body?.message ?: "Unknown login error"))
@@ -37,6 +46,19 @@ class AuthRepositoryImpl @Inject constructor(
             if (response.isSuccessful) {
                 val body = response.body()
                 if (body != null && body.success) {
+                    // Auto-login: save token if present
+                    body.token?.let { token ->
+                        userPreferences.saveAuthToken(token)
+                    }
+                    // Save returning-user profile
+                    body.user?.let { user ->
+                        userPreferences.saveRememberedUser(
+                            name = user.fullName,
+                            phone = user.phone,
+                            email = user.email,
+                            avatar = user.avatar,
+                        )
+                    }
                     Result.success(Unit)
                 } else {
                     Result.failure(Exception(body?.message ?: "Unknown registration error"))
