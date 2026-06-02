@@ -9,6 +9,7 @@ data class Loan(
     @SerializedName("nextPaymentLabel") val description: String? = null,
     @SerializedName("lenderLogo")       val lenderLogo: String? = null,
     @SerializedName("status")           val status: String = "",
+    @SerializedName("purpose")          val purpose: String = "",
 )
 
 data class LoansApiResponse(

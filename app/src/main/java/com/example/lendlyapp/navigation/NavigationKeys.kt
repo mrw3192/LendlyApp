@@ -27,4 +27,7 @@ sealed class AppDestination(val route: String) {
     data object FaceRecognition : AppDestination("faceRecognition")
     data object Signature : AppDestination("signature")
     data object Verified : AppDestination("verified")
+    data object TransactionDetails : AppDestination("transaction_details/{transactionId}") {
+        fun createRoute(transactionId: String) = "transaction_details/${Uri.encode(transactionId)}"
+    }
 }

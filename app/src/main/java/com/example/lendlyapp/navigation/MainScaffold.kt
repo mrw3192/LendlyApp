@@ -22,7 +22,10 @@ import com.example.lendlyapp.ui.shared.BottomNavBar
 import com.example.lendlyapp.ui.shared.BottomNavTab
 
 @Composable
-fun MainScaffold(onNavigateToCashIn: () -> Unit = {}) {
+fun MainScaffold(
+    onNavigateToCashIn: () -> Unit = {},
+    onNavigateToTransactionDetails: (String) -> Unit = {},
+) {
     var selectedTab by remember { mutableStateOf(BottomNavTab.Home) }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -32,7 +35,7 @@ fun MainScaffold(onNavigateToCashIn: () -> Unit = {}) {
                 BottomNavTab.Home    -> HomeScreen(onNavigateToCashIn = onNavigateToCashIn)
                 BottomNavTab.Loan    -> LoanScreen()
                 BottomNavTab.Shop    -> ShopScreen()
-                BottomNavTab.History -> HistoryScreen()
+                BottomNavTab.History -> HistoryScreen(onNavigateToTransactionDetails = onNavigateToTransactionDetails)
                 BottomNavTab.Manage  -> ProfileScreen()
             }
         }
