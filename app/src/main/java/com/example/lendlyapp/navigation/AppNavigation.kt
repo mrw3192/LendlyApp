@@ -1,31 +1,30 @@
 package com.example.lendlyapp.navigation
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.lendlyapp.ui.screens.auth.LoginScreen
 import com.example.lendlyapp.ui.screens.auth.SplashScreen
+import com.example.lendlyapp.ui.screens.cashin.CashInAmountScreen
+import com.example.lendlyapp.ui.screens.cashin.CashInOnlineScreen
+import com.example.lendlyapp.ui.screens.cashin.CashInOverTheCounterScreen
+import com.example.lendlyapp.ui.screens.cashin.CashInScreen
+import com.example.lendlyapp.ui.screens.cashin.SuccessfulTransactionScreen
 import com.example.lendlyapp.ui.screens.onboarding.OnboardingScreen
-import com.example.lendlyapp.ui.screens.register.VerifyPhoneScreen
-import com.example.lendlyapp.ui.screens.register.SmsVerificationScreen
-import com.example.lendlyapp.ui.screens.register.ProfileDetailScreen
 import com.example.lendlyapp.ui.screens.register.CreatePasswordScreen
 import com.example.lendlyapp.ui.screens.register.DoneScreen
-import com.example.lendlyapp.ui.screens.register.IdVerificationScreen
 import com.example.lendlyapp.ui.screens.register.FaceRecognitionScreen
+import com.example.lendlyapp.ui.screens.register.IdVerificationScreen
+import com.example.lendlyapp.ui.screens.register.ProfileDetailScreen
 import com.example.lendlyapp.ui.screens.register.SignatureScreen
+import com.example.lendlyapp.ui.screens.register.SmsVerificationScreen
 import com.example.lendlyapp.ui.screens.register.VerifiedScreen
+import com.example.lendlyapp.ui.screens.register.VerifyPhoneScreen
 import com.example.lendlyapp.viewmodel.RegisterViewModel
-import com.example.lendlyapp.ui.theme.FigmaDarkBg
-import com.example.lendlyapp.ui.theme.FigmaDarkText
 
 /**
  * Root navigation graph for LendlyApp.
@@ -207,8 +206,71 @@ fun AppNavigation() {
 
         // ── Home ─────────────────────────────────────────────────────────────
         composable(AppDestination.Home.route) {
-            // Replace with HomeScreen composable once implemented.
-            MainScaffold()
+            MainScaffold(
+                onNavigateToCashIn = { navController.navigate(AppDestination.CashIn.route) }
+            )
+        }
+
+        // ── Cash In ───────────────────────────────────────────────────────────
+        composable(AppDestination.CashIn.route) {
+            CashInScreen(
+                onBack = { navController.popBackStack() },
+                onNavigateToOnline = { navController.navigate(AppDestination.CashInOnline.route) },
+                onNavigateToOverTheCounter = { navController.navigate(AppDestination.CashInOverTheCounter.route) },
+            )
+        }
+
+        composable(AppDestination.CashInOnline.route) {
+            CashInOnlineScreen(
+                onBack = { navController.popBackStack() },
+                onNavigateToAmount = { bankName ->
+                    navController.navigate(AppDestination.CashInAmount.createRoute(bankName))
+                },
+            )
+        }
+
+        composable(AppDestination.CashInOverTheCounter.route) {
+            CashInOverTheCounterScreen(
+                onBack = { navController.popBackStack() },
+                onNavigateToAmount = { bankName ->
+                    navController.navigate(AppDestination.CashInAmount.createRoute(bankName))
+                },
+            )
+        }
+
+        composable(
+            route = AppDestination.CashInAmount.route,
+            arguments = listOf(navArgument("bankName") { type = NavType.StringType }),
+        ) { backStackEntry ->
+            val bankName = backStackEntry.arguments?.getString("bankName") ?: ""
+            CashInAmountScreen(
+                bankName = bankName,
+                onBack = { navController.popBackStack() },
+                onNext = { amount ->
+                    navController.navigate(AppDestination.SuccessfulTransaction.createRoute(bankName, amount))
+                },
+            )
+        }
+
+        composable(
+            route = AppDestination.SuccessfulTransaction.route,
+            arguments = listOf(
+                navArgument("partnerName") { type = NavType.StringType },
+                navArgument("amount") { type = NavType.StringType },
+            ),
+        ) { backStackEntry ->
+            val partnerName = backStackEntry.arguments?.getString("partnerName") ?: ""
+            val amount = backStackEntry.arguments?.getString("amount") ?: ""
+            SuccessfulTransactionScreen(
+                partnerName = partnerName,
+                amount = amount,
+                onClose = {
+                    navController.navigate(AppDestination.Home.route) { popUpTo(0) { inclusive = true } }
+                },
+                onDone = {
+                    navController.navigate(AppDestination.Home.route) { popUpTo(0) { inclusive = true } }
+                },
+            )
         }
     }
 }

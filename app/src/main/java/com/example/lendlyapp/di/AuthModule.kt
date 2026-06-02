@@ -10,7 +10,15 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
+import com.example.lendlyapp.core.ApiConfig
+import com.example.lendlyapp.core.AuthInterceptor
+import com.example.lendlyapp.shared.LendlyApiService
+
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -25,7 +33,6 @@ abstract class AuthRepositoryModule {
 object AuthModule {
     @Provides
     @Singleton
-    fun provideUserPreferences(
-        @ApplicationContext context: Context,
-    ): UserPreferences = UserPreferences(context)
+    fun provideLendlyApiService(retrofit: Retrofit): LendlyApiService =
+        retrofit.create(LendlyApiService::class.java)
 }
