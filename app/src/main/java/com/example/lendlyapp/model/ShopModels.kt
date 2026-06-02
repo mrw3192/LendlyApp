@@ -44,6 +44,29 @@ data class BrandResponse(
     val logo: String,
 )
 
+// ─── Mapping ─────────────────────────────────────────────────────────────────
+
+fun ProductResponse.toDomain() = Product(
+    id                = id,
+    name              = name,
+    shortName         = name.take(14),
+    imageAsset        = image,
+    monthlyPayment    = monthlyInstallment,
+    totalPrice        = price,
+    category          = category,
+    brand             = brand,
+    installmentMonths = installmentMonths,
+    currency          = when (currency.uppercase()) {
+        "PHP" -> "₱"
+        "USD" -> "$"
+        else  -> currency
+    },
+    isAvailable       = isAvailable,
+    description       = description ?: "",
+    rating            = rating,
+    reviewCount       = reviewCount,
+)
+
 // ─── Domain models ────────────────────────────────────────────────────────────
 
 data class ShopCategory(val id: String, val name: String, val icon: String)

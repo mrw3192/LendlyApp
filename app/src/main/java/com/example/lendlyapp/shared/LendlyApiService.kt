@@ -8,9 +8,9 @@ import com.example.lendlyapp.model.LoansApiResponse
 import com.example.lendlyapp.model.RegisterRequest
 import com.example.lendlyapp.model.RegisterResponse
 import com.example.lendlyapp.model.ShopResponse
+
 import com.example.lendlyapp.model.TransactionsApiResponse
 import com.example.lendlyapp.model.UserApiResponse
-import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -37,5 +37,5 @@ interface LendlyApiService {
     suspend fun getTransactions(): TransactionsApiResponse
 
     @GET("products")
-    suspend fun getShopData(): Response<ShopResponse>
+    suspend fun getShopData(): ShopResponse
 }

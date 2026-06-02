@@ -2,7 +2,7 @@ package com.example.lendlyapp.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.lendlyapp.data.repository.ProductRepository
+import com.example.lendlyapp.model.toDomain
 import com.example.lendlyapp.shared.LendlyApiService
 import com.example.lendlyapp.ui.screens.home.HomeData
 import com.example.lendlyapp.ui.screens.home.HomeUiState
@@ -18,7 +18,6 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val apiService: LendlyApiService,
-    private val productRepository: ProductRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
@@ -37,12 +36,12 @@ class HomeViewModel @Inject constructor(
                 coroutineScope {
                     val userDef  = async { apiService.getUser(userId) }
                     val loansDef = async { apiService.getLoans() }
-                    val shopDef  = async { productRepository.getShopData() }
+                    val shopDef  = async { apiService.getShopData() }
 
                     val user     = userDef.await().user
                         ?: throw Exception("User data unavailable")
                     val loans    = loansDef.await().loans
-                    val products = shopDef.await().getOrThrow().products
+                    val products = shopDef.await().products.map { it.toDomain() }
 
                     _uiState.value = HomeUiState.Success(
                         HomeData(

@@ -3,8 +3,6 @@ package com.example.lendlyapp.di
 import com.example.lendlyapp.core.ApiConfig
 import com.example.lendlyapp.core.ApiKeyInterceptor
 import com.example.lendlyapp.core.AuthInterceptor
-import com.example.lendlyapp.data.repository.ProductRepository
-import com.example.lendlyapp.data.repository.ProductRepositoryImpl
 import com.example.lendlyapp.shared.AuthApi
 import com.example.lendlyapp.shared.LendlyApiService
 import dagger.Module
@@ -52,9 +50,4 @@ object NetworkModule {
         return retrofit.create(AuthApi::class.java)
     }
 
-    @Provides
-    @Singleton
-    fun provideProductRepository(api: LendlyApiService): ProductRepository {
-        return ProductRepositoryImpl(api)
-    }
 }
