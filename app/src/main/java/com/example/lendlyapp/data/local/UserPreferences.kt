@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
+import dagger.hilt.android.qualifiers.ApplicationContext
 
 // DataStore instance is created once per application context (top-level extension property).
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "lendly_prefs")
@@ -26,11 +27,17 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
  */
 @Singleton
 class UserPreferences @Inject constructor(
-    private val context: Context,
+    @ApplicationContext private val context: Context
 ) {
     companion object {
         val AUTH_TOKEN = stringPreferencesKey("auth_token")
         val HAS_SEEN_ONBOARDING = booleanPreferencesKey("has_seen_onboarding")
+        // Returning User keys
+        val REMEMBERED_USER_ID = androidx.datastore.preferences.core.intPreferencesKey("remembered_user_id")
+        val REMEMBERED_NAME = stringPreferencesKey("remembered_name") // Kept for migration / old logic
+        val REMEMBERED_PHONE = stringPreferencesKey("remembered_phone")
+        val REMEMBERED_EMAIL = stringPreferencesKey("remembered_email")
+        val REMEMBERED_AVATAR = stringPreferencesKey("remembered_avatar")
     }
 
     /** Emits the current auth token, or null if not set. */
@@ -45,6 +52,15 @@ class UserPreferences @Inject constructor(
     val hasSeenOnboarding: Flow<Boolean> = context.dataStore.data.map { prefs ->
         prefs[HAS_SEEN_ONBOARDING] ?: false
     }
+
+    // ── Remembered user flows ───────────────────────────────────────────
+    val rememberedUserId: Flow<Int?> = context.dataStore.data.map { it[REMEMBERED_USER_ID] }
+    
+    // (Legacy) Old flows
+    val rememberedName: Flow<String?> = context.dataStore.data.map { it[REMEMBERED_NAME] }
+    val rememberedPhone: Flow<String?> = context.dataStore.data.map { it[REMEMBERED_PHONE] }
+    val rememberedEmail: Flow<String?> = context.dataStore.data.map { it[REMEMBERED_EMAIL] }
+    val rememberedAvatar: Flow<String?> = context.dataStore.data.map { it[REMEMBERED_AVATAR] }
 
     /** Persists the has-seen-onboarding flag. Called before navigating away from Onboarding. */
     suspend fun setHasSeenOnboarding(seen: Boolean) {
@@ -64,6 +80,35 @@ class UserPreferences @Inject constructor(
     suspend fun clearAuthToken() {
         context.dataStore.edit { prefs ->
             prefs.remove(AUTH_TOKEN)
+        }
+    }
+
+    /** Saves the last-logged-in user ID for the Returning User login variant. */
+    suspend fun saveRememberedUserId(userId: Int) {
+        context.dataStore.edit { prefs ->
+            prefs[REMEMBERED_USER_ID] = userId
+        }
+    }
+
+    /** Saves the last-logged-in user profile for the Returning User login variant. (Legacy) */
+    suspend fun saveRememberedUser(name: String, phone: String, email: String, avatar: String?) {
+        context.dataStore.edit { prefs ->
+            prefs[REMEMBERED_NAME] = name
+            prefs[REMEMBERED_PHONE] = phone
+            prefs[REMEMBERED_EMAIL] = email
+            if (avatar != null) prefs[REMEMBERED_AVATAR] = avatar
+            else prefs.remove(REMEMBERED_AVATAR)
+        }
+    }
+
+    /** Clears the remembered user data (e.g. on explicit logout). */
+    suspend fun clearRememberedUser() {
+        context.dataStore.edit { prefs ->
+            prefs.remove(REMEMBERED_USER_ID)
+            prefs.remove(REMEMBERED_NAME)
+            prefs.remove(REMEMBERED_PHONE)
+            prefs.remove(REMEMBERED_EMAIL)
+            prefs.remove(REMEMBERED_AVATAR)
         }
     }
 }

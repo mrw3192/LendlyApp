@@ -10,8 +10,14 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 
 sealed class OnboardingLayout {
-    data class SingleCta(val outerGap: Dp, val innerGap: Dp) : OnboardingLayout()
-    data class DoubleCta(val outerGap: Dp) : OnboardingLayout()
+    data class SingleCta(
+        val outerGap: Dp,
+        val innerGap: Dp,
+    ) : OnboardingLayout()
+
+    data class DoubleCta(
+        val outerGap: Dp,
+    ) : OnboardingLayout()
 }
 
 data class OnboardingPage(

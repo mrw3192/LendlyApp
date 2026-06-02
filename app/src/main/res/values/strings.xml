@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">LendlyApp</string>
+    <string name="api_key">123456789</string>
+    <string name="api_base_url">https://6d710e79-f4ca-4651-909f-7dd13bd29968.mock.pstmn.io/</string>
 </resources>

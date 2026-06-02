@@ -6,6 +6,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -13,29 +18,50 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.example.lendlyapp.ui.screens.home.HomeScreen
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
+import com.example.lendlyapp.model.Product
 import com.example.lendlyapp.ui.screens.history.HistoryScreen
+import com.example.lendlyapp.ui.screens.home.HomeScreen
 import com.example.lendlyapp.ui.screens.loans.LoanScreen
 import com.example.lendlyapp.ui.screens.profile.ProfileScreen
-import com.example.lendlyapp.model.Product
 import com.example.lendlyapp.ui.screens.shop.ProductDetailScreen
 import com.example.lendlyapp.ui.screens.shop.SearchScreen
 import com.example.lendlyapp.ui.screens.shop.ShopScreen
 import com.example.lendlyapp.ui.shared.BottomNavBar
 import com.example.lendlyapp.ui.shared.BottomNavTab
+import com.example.lendlyapp.ui.shared.LendlyLogo
+import com.example.lendlyapp.ui.shared.LendlyTopBar
+import com.example.lendlyapp.ui.theme.FigmaLightText
 
 @Composable
-fun MainScaffold() {
+fun MainScaffold(onNavigateToCashIn: () -> Unit = {}) {
     var selectedTab by remember { mutableStateOf(BottomNavTab.Home) }
     var shopSelectedProduct by remember { mutableStateOf<Product?>(null) }
     var shopShowSearch by remember { mutableStateOf(false) }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    val showMainTopBar = shopSelectedProduct == null && !shopShowSearch
 
-        // ── Tab content ────────────────────────────────────────────────────────
+    Column(modifier = Modifier.fillMaxSize().statusBarsPadding()) {
+
+        if (showMainTopBar) {
+            LendlyTopBar(
+                onNavigationClick = {},
+                navigationIcon = Icons.Outlined.Person,
+                centerContent = { LendlyLogo(size = DpSize(58.dp, 20.dp)) },
+                trailingContent = {
+                    Icon(
+                        imageVector = Icons.Outlined.Notifications,
+                        contentDescription = null,
+                        tint = FigmaLightText,
+                    )
+                },
+            )
+        }
+
         Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
             when (selectedTab) {
-                BottomNavTab.Home    -> HomeScreen()
+                BottomNavTab.Home    -> HomeScreen(onNavigateToCashIn = onNavigateToCashIn)
                 BottomNavTab.Loan    -> LoanScreen()
                 BottomNavTab.Shop    -> {
                     val selected = shopSelectedProduct
@@ -58,7 +84,7 @@ fun MainScaffold() {
             }
         }
 
-      Column(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(Color.White)

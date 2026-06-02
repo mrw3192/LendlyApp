@@ -13,12 +13,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // enableEdgeToEdge draws content behind status bar and navigation bar.
-        // Each screen manages its own insets / status bar icon colour.
         enableEdgeToEdge()
 
         setContent {
-            // dynamicColor = false → enforces Figma colour tokens on all API levels.
             LendlyAppTheme(dynamicColor = false) {
                 AppNavigation()
             }

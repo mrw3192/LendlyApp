@@ -71,7 +71,6 @@ private fun SplashScreenContent(modifier: Modifier = Modifier) {
             modifier = Modifier.align(Alignment.Center),
             size = DpSize(width = 243.dp, height = 83.dp),
         )
-
     }
 }
 

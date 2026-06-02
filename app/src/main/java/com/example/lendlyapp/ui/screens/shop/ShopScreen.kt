@@ -101,7 +101,6 @@ fun ShopScreen(
     ) {
         item {
             Column {
-                ShopAppBar(onSearchClick = onSearchClick)
                 Spacer(Modifier.height(16.dp))
                 Column(
                     modifier = Modifier.padding(horizontal = 16.dp),
@@ -168,43 +167,6 @@ fun ShopScreen(
                         )
                     }
                 }
-            }
-        }
-    }
-}
-
-// ─── AppBar ───────────────────────────────────────────────────────────────────
-
-@Composable
-private fun ShopAppBar(onSearchClick: () -> Unit = {}) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(64.dp)
-            .padding(horizontal = 4.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Box(
-            modifier = Modifier
-                .size(48.dp)
-                .clip(CircleShape)
-                .clickable { },
-            contentAlignment = Alignment.Center,
-        ) {
-            Icon(imageVector = Icons.Default.Menu, contentDescription = null, tint = FigmaLightText)
-        }
-        Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
-            LendlyLogo(size = DpSize(58.dp, 20.dp))
-        }
-        listOf(Icons.Default.Search, Icons.Default.Favorite, Icons.Default.ShoppingCart).forEachIndexed { index, icon ->
-            Box(
-                modifier = Modifier
-                    .size(48.dp)
-                    .clip(CircleShape)
-                    .clickable { if (index == 0) onSearchClick() },
-                contentAlignment = Alignment.Center,
-            ) {
-                Icon(imageVector = icon, contentDescription = null, tint = FigmaLightText)
             }
         }
     }

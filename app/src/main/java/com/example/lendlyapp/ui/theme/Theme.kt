@@ -10,7 +10,6 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
-// ─── Figma-token–based colour schemes ─────────────────────────────────────────
 
 private val DarkColorScheme = darkColorScheme(
     primary = FigmaNeonGreen,
@@ -35,7 +34,6 @@ private val LightColorScheme = lightColorScheme(
 @Composable
 fun LendlyAppTheme(
   darkTheme: Boolean = isSystemInDarkTheme(),
-  // Set to false so Figma tokens are always used (no Android 12 dynamic colour override).
   dynamicColor: Boolean = false,
   content: @Composable () -> Unit,
 ) {

@@ -101,7 +101,6 @@ fun OnboardingScreen(
             pageIndex = pageIndex,
             pagerState = pagerState,
             onGetStarted = {
-                // Pages 0 & 1: advance to next page
                 scope.launch {
                     pagerState.animateScrollToPage(pageIndex + 1)
                 }
@@ -118,7 +117,6 @@ fun OnboardingScreen(
     }
 }
 
-// ─── Single pager page ─────────────────────────────────────────────────────────
 
 @Composable
 private fun OnboardingPageContent(
@@ -134,7 +132,6 @@ private fun OnboardingPageContent(
         modifier = modifier
             .fillMaxSize()
             .background(FigmaDarkForest),
-        // gap=32dp between illustration section and content section (Figma "Onboarding X-content")
         verticalArrangement = Arrangement.spacedBy(32.dp),
     ) {
         // ── Upper illustration area (Figma Frame 232: FIXED 481dp) ──────────
@@ -142,12 +139,11 @@ private fun OnboardingPageContent(
             modifier = Modifier
                 .height(481.dp)
                 .fillMaxWidth()
-                .clipToBounds(),  // clips the 698dp-wide inner content to the 393dp screen
+                .clipToBounds(),
         ) {
             OnboardingIllustration(page = page, pageIndex = pageIndex)
         }
 
-        // ── Lower content area (339dp — fixed per Figma) ─────────────────────
         OnboardingBottomContent(
             page = page,
             pageIndex = pageIndex,
@@ -157,7 +153,7 @@ private fun OnboardingPageContent(
             onSignUp = onSignUp,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),  // 16dp margin → 361dp effective width for buttons
+                .padding(horizontal = 16.dp),
         )
     }
 }
@@ -259,7 +255,6 @@ private fun OnboardingIllustration(
     }
 }
 
-// ─── Helper data carrier for image positioning ────────────────────────────────
 private data class Quad<A, B, C, D>(val first: A, val second: B, val third: C, val fourth: D)
 
 @Suppress("UNCHECKED_CAST")
@@ -270,11 +265,6 @@ private operator fun <A, B, C, D> Quad<A, B, C, D>.component2() = second
 private operator fun <A, B, C, D> Quad<A, B, C, D>.component3() = third
 @Suppress("UNCHECKED_CAST")
 private operator fun <A, B, C, D> Quad<A, B, C, D>.component4() = fourth
-
-// ─── Floating Decorations ────────────────────────────────────────────────────
-// Simplified approximation of the floating emoji-reaction and balance cards
-// visible in the Figma illustration area.  Exact canvas positions are
-// not available without full sub-frame absolute coordinate extraction.
 
 @Composable
 private fun FloatingDecorations(
@@ -296,7 +286,6 @@ private fun FloatingDecorations(
             )
         }
 
-        // ── Page-specific floating card decorations ────────────────────────
         when (pageIndex) {
             0 -> {
                 Column(
@@ -316,10 +305,9 @@ private fun FloatingDecorations(
                 Column(
                     modifier = Modifier.offset(x = 20.dp, y = 247.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
-                ){ // Nike transaction card — center area
+                ) {
                     TransactionCard(
-                        modifier = Modifier
-                            .padding(start = 2.dp),
+                        modifier = Modifier.padding(start = 2.dp),
                     )
                 }
             }
@@ -327,7 +315,6 @@ private fun FloatingDecorations(
     }
 }
 
-// ─── Floating card sub-composables ────────────────────────────────────────────
 
 @Composable
 private fun EmojiBubble(
@@ -437,7 +424,6 @@ private fun TransactionCard(modifier: Modifier = Modifier) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        // Left — logo circular + nombre
         Row(
             horizontalArrangement = Arrangement.spacedBy(6.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -460,7 +446,6 @@ private fun TransactionCard(modifier: Modifier = Modifier) {
                 color = FigmaMintSplash,
             )
         }
-        // Right — precio + subtítulo
         Column(
             horizontalAlignment = Alignment.End,
             verticalArrangement = Arrangement.spacedBy(2.dp),
@@ -483,14 +468,6 @@ private fun TransactionCard(modifier: Modifier = Modifier) {
     }
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// Bottom Content Section
-// ═══════════════════════════════════════════════════════════════════════════════
-//
-// Total height: 339dp  (Figma Frame 233/234/235)
-// Horizontal padding: 16dp applied by parent → content fills 361dp effective width
-// Layout varies per page — controlled by OnboardingLayout sealed class.
-
 @Composable
 private fun OnboardingBottomContent(
     page: OnboardingPage,
@@ -510,7 +487,6 @@ private fun OnboardingBottomContent(
                 verticalArrangement = Arrangement.spacedBy(layout.outerGap),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                // Frame 169 — title + subtitle
                 Column(
                     verticalArrangement = Arrangement.spacedBy(20.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -519,12 +495,10 @@ private fun OnboardingBottomContent(
                     OnboardingSubtitle(text = page.subtitle)
                 }
 
-                // Frame 223/224 — indicators + button + home
                 Column(
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    // Frame 221/222 — indicators + button
                     Column(
                         verticalArrangement = Arrangement.spacedBy(layout.innerGap),
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -551,10 +525,8 @@ private fun OnboardingBottomContent(
                 verticalArrangement = Arrangement.spacedBy(layout.outerGap),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                // Title only — no subtitle on last page
                 OnboardingTitle(text = page.title)
 
-                // Frame 226 — indicators + buttons + home
                 Column(
                     verticalArrangement = Arrangement.spacedBy(24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -564,23 +536,19 @@ private fun OnboardingBottomContent(
                         pageCount = onboardingPages.size,
                     )
 
-                    // Frame 225 — buttons + home
                     Column(
                         verticalArrangement = Arrangement.spacedBy(16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        // Frame 220 — two CTAs stacked, gap=16dp
                         Column(
                             verticalArrangement = Arrangement.spacedBy(16.dp),
                             modifier = Modifier.fillMaxWidth(),
                         ) {
-                            // "Log In" — secondary / transparent, white text
                             LendlySecondaryButton(
                                 text = "Log In",
                                 onClick = onLogin,
                                 modifier = Modifier.fillMaxWidth(),
                             )
-                            // "Sign up for free" — primary / green
                             LendlyPrimaryButton(
                                 text = "Sign up for free",
                                 onClick = onSignUp,

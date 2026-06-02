@@ -65,6 +65,17 @@ val IllustrationGradientStart = Color(0xFF8FFF85)
 /** #39A0FF — Onboarding illustration gradient end */
 val IllustrationGradientEnd = Color(0xFF39A0FF)
 
+/** #3C6839 — Product price text in shop/home cards */
+val ProductPriceGreen = Color(0xFF3C6839)
+
+/** #1F3701 — Navigation arrow icons in Cash-In option rows */
+val CashInArrowGreen = Color(0xFF1F3701)
+
+/** #ADAAAA — Search bar border (Online Cash-In) */
+val SearchBorderGray = Color(0xFFADAAAA)
+
+/** #E5E2E1 — Divider between BANKS / E-WALLETS sections */
+val SectionDividerGray = Color(0xFFE5E2E1)
 /** #BDF0B3 — Done page "All done!" headline */
 val DoneHeadlineGreen = Color(0xFFBDF0B3)
 
@@ -76,3 +87,12 @@ val OtpLinkTeal = Color(0xFF005046)
 
 /** #1F3701 — Price text in Shop catalog and Product Detail */
 val ShopPriceGreen = Color(0xFF1F3701)
+
+// ─── KYC / Verification screen tokens ───────────────────────────────────────────
+
+/** #1D1B20 — AppBar headline on KYC screens */
+val AppBarHeadline = Color(0xFF1D1B20)
+
+/** #E8F5E9 — Light green tint for the verified card background */
+val VerifiedCardBg = Color(0xFFE8F5E9)
+
