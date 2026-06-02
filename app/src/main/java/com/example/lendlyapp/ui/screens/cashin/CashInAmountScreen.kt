@@ -9,18 +9,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -37,15 +33,17 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.lendlyapp.ui.shared.LendlyTopBar
 import com.example.lendlyapp.ui.theme.FigmaLightBg
 import com.example.lendlyapp.ui.theme.FigmaLightText
 import com.example.lendlyapp.ui.theme.FigmaNeonGreen
 import com.example.lendlyapp.ui.theme.InterFamily
 import com.example.lendlyapp.ui.theme.LendlyAppTheme
-import com.example.lendlyapp.ui.shared.LendlyTopBar
 import com.example.lendlyapp.ui.theme.OnPrimaryGreen
 import com.example.lendlyapp.ui.theme.SectionDividerGray
 import com.example.lendlyapp.ui.theme.SubtitleGray
+
+private const val MAX_LIMIT = 10_000.0
 
 @Composable
 fun CashInAmountScreen(
@@ -54,6 +52,9 @@ fun CashInAmountScreen(
     onNext: (amount: String) -> Unit = {},
 ) {
     var amount by remember { mutableStateOf("") }
+    val numericValue = amount.toDoubleOrNull()
+    val isOverLimit = numericValue != null && numericValue > MAX_LIMIT
+    val isButtonEnabled = amount.isNotEmpty() && numericValue != null && !isOverLimit
 
     Column(
         modifier = Modifier
@@ -89,12 +90,29 @@ fun CashInAmountScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            AmountInputField(amount = amount, onAmountChange = { amount = it })
+            AmountInputField(
+                amount = amount,
+                onAmountChange = { newValue ->
+                    if (isValidDecimalInput(newValue)) amount = newValue
+                },
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            if (isOverLimit) {
+                Text(
+                    text = "Amount exceeds the ₱10,000.00 daily limit",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium,
+                    fontFamily = InterFamily,
+                    color = MaterialTheme.colorScheme.error,
+                )
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "$bankName’s max limit is ₱10,000.00 per day",
+                text = "$bankName's max limit is ₱10,000.00 per day",
                 fontSize = 14.sp,
                 fontWeight = FontWeight.SemiBold,
                 fontFamily = InterFamily,
@@ -109,6 +127,7 @@ fun CashInAmountScreen(
         ) {
             Button(
                 onClick = { onNext(amount) },
+                enabled = isButtonEnabled,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
@@ -125,6 +144,11 @@ fun CashInAmountScreen(
             }
         }
     }
+}
+
+private fun isValidDecimalInput(input: String): Boolean {
+    if (input.isEmpty()) return true
+    return input.matches(Regex("^\\d+(\\.\\d{0,2})?\$"))
 }
 
 @Composable
