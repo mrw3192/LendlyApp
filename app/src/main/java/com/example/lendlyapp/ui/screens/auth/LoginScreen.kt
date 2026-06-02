@@ -75,9 +75,9 @@ fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val email by viewModel.email.collectAsState()
+    val phone by viewModel.phone.collectAsState()
     val password by viewModel.password.collectAsState()
-    val emailError by viewModel.emailError.collectAsState()
+    val phoneError by viewModel.phoneError.collectAsState()
     val passwordError by viewModel.passwordError.collectAsState()
     val isReturningUser by viewModel.isReturningUser.collectAsState()
     val rememberedUser by viewModel.rememberedUser.collectAsState()
@@ -127,15 +127,18 @@ fun LoginScreen(
                     )
                     Spacer(modifier = Modifier.height(24.dp))
                 } else {
-                    // ── Variant A: Email field ──────────────────────────────
+                    // ── Variant A: Phone field ──────────────────────────────
                     LendlyTextField(
-                        label = "Email",
-                        value = email,
-                        onValueChange = { viewModel.onEmailChange(it) },
-                        placeholder = "Enter your email",
-                        isError = emailError != null,
-                        errorMessage = emailError,
-                        onFocusLost = { viewModel.onEmailFocusLost() }
+                        label = "Phone Number",
+                        value = phone,
+                        onValueChange = { viewModel.onPhoneChange(it) },
+                        placeholder = "Enter your phone number",
+                        isError = phoneError != null,
+                        errorMessage = phoneError,
+                        keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
+                            keyboardType = androidx.compose.ui.text.input.KeyboardType.Phone
+                        ),
+                        onFocusLost = { viewModel.onPhoneFocusLost() }
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                 }

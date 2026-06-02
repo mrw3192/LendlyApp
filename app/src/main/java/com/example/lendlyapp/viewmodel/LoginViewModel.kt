@@ -62,11 +62,11 @@ class LoginViewModel @Inject constructor(
 
     // ── Form fields ────────────────────────────────────────────────────────
 
-    private val _email = MutableStateFlow("")
-    val email: StateFlow<String> = _email.asStateFlow()
+    private val _phone = MutableStateFlow("")
+    val phone: StateFlow<String> = _phone.asStateFlow()
 
-    private val _emailError = MutableStateFlow<String?>(null)
-    val emailError: StateFlow<String?> = _emailError.asStateFlow()
+    private val _phoneError = MutableStateFlow<String?>(null)
+    val phoneError: StateFlow<String?> = _phoneError.asStateFlow()
 
     private val _password = MutableStateFlow("")
     val password: StateFlow<String> = _password.asStateFlow()
@@ -74,9 +74,11 @@ class LoginViewModel @Inject constructor(
     private val _passwordError = MutableStateFlow<String?>(null)
     val passwordError: StateFlow<String?> = _passwordError.asStateFlow()
 
-    fun onEmailChange(value: String) { 
-        _email.value = value 
-        _emailError.value = null
+    fun onPhoneChange(value: String) { 
+        if (value.isEmpty() || value.matches(Regex("^\\+?[0-9]*$"))) {
+            _phone.value = value 
+            _phoneError.value = null
+        }
     }
     fun onPasswordChange(value: String) { 
         _password.value = value 
@@ -95,24 +97,41 @@ class LoginViewModel @Inject constructor(
         loadRememberedUser()
     }
 
-    /** Checks DataStore for a remembered user profile. */
+    /** Checks DataStore for a remembered user ID and fetches profile. */
     private fun loadRememberedUser() {
         viewModelScope.launch {
-            val name = userPreferences.rememberedName.first()
-            val phone = userPreferences.rememberedPhone.first()
-            val email = userPreferences.rememberedEmail.first()
-            val avatar = userPreferences.rememberedAvatar.first()
+            val userId = userPreferences.rememberedUserId.first()
+            if (userId != null) {
+                // Fetch from Repository (API + Room cache)
+                val result = authRepository.getUser(userId)
+                result.onSuccess { userDto ->
+                    _rememberedUser.value = RememberedUser(
+                        name = userDto.fullName,
+                        phone = userDto.phone,
+                        email = userDto.email,
+                        avatar = userDto.avatar,
+                    )
+                    _isReturningUser.value = true
+                    // Pre-fill phone from remembered user for the login request
+                    _phone.value = userDto.phone
+                }
+            } else {
+                // Fallback for legacy data (if any) or first install behavior
+                val name = userPreferences.rememberedName.first()
+                val phone = userPreferences.rememberedPhone.first()
+                val email = userPreferences.rememberedEmail.first()
+                val avatar = userPreferences.rememberedAvatar.first()
 
-            if (!name.isNullOrBlank() && !email.isNullOrBlank()) {
-                _rememberedUser.value = RememberedUser(
-                    name = name,
-                    phone = phone ?: "",
-                    email = email,
-                    avatar = avatar,
-                )
-                _isReturningUser.value = true
-                // Pre-fill email from remembered user for the login request
-                _email.value = email
+                if (!name.isNullOrBlank() && !phone.isNullOrBlank()) {
+                    _rememberedUser.value = RememberedUser(
+                        name = name,
+                        phone = phone,
+                        email = email ?: "",
+                        avatar = avatar,
+                    )
+                    _isReturningUser.value = true
+                    _phone.value = phone
+                }
             }
         }
     }
@@ -123,21 +142,21 @@ class LoginViewModel @Inject constructor(
      */
     fun changeUser() {
         _isReturningUser.value = false
-        _email.value = ""
+        _phone.value = ""
         _password.value = ""
     }
 
     // ── Validation ─────────────────────────────────────────────────────────
 
-    private fun isEmailValid(email: String): Boolean {
-        return email.isNotBlank() && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    private fun isPhoneValid(phone: String): Boolean {
+        return phone.isNotBlank() && phone.length >= 6
     }
 
-    fun onEmailFocusLost() {
-        if (_email.value.isBlank()) {
-            _emailError.value = "Email is required"
-        } else if (!isEmailValid(_email.value)) {
-            _emailError.value = "Please enter a valid email address"
+    fun onPhoneFocusLost() {
+        if (_phone.value.isBlank()) {
+            _phoneError.value = "Phone is required"
+        } else if (!isPhoneValid(_phone.value)) {
+            _phoneError.value = "Please enter a valid phone number"
         }
     }
 
@@ -150,19 +169,19 @@ class LoginViewModel @Inject constructor(
     // ── Login action ───────────────────────────────────────────────────────
 
     fun login() {
-        val currentEmail = if (_isReturningUser.value) {
-            _rememberedUser.value?.email?.trim() ?: _email.value.trim()
+        val currentPhone = if (_isReturningUser.value) {
+            _rememberedUser.value?.phone?.trim() ?: _phone.value.trim()
         } else {
-            _email.value.trim()
+            _phone.value.trim()
         }
         val currentPassword = _password.value
 
-        // Validate email
-        if (!isEmailValid(currentEmail)) {
+        // Validate phone
+        if (!isPhoneValid(currentPhone)) {
             if (_isReturningUser.value) {
-                _uiState.value = LoginUiState.Error("Invalid remembered email")
+                _uiState.value = LoginUiState.Error("Invalid remembered phone")
             } else {
-                _emailError.value = "Please enter a valid email address"
+                _phoneError.value = "Please enter a valid phone number"
             }
             return
         }
@@ -176,7 +195,7 @@ class LoginViewModel @Inject constructor(
         // Perform login via repository
         _uiState.value = LoginUiState.Loading
         viewModelScope.launch {
-            val result = authRepository.login(LoginRequest(currentEmail, currentPassword))
+            val result = authRepository.login(LoginRequest(currentPhone, currentPassword))
             result.onSuccess { token ->
                 _uiState.value = LoginUiState.Success(token)
             }.onFailure { error ->

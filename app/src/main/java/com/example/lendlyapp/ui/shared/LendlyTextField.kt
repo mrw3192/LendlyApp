@@ -46,6 +46,7 @@ fun LendlyTextField(
     readOnly: Boolean = false,
     isError: Boolean = false,
     errorMessage: String? = null,
+    keyboardOptions: androidx.compose.foundation.text.KeyboardOptions = androidx.compose.foundation.text.KeyboardOptions.Default,
     onFocusLost: () -> Unit = {},
 ) {
     var hasFocus by remember { mutableStateOf(false) }
@@ -92,6 +93,7 @@ fun LendlyTextField(
             singleLine = singleLine,
             readOnly = readOnly,
             shape = RoundedCornerShape(12.dp),
+            keyboardOptions = keyboardOptions,
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = FigmaNeonGreen,
                 unfocusedBorderColor = SubtitleGray,

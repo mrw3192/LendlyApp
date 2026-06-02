@@ -198,7 +198,7 @@ fun AppNavigation() {
         composable(AppDestination.Done.route) {
             DoneScreen(
                 onNavigateToHome = {
-                    navController.navigate(AppDestination.Home.route) {
+                    navController.navigate(AppDestination.Login.route) {
                         popUpTo(AppDestination.Splash.route) { inclusive = true }
                     }
                 },
