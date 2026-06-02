@@ -12,15 +12,10 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-// ─── HomeViewModel ─────────────────────────────────────────────────────────────
-// Calls GET /users/{id}, GET /loans and GET /products in parallel.
-// All responses are wrapped objects — unwrapped here before emitting to UI.
-//
-// TODO: replace hardcoded "1" with userId stored in UserPreferences after login.
+// Cambiar el "1" hardcodeado con el user id despues de implementar login
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -39,7 +34,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = HomeUiState.Loading
             try {
-                val userId = userPreferences.userId.first() ?: "1"
+                val userId = userPreferences.userId ?: "1"
 
                 coroutineScope {
                     val userDef     = async { apiService.getUser(userId) }
@@ -54,7 +49,6 @@ class HomeViewModel @Inject constructor(
                     _uiState.value = HomeUiState.Success(
                         HomeData(
                             balance = user.availableBalance,
-                            // Only show loans with pending payments
                             unpaidLoans = loans.filter { it.status == "ACTIVE" },
                             recommendedProducts = products,
                         )

@@ -33,15 +33,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.border
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -61,7 +58,6 @@ import com.example.lendlyapp.ui.theme.FigmaLightSurface
 import com.example.lendlyapp.ui.theme.FigmaMintSplash
 import com.example.lendlyapp.ui.theme.FigmaNeonGreen
 import com.example.lendlyapp.ui.theme.FormLabel
-import com.example.lendlyapp.ui.theme.IllustrationGradientEnd
 import com.example.lendlyapp.ui.theme.IllustrationGradientStart
 import com.example.lendlyapp.ui.theme.InterFamily
 import com.example.lendlyapp.ui.theme.MontserratFamily
@@ -146,6 +142,7 @@ private fun OnboardingPageContent(
         )
     }
 }
+
 @Composable
 private fun OnboardingIllustration(
     page: OnboardingPage,
@@ -160,12 +157,7 @@ private fun OnboardingIllustration(
                 .width(674.dp)
                 .height(333.dp)
                 .clip(RoundedCornerShape(12.dp))
-                .blur(5.dp)
-                .background(
-                    brush = Brush.horizontalGradient(
-                        colors = listOf(IllustrationGradientStart, IllustrationGradientEnd),
-                    ),
-                )
+                .background(IllustrationGradientStart)
                 .border(
                     width = 0.43.dp,
                     color = Color.White.copy(alpha = 0.41f),
@@ -194,8 +186,7 @@ private fun OnboardingIllustration(
             modifier = Modifier
                 .offset(x = imgOffsetX, y = imgOffsetY)
                 .size(width = imgW, height = imgH)
-                .clip(RoundedCornerShape(8.dp))
-                .then(if (pageIndex == 0) Modifier.graphicsLayer { scaleX = -1f } else Modifier),
+                .clip(RoundedCornerShape(8.dp)),
         )
 
         FloatingDecorations(page = page, pageIndex = pageIndex)
@@ -228,7 +219,6 @@ private fun OnboardingIllustration(
                 .padding(top = 44.dp, start = 16.dp),
             verticalArrangement = Arrangement.spacedBy(32.dp),
         ) {
-            // Lendly Logo — small variant (116×40dp per Figma)
             LendlyLogo(
                 size = DpSize(width = 116.dp, height = 40.dp),
                 color = FigmaNeonGreen,
@@ -263,7 +253,6 @@ private fun FloatingDecorations(
                     .padding(top = 100.dp, end = 32.dp),
             )
         }
-        //
         if (page.emojiCards.size >= 2) {
             EmojiBubble(
                 emoji = page.emojiCards[1],
@@ -303,7 +292,6 @@ private fun FloatingDecorations(
     }
 }
 
-// ─── Floating card sub-composables ────────────────────────────────────────────
 
 @Composable
 private fun EmojiBubble(
@@ -335,11 +323,6 @@ private fun EmojiBubble(
 
 @Composable
 private fun LoanSuccessCard(modifier: Modifier = Modifier) {
-    // Figma nodos 189:3693 / 189:3673 — Frame 19 (hijo):
-    //   backgroundColor=rgba(1,1,1,0.27), cornerRadius=6.24dp, padding=8.32dp
-    //   Frame 18 (HORIZONTAL): itemSpacing=3.12dp
-    //   stroke: white opacity=0.51, weight=0.52
-    //   Hijos: avatar (d6c8be → avatar.png) + "Loan Successful" (#E5F5EA) + "+ ₱ 2,000.00" (verde)
     Row(
         modifier = modifier
             .background(
@@ -622,6 +605,7 @@ fun PageIndicatorDots(
     }
 }
 
+
 @Composable
 fun LendlyPrimaryButton(
     text: String,
@@ -646,6 +630,7 @@ fun LendlyPrimaryButton(
         )
     }
 }
+
 
 @Composable
 fun LendlySecondaryButton(
@@ -675,6 +660,7 @@ fun LendlySecondaryButton(
         )
     }
 }
+
 
 @Preview(showBackground = true, widthDp = 393, heightDp = 852)
 @Composable

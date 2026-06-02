@@ -7,11 +7,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.navigation3.runtime.entryProvider
-import androidx.navigation3.runtime.rememberNavBackStack
-import androidx.navigation3.ui.NavDisplay
-import com.example.lendlyapp.ui.theme.FigmaDarkBg
-import com.example.lendlyapp.ui.theme.FigmaDarkText
+import androidx.navigation.NavController
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.lendlyapp.ui.screens.auth.SplashScreen
 import com.example.lendlyapp.ui.screens.cashin.CashInAmountScreen
 import com.example.lendlyapp.ui.screens.cashin.CashInOnlineScreen
@@ -19,106 +20,101 @@ import com.example.lendlyapp.ui.screens.cashin.CashInOverTheCounterScreen
 import com.example.lendlyapp.ui.screens.cashin.CashInScreen
 import com.example.lendlyapp.ui.screens.cashin.SuccessfulTransactionScreen
 import com.example.lendlyapp.ui.screens.onboarding.OnboardingScreen
+import com.example.lendlyapp.ui.theme.FigmaDarkBg
+import com.example.lendlyapp.ui.theme.FigmaDarkText
 
 @Composable
 fun AppNavigation() {
-    val backStack = rememberNavBackStack(SplashRoute)
+    val navController = rememberNavController()
 
-    NavDisplay(
-        backStack = backStack,
-        onBack = { backStack.removeLastOrNull() },
-        entryProvider = entryProvider {
+    NavHost(navController = navController, startDestination = AppDestination.Splash.route) {
 
-            entry<SplashRoute> {
-                SplashScreen(
-                    onNavigateToOnboarding = {
-                        navigateClearingStack(backStack, OnboardingRoute)
-                    },
-                    onNavigateToLogin = {
-                        navigateClearingStack(backStack, LoginRoute)
-                    },
-                    onNavigateToHome = {
-                        navigateClearingStack(backStack, HomeRoute)
-                    },
-                )
-            }
+        composable(AppDestination.Splash.route) {
+            SplashScreen(
+                onNavigateToOnboarding = { navController.navigateSingle(AppDestination.Onboarding.route) },
+                onNavigateToLogin      = { navController.navigateSingle(AppDestination.Login.route) },
+                onNavigateToHome       = { navController.navigateSingle(AppDestination.Home.route) },
+            )
+        }
 
-            entry<OnboardingRoute> {
-                OnboardingScreen(
-                    onNavigateToLogin = {
-                        navigateClearingStack(backStack, LoginRoute)
-                    },
-                    onNavigateToRegister = {
-                        navigateClearingStack(backStack, RegisterRoute)
-                    },
-                )
-            }
+        composable(AppDestination.Onboarding.route) {
+            OnboardingScreen(
+                onNavigateToLogin    = { navController.navigateSingle(AppDestination.Login.route) },
+                onNavigateToRegister = { navController.navigateSingle(AppDestination.Register.route) },
+            )
+        }
 
-            entry<LoginRoute> {
-                // TODO: Replace with LoginScreen composable once implemented.
-                PlaceholderScreen("Login Screen")
-            }
+        composable(AppDestination.Login.route) {
+            PlaceholderScreen("Login Screen")
+        }
 
-            entry<RegisterRoute> {
-                // TODO: Replace with RegisterScreen composable once implemented.
-                PlaceholderScreen("Register Screen")
-            }
+        composable(AppDestination.Register.route) {
+            PlaceholderScreen("Register Screen")
+        }
 
-            entry<HomeRoute> {
-                MainScaffold(
-                    onNavigateToCashIn = { backStack.add(CashInRoute) },
-                )
-            }
+        composable(AppDestination.Home.route) {
+            MainScaffold(
+                onNavigateToCashIn = { navController.navigate(AppDestination.CashIn.route) },
+            )
+        }
 
-            entry<CashInRoute> {
-                CashInScreen(
-                    onBack = { backStack.removeLastOrNull() },
-                    onNavigateToOnline = { backStack.add(CashInOnlineRoute) },
-                    onNavigateToOverTheCounter = { backStack.add(CashInOverTheCounterRoute) },
-                )
-            }
+        composable(AppDestination.CashIn.route) {
+            CashInScreen(
+                onBack                     = { navController.popBackStack() },
+                onNavigateToOnline         = { navController.navigate(AppDestination.CashInOnline.route) },
+                onNavigateToOverTheCounter = { navController.navigate(AppDestination.CashInOverTheCounter.route) },
+            )
+        }
 
-            entry<CashInOnlineRoute> {
-                CashInOnlineScreen(
-                    onBack = { backStack.removeLastOrNull() },
-                    onNavigateToAmount = { bankName -> backStack.add(CashInAmountRoute(bankName)) },
-                )
-            }
+        composable(AppDestination.CashInOnline.route) {
+            CashInOnlineScreen(
+                onBack             = { navController.popBackStack() },
+                onNavigateToAmount = { bankName -> navController.navigate(AppDestination.CashInAmount.createRoute(bankName)) },
+            )
+        }
 
-            entry<CashInOverTheCounterRoute> {
-                CashInOverTheCounterScreen(
-                    onBack = { backStack.removeLastOrNull() },
-                    onNavigateToAmount = { partnerName -> backStack.add(CashInAmountRoute(partnerName)) },
-                )
-            }
+        composable(AppDestination.CashInOverTheCounter.route) {
+            CashInOverTheCounterScreen(
+                onBack             = { navController.popBackStack() },
+                onNavigateToAmount = { partnerName -> navController.navigate(AppDestination.CashInAmount.createRoute(partnerName)) },
+            )
+        }
 
-            entry<CashInAmountRoute> { route ->
-                CashInAmountScreen(
-                    bankName = route.bankName,
-                    onBack = { backStack.removeLastOrNull() },
-                    onNext = { amount -> backStack.add(SuccessfulTransactionRoute(route.bankName, amount)) },
-                )
-            }
+        composable(
+            route = AppDestination.CashInAmount.route,
+            arguments = listOf(navArgument("bankName") { type = NavType.StringType }),
+        ) { backStackEntry ->
+            val bankName = backStackEntry.arguments?.getString("bankName") ?: ""
+            CashInAmountScreen(
+                bankName = bankName,
+                onBack   = { navController.popBackStack() },
+                onNext   = { amount -> navController.navigate(AppDestination.SuccessfulTransaction.createRoute(bankName, amount)) },
+            )
+        }
 
-            entry<SuccessfulTransactionRoute> { route ->
-                SuccessfulTransactionScreen(
-                    partnerName = route.partnerName,
-                    amount = route.amount,
-                    onClose = { navigateClearingStack(backStack, HomeRoute) },
-                    onDone = { navigateClearingStack(backStack, HomeRoute) },
-                )
-            }
-        },
-    )
+        composable(
+            route = AppDestination.SuccessfulTransaction.route,
+            arguments = listOf(
+                navArgument("partnerName") { type = NavType.StringType },
+                navArgument("amount")      { type = NavType.StringType },
+            ),
+        ) { backStackEntry ->
+            val partnerName = backStackEntry.arguments?.getString("partnerName") ?: ""
+            val amount      = backStackEntry.arguments?.getString("amount") ?: ""
+            SuccessfulTransactionScreen(
+                partnerName = partnerName,
+                amount      = amount,
+                onClose = { navController.navigateSingle(AppDestination.Home.route) },
+                onDone  = { navController.navigateSingle(AppDestination.Home.route) },
+            )
+        }
+    }
 }
 
-private fun navigateClearingStack(
-    backStack: MutableList<androidx.navigation3.runtime.NavKey>,
-    destination: androidx.navigation3.runtime.NavKey,
-) {
-    backStack.add(destination)
-    backStack.subList(0, backStack.size - 1).clear()
+private fun NavController.navigateSingle(route: String) {
+    navigate(route) { popUpTo(0) { inclusive = true } }
 }
+
 @Composable
 private fun PlaceholderScreen(label: String) {
     Box(
