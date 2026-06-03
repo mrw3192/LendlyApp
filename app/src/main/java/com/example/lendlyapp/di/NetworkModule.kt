@@ -4,6 +4,7 @@ import com.example.lendlyapp.core.ApiConfig
 import com.example.lendlyapp.core.ApiKeyInterceptor
 import com.example.lendlyapp.core.AuthInterceptor
 import com.example.lendlyapp.shared.AuthApi
+import com.example.lendlyapp.shared.LendlyApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -48,4 +49,5 @@ object NetworkModule {
     fun provideAuthApi(retrofit: Retrofit): AuthApi {
         return retrofit.create(AuthApi::class.java)
     }
+
 }
