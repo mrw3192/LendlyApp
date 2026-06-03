@@ -55,4 +55,9 @@ object NetworkModule {
         return retrofit.create(AuthApi::class.java)
     }
 
+    @Provides
+    @Singleton
+    fun provideLendlyApiService(retrofit: Retrofit): LendlyApiService {
+        return retrofit.create(LendlyApiService::class.java)
+    }
 }

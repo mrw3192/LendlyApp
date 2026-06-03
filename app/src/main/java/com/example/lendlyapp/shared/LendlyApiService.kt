@@ -2,11 +2,7 @@ package com.example.lendlyapp.shared
 
 import com.example.lendlyapp.model.LoanApplyApiResponse
 import com.example.lendlyapp.model.LoanApplyRequest
-import com.example.lendlyapp.model.LoginRequest
-import com.example.lendlyapp.model.LoginResponse
 import com.example.lendlyapp.model.LoansApiResponse
-import com.example.lendlyapp.model.RegisterRequest
-import com.example.lendlyapp.model.RegisterResponse
 import com.example.lendlyapp.model.ShopResponse
 
 import com.example.lendlyapp.model.TransactionsApiResponse
@@ -17,12 +13,6 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface LendlyApiService {
-
-    @POST("auth/login")
-    suspend fun login(@Body request: LoginRequest): LoginResponse
-
-    @POST("auth/create")
-    suspend fun register(@Body request: RegisterRequest): RegisterResponse
 
     @GET("users/{id}")
     suspend fun getUser(@Path("id") userId: String): UserApiResponse

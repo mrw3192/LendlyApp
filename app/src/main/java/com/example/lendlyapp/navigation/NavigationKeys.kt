@@ -33,4 +33,8 @@ sealed class AppDestination(val route: String) {
     data object LoanForm : AppDestination("loan_form")
     data object LoanActive : AppDestination("loan_active")
     data object LoanSuccess : AppDestination("loan_success")
+    // ─── Manage Module ────────────────────────────────────────────────────────
+    data object EditProfile : AppDestination("edit_profile")
+    data object CreditScore : AppDestination("credit_score")
+    data object ProfileDone : AppDestination("profile_done")
 }
