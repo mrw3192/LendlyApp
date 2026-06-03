@@ -124,25 +124,6 @@ private fun HistoryContent(
             }
         }
 
-    val todayKey = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
-    val yesterdayKey = Calendar.getInstance()
-        .apply { add(Calendar.DAY_OF_YEAR, -1) }
-        .let { SimpleDateFormat("yyyy-MM-dd", Locale.US).format(it.time) }
-
-    val groupedTransactions = filteredTransactions
-        .mapNotNull { tx -> tx.date.toDateKey()?.let { key -> key to tx } }
-        .groupBy { it.first }
-        .entries
-        .sortedByDescending { it.key }
-        .map { (key, pairs) ->
-            val label = when (key) {
-                todayKey     -> "Today"
-                yesterdayKey -> "Yesterday"
-                else         -> key.toDisplayDate()
-            }
-            label to pairs.map { it.second }
-        }
-
     val paidLoans = data.loans.filter { it.status == "PAID" }
 
     Column(
@@ -187,23 +168,21 @@ private fun HistoryContent(
                 }
                 Spacer(modifier = Modifier.height(16.dp))
             }
-            groupedTransactions.forEach { (dateLabel, transactions) ->
-                item {
-                    Text(
-                        text = dateLabel,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Medium,
-                        fontFamily = InterFamily,
-                        color = SubtitleGray,
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                    )
-                }
-                items(transactions) { tx ->
-                    TransactionRow(
-                        transaction = tx,
-                        onClick = { onNavigateToTransactionDetails(tx.id) },
-                    )
-                }
+            item {
+                Text(
+                    text = "Transactions",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium,
+                    fontFamily = InterFamily,
+                    color = SubtitleGray,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                )
+            }
+            items(filteredTransactions.sortedByDescending { it.date }) { tx ->
+                TransactionRow(
+                    transaction = tx,
+                    onClick = { onNavigateToTransactionDetails(tx.id) },
+                )
             }
             if (paidLoans.isNotEmpty()) {
                 item {
@@ -276,7 +255,7 @@ private fun HistoryFilterChip(
 
     Surface(
         onClick = onClick,
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(8.dp),
         color = bg,
         border = BorderStroke(1.dp, borderColor),
         modifier = Modifier.height(32.dp),
@@ -301,9 +280,7 @@ private fun TransactionRow(
 ) {
     val isPositive = transaction.amount > 0
     val icon = if (isPositive) Icons.Default.Add else Icons.Default.ArrowUpward
-    val iconBg = if (isPositive) FigmaMintSplash else Color(0xFFFFE5D3)
-    val iconTint = if (isPositive) FigmaDarkForest else FigmaOrangeAccent
-    val time = transaction.date.toFormattedTime()
+    val timeOrDate = transaction.date.toRelativeTimeOrDate()
     val company = transaction.title.extractPartner()
     val label = transaction.type.toHistoryLabel()
     val amount = String.format(Locale.US, "%,.2f PHP", abs(transaction.amount))
@@ -315,37 +292,49 @@ private fun TransactionRow(
             .padding(horizontal = 16.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(
-            text = time,
-            fontSize = 11.sp,
-            fontFamily = InterFamily,
-            color = SubtitleGray,
-            modifier = Modifier.width(52.dp),
-        )
-        Spacer(modifier = Modifier.width(8.dp))
         Box(
-            modifier = Modifier.size(36.dp).clip(CircleShape).background(iconBg),
+            modifier = Modifier
+                .size(36.dp)
+                .clip(CircleShape)
+                .border(1.dp, SearchBorderGray, CircleShape),
             contentAlignment = Alignment.Center,
         ) {
-            Icon(imageVector = icon, contentDescription = null, tint = iconTint, modifier = Modifier.size(18.dp))
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = FigmaLightText,
+                modifier = Modifier.size(18.dp)
+            )
         }
         Spacer(modifier = Modifier.width(12.dp))
-        Text(
-            text = label,
-            fontSize = 13.sp,
-            fontWeight = FontWeight.Medium,
-            fontFamily = InterFamily,
-            color = FigmaLightText,
-            modifier = Modifier.weight(1f),
-        )
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = timeOrDate,
+                fontSize = 10.sp,
+                fontFamily = InterFamily,
+                color = SubtitleGray
+            )
+            Text(
+                text = label,
+                fontSize = 13.sp,
+                fontWeight = FontWeight.Medium,
+                fontFamily = InterFamily,
+                color = FigmaLightText,
+            )
+        }
         Column(horizontalAlignment = Alignment.End) {
-            Text(text = company, fontSize = 12.sp, fontFamily = InterFamily, color = SubtitleGray)
+            Text(
+                text = company,
+                fontSize = 10.sp,
+                fontFamily = InterFamily,
+                color = SubtitleGray
+            )
             Text(
                 text = amount,
                 fontSize = 13.sp,
-                fontWeight = FontWeight.SemiBold,
+                fontWeight = FontWeight.Medium,
                 fontFamily = InterFamily,
-                color = if (isPositive) ProductPriceGreen else FigmaLightText,
+                color = FigmaLightText,
             )
         }
     }
@@ -360,13 +349,27 @@ private fun LoanRow(loan: Loan) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
-            modifier = Modifier.size(36.dp).clip(CircleShape).background(FigmaMintSplash),
+            modifier = Modifier
+                .size(36.dp)
+                .clip(CircleShape)
+                .border(1.dp, SearchBorderGray, CircleShape),
             contentAlignment = Alignment.Center,
         ) {
-            Icon(Icons.Default.Check, contentDescription = null, tint = FigmaDarkForest, modifier = Modifier.size(18.dp))
+            Icon(
+                imageVector = Icons.Default.Check,
+                contentDescription = null,
+                tint = FigmaLightText,
+                modifier = Modifier.size(18.dp)
+            )
         }
         Spacer(modifier = Modifier.width(12.dp))
         Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = "02/08/2024",
+                fontSize = 10.sp,
+                fontFamily = InterFamily,
+                color = SubtitleGray
+            )
             Text(
                 text = loan.purpose.ifEmpty { loan.companyName },
                 fontSize = 13.sp,
@@ -374,15 +377,22 @@ private fun LoanRow(loan: Loan) {
                 fontFamily = InterFamily,
                 color = FigmaLightText,
             )
-            Text(text = loan.companyName, fontSize = 12.sp, fontFamily = InterFamily, color = SubtitleGray)
         }
-        Text(
-            text = loan.status.lowercase().replaceFirstChar { it.uppercase() },
-            fontSize = 12.sp,
-            fontWeight = FontWeight.SemiBold,
-            fontFamily = InterFamily,
-            color = ProductPriceGreen,
-        )
+        Column(horizontalAlignment = Alignment.End) {
+            Text(
+                text = loan.companyName,
+                fontSize = 10.sp,
+                fontFamily = InterFamily,
+                color = SubtitleGray
+            )
+            Text(
+                text = loan.status.lowercase().replaceFirstChar { it.uppercase() },
+                fontSize = 13.sp,
+                fontWeight = FontWeight.Medium,
+                fontFamily = InterFamily,
+                color = FigmaLightText,
+            )
+        }
     }
 }
 
@@ -393,11 +403,17 @@ private fun String.toDateKey(): String? = try {
     SimpleDateFormat("yyyy-MM-dd", Locale.US).format(parsed)
 } catch (e: Exception) { null }
 
-private fun String.toFormattedTime(): String = try {
+private fun String.toRelativeTimeOrDate(): String = try {
     val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US)
     sdf.isLenient = false
     val parsed = sdf.parse(this) ?: return ""
-    SimpleDateFormat("h:mm a", Locale.US).format(parsed)
+    val now = Date()
+    val diffMs = now.time - parsed.time
+    if (diffMs < 24L * 60 * 60 * 1000 && diffMs >= 0) {
+        SimpleDateFormat("h:mm a", Locale.US).format(parsed)
+    } else {
+        SimpleDateFormat("MM/dd/yyyy", Locale.US).format(parsed)
+    }
 } catch (e: Exception) { "" }
 
 private fun String.toDisplayDate(): String = try {

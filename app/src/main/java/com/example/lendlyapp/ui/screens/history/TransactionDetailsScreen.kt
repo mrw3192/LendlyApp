@@ -38,11 +38,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.lendlyapp.model.Transaction
 import com.example.lendlyapp.ui.shared.LendlyTopBar
+import com.example.lendlyapp.ui.theme.FigmaDarkForest
 import com.example.lendlyapp.ui.theme.FigmaLightBg
 import com.example.lendlyapp.ui.theme.FigmaLightText
 import com.example.lendlyapp.ui.theme.FigmaNeonGreen
@@ -102,7 +104,8 @@ fun TransactionDetailsScreen(
 private fun TransactionDetailsContent(transaction: Transaction) {
     val isPositive = transaction.amount > 0
     val icon = if (isPositive) Icons.Default.Add else Icons.Default.ArrowUpward
-    val iconBg = if (isPositive) FigmaNeonGreen else FigmaOrangeAccent
+    val iconBg = FigmaNeonGreen
+    val iconTint = FigmaDarkForest
     val partner = transaction.title.extractPartner()
     val directionLabel = if (isPositive) "From" else "To"
     val typeLabel = transaction.type.toDetailsLabel()
@@ -125,7 +128,7 @@ private fun TransactionDetailsContent(transaction: Transaction) {
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                tint = Color.White,
+                tint = iconTint,
                 modifier = Modifier.size(32.dp),
             )
         }
@@ -144,7 +147,7 @@ private fun TransactionDetailsContent(transaction: Transaction) {
         Spacer(modifier = Modifier.height(12.dp))
         Box(
             modifier = Modifier
-                .border(1.dp, SubtitleGray, RoundedCornerShape(16.dp))
+                .border(1.dp, SubtitleGray, RoundedCornerShape(8.dp))
                 .padding(horizontal = 12.dp, vertical = 4.dp),
         ) {
             Text(text = chipLabel, fontSize = 12.sp, fontFamily = InterFamily, color = FigmaLightText)
@@ -165,13 +168,18 @@ private fun TransactionDetailsContent(transaction: Transaction) {
                     color = FigmaLightText,
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-                DetailRow(label = "Date & Time", value = formattedDate)
-                HorizontalDivider(color = SectionDividerGray, modifier = Modifier.padding(vertical = 12.dp))
+                DetailRow(label = "Fee", value = "₱0.00", valueColor = SubtitleGray)
+                Spacer(modifier = Modifier.height(16.dp))
+                DetailRow(label = "Date & Time", value = formattedDate, valueColor = SubtitleGray)
+                Spacer(modifier = Modifier.height(16.dp))
                 DetailRow(
                     label = "Transaction Number",
-                    value = transaction.referenceNumber,
+                    value = "#${transaction.referenceNumber}",
                     valueColor = OtpLinkTeal,
+                    isUnderlined = true
                 )
+                Spacer(modifier = Modifier.height(16.dp))
+                HorizontalDivider(color = SectionDividerGray, modifier = Modifier.padding(vertical = 8.dp))
             }
         }
         Spacer(modifier = Modifier.height(32.dp))
@@ -199,13 +207,21 @@ private fun DetailRow(
     label: String,
     value: String,
     valueColor: Color = FigmaLightText,
+    isUnderlined: Boolean = false,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Text(text = label, fontSize = 14.sp, fontFamily = InterFamily, color = SubtitleGray)
-        Text(text = value, fontSize = 14.sp, fontFamily = InterFamily, color = valueColor)
+        Text(
+            text = value,
+            fontSize = 14.sp,
+            fontFamily = InterFamily,
+            color = valueColor,
+            fontWeight = if (isUnderlined) FontWeight.SemiBold else FontWeight.Normal,
+            textDecoration = if (isUnderlined) TextDecoration.Underline else TextDecoration.None
+        )
     }
 }
 

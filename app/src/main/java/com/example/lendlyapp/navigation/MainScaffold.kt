@@ -46,6 +46,8 @@ import com.example.lendlyapp.ui.shared.LendlyTopBar
 import com.example.lendlyapp.ui.theme.FigmaLightText
 import com.example.lendlyapp.viewmodel.MainViewModel
 
+import androidx.compose.runtime.saveable.rememberSaveable
+
 @Composable
 fun MainScaffold(
     navController: NavController,
@@ -54,7 +56,7 @@ fun MainScaffold(
     viewModel: MainViewModel = hiltViewModel(),
 ) {
     val avatarUrl by viewModel.avatarUrl.collectAsState()
-    var selectedTab by remember { mutableStateOf(BottomNavTab.Home) }
+    var selectedTab by rememberSaveable { mutableStateOf(BottomNavTab.Home) }
     var shopSelectedProduct by remember { mutableStateOf<Product?>(null) }
     var shopShowSearch by remember { mutableStateOf(false) }
     var shopShowFilter by remember { mutableStateOf(false) }
