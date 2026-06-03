@@ -53,7 +53,7 @@ fun LoanInfoScreen(
         LendlyTopBar(
             onNavigationClick = { /* TODO: Profile action */ },
             navigationIcon = Icons.Outlined.Person,
-            titleContent = {
+            centerContent = {
                 LendlyLogo(size = DpSize(width = 58.dp, height = 20.dp))
             },
             trailingContent = {
