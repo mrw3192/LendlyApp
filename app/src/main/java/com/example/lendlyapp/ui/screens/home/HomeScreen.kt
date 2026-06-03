@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -40,7 +38,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -51,6 +48,8 @@ import coil.request.ImageRequest
 import com.example.lendlyapp.model.Loan
 import com.example.lendlyapp.model.Product
 import com.example.lendlyapp.ui.shared.LendlyLogo
+import com.example.lendlyapp.ui.shared.ProductCarousel
+import com.example.lendlyapp.ui.shared.ProductCarouselStyle
 import com.example.lendlyapp.ui.theme.FigmaLightBg
 import com.example.lendlyapp.ui.theme.FigmaLightText
 import com.example.lendlyapp.ui.theme.FigmaNeonGreen
@@ -59,7 +58,6 @@ import com.example.lendlyapp.ui.theme.FormLabel
 import com.example.lendlyapp.ui.theme.InterFamily
 import com.example.lendlyapp.ui.theme.LendlyAppTheme
 import com.example.lendlyapp.ui.theme.OnPrimaryGreen
-import com.example.lendlyapp.ui.theme.ProductPriceGreen
 import com.example.lendlyapp.ui.theme.SubtitleGray
 import com.example.lendlyapp.viewmodel.HomeViewModel
 import java.util.Locale
@@ -151,19 +149,11 @@ private fun HomeScreenContent(
         }
 
         Spacer(modifier = Modifier.height(32.dp))
-        SectionHeader(
+        ProductCarousel(
             title = "Recommended For You",
-            modifier = Modifier.padding(horizontal = 16.dp),
+            products = data.recommendedProducts,
+            style = ProductCarouselStyle.Home,
         )
-        Spacer(modifier = Modifier.height(16.dp))
-        LazyRow(
-            contentPadding = PaddingValues(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            items(data.recommendedProducts) { product ->
-                ProductCard(product = product)
-            }
-        }
 
         Spacer(modifier = Modifier.height(24.dp))
     }
@@ -352,61 +342,6 @@ private fun LoanCard(
         }
     }
 }
-
-@Composable
-private fun ProductCard(
-    product: Product,
-    modifier: Modifier = Modifier,
-) {
-    Card(
-        modifier = modifier
-            .width(132.dp)
-            .height(145.dp),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = FigmaLightBg),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-    ) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            Spacer(modifier = Modifier.height(16.dp))
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(product.imageAsset)
-                    .crossfade(true)
-                    .build(),
-                contentDescription = product.name,
-                contentScale = ContentScale.Fit,
-                modifier = Modifier
-                    .size(width = 85.dp, height = 65.dp)
-                    .align(Alignment.CenterHorizontally),
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = product.name,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Medium,
-                fontFamily = InterFamily,
-                color = FormLabel,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-            )
-            Text(
-                text = String.format(Locale.US, "₱%,.0f x %d mo", product.monthlyPayment, product.installmentMonths),
-                fontSize = 11.sp,
-                fontWeight = FontWeight.Medium,
-                fontFamily = InterFamily,
-                color = ProductPriceGreen,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-            )
-        }
-    }
-}
-
 
 @Preview(showBackground = true, widthDp = 393, heightDp = 852)
 @Composable

@@ -13,6 +13,7 @@ data class Loan(
     @SerializedName("nextPaymentLabel") val description: String? = null,
     @SerializedName("lenderLogo")       val lenderLogo: String? = null,
     @SerializedName("status")           val status: String = "",
+    @SerializedName("purpose")          val purpose: String = "",
     // Campos adicionales para compatibilidad con la UI previa
     val monthlyPayment: Double = 0.0,
     val totalToPay: Double = 0.0,

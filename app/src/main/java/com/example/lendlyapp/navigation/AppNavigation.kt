@@ -21,6 +21,7 @@ import com.example.lendlyapp.ui.screens.cashin.CashInOnlineScreen
 import com.example.lendlyapp.ui.screens.cashin.CashInOverTheCounterScreen
 import com.example.lendlyapp.ui.screens.cashin.CashInScreen
 import com.example.lendlyapp.ui.screens.cashin.SuccessfulTransactionScreen
+import com.example.lendlyapp.ui.screens.history.TransactionDetailsScreen
 import com.example.lendlyapp.ui.screens.onboarding.OnboardingScreen
 import com.example.lendlyapp.ui.screens.register.VerifyPhoneScreen
 import com.example.lendlyapp.ui.screens.register.SmsVerificationScreen
@@ -245,7 +246,10 @@ fun AppNavigation() {
         composable(AppDestination.Home.route) {
             MainScaffold(
               navController = navController,
-                onNavigateToCashIn = { navController.navigate(AppDestination.CashIn.route) },               
+                onNavigateToCashIn = { navController.navigate(AppDestination.CashIn.route) },
+                onNavigateToTransactionDetails = { id ->
+                    navController.navigate(AppDestination.TransactionDetails.createRoute(id))
+                },
                 onNavigateToLoanForm = { navController.navigate(AppDestination.LoanForm.route) }
             )
         }
@@ -323,6 +327,15 @@ fun AppNavigation() {
                 onNext = { amount ->
                     navController.navigate(AppDestination.SuccessfulTransaction.createRoute(bankName, amount))
                 },
+            )
+        }
+
+        composable(
+            route = AppDestination.TransactionDetails.route,
+            arguments = listOf(navArgument("transactionId") { type = NavType.StringType }),
+        ) {
+            TransactionDetailsScreen(
+                onBack = { navController.popBackStack() },
             )
         }
 
