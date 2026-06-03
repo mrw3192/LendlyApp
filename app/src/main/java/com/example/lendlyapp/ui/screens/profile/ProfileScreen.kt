@@ -46,22 +46,6 @@ fun ProfileScreen(
             .background(Color.White)
             .verticalScroll(rememberScrollState())
     ) {
-        // Barra Superior Compartida
-        LendlyTopBar(
-            onNavigationClick = { /* Acción perfil */ },
-            navigationIcon = Icons.Outlined.Person,
-            centerContent = { LendlyLogo(size = DpSize(58.dp, 20.dp)) },
-            trailingContent = {
-                IconButton(onClick = {}) {
-                    Icon(
-                        imageVector = Icons.Outlined.Notifications,
-                        contentDescription = null,
-                        tint = FigmaLightText,
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
-            }
-        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
