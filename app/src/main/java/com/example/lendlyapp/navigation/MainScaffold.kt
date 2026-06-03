@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.example.lendlyapp.viewmodel.MainViewModel
 import com.example.lendlyapp.model.Product
 import com.example.lendlyapp.ui.screens.history.HistoryScreen
 import com.example.lendlyapp.ui.screens.home.HomeScreen
@@ -37,25 +36,22 @@ import com.example.lendlyapp.ui.screens.loans.LoanScreen
 import com.example.lendlyapp.ui.screens.profile.ProfileScreen
 import com.example.lendlyapp.ui.screens.shop.ProductDetailScreen
 import com.example.lendlyapp.ui.screens.shop.SearchScreen
-import com.example.lendlyapp.ui.screens.shop.ShopScreen
 import com.example.lendlyapp.ui.screens.shop.ShopFilterScreen
+import com.example.lendlyapp.ui.screens.shop.ShopScreen
 import com.example.lendlyapp.ui.shared.BottomNavBar
 import com.example.lendlyapp.ui.shared.BottomNavTab
 import com.example.lendlyapp.ui.shared.LendlyLogo
 import com.example.lendlyapp.ui.shared.LendlyTopBar
 import com.example.lendlyapp.ui.theme.FigmaLightText
+import com.example.lendlyapp.viewmodel.MainViewModel
 
 @Composable
 fun MainScaffold(
     onNavigateToCashIn: () -> Unit = {},
-<<<<<<< HEAD
     onNavigateToTransactionDetails: (String) -> Unit = {},
-) {
-=======
     viewModel: MainViewModel = hiltViewModel(),
 ) {
     val avatarUrl by viewModel.avatarUrl.collectAsState()
->>>>>>> 08c17d7534fe1fcca90fe057326c1007f7765e39
     var selectedTab by remember { mutableStateOf(BottomNavTab.Home) }
     var shopSelectedProduct by remember { mutableStateOf<Product?>(null) }
     var shopShowSearch by remember { mutableStateOf(false) }
@@ -97,10 +93,6 @@ fun MainScaffold(
             when (selectedTab) {
                 BottomNavTab.Home    -> HomeScreen(onNavigateToCashIn = onNavigateToCashIn)
                 BottomNavTab.Loan    -> LoanScreen()
-<<<<<<< HEAD
-                BottomNavTab.Shop    -> ShopScreen()
-                BottomNavTab.History -> HistoryScreen(onNavigateToTransactionDetails = onNavigateToTransactionDetails)
-=======
                 BottomNavTab.Shop    -> {
                     val selected = shopSelectedProduct
                     when {
@@ -110,7 +102,7 @@ fun MainScaffold(
                         )
                         shopShowFilter -> ShopFilterScreen(
                             onBack = { shopShowFilter = false },
-                            onApply = { shopShowFilter = false }
+                            onApply = { shopShowFilter = false },
                         )
                         shopShowSearch -> SearchScreen(
                             onBack = { shopShowSearch = false },
@@ -119,12 +111,11 @@ fun MainScaffold(
                         else -> ShopScreen(
                             onProductClick = { shopSelectedProduct = it },
                             onSearchClick = { shopShowSearch = true },
-                            onFilterClick = { shopShowFilter = true }
+                            onFilterClick = { shopShowFilter = true },
                         )
                     }
                 }
-                BottomNavTab.History -> HistoryScreen()
->>>>>>> 08c17d7534fe1fcca90fe057326c1007f7765e39
+                BottomNavTab.History -> HistoryScreen(onNavigateToTransactionDetails = onNavigateToTransactionDetails)
                 BottomNavTab.Manage  -> ProfileScreen()
             }
         }

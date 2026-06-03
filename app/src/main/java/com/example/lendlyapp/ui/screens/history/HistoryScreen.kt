@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -28,12 +27,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -48,13 +44,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.lendlyapp.model.Loan
 import com.example.lendlyapp.model.Transaction
-import com.example.lendlyapp.ui.shared.LendlyLogo
 import com.example.lendlyapp.ui.theme.FigmaDarkForest
 import com.example.lendlyapp.ui.theme.FigmaLightText
 import com.example.lendlyapp.ui.theme.FigmaMintSplash
@@ -154,10 +148,8 @@ private fun HistoryContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
-            .statusBarsPadding(),
+            .background(Color.White),
     ) {
-        HistoryTopBar()
         LazyColumn {
             item {
                 Text(
@@ -230,27 +222,6 @@ private fun HistoryContent(
                 }
             }
             item { Spacer(modifier = Modifier.height(24.dp)) }
-        }
-    }
-}
-
-@Composable
-private fun HistoryTopBar() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(56.dp)
-            .padding(horizontal = 4.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        IconButton(onClick = {}, modifier = Modifier.size(48.dp)) {
-            Icon(Icons.Default.Person, contentDescription = null, tint = FigmaLightText, modifier = Modifier.size(24.dp))
-        }
-        Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
-            LendlyLogo(size = DpSize(width = 58.dp, height = 20.dp))
-        }
-        IconButton(onClick = {}, modifier = Modifier.size(48.dp)) {
-            Icon(Icons.Default.Notifications, contentDescription = null, tint = FigmaLightText, modifier = Modifier.size(24.dp))
         }
     }
 }
