@@ -147,6 +147,8 @@ fun AppNavigation() {
         }
 
         // ── KYC Step 1: ID Verification ──────────────────────────────────────
+        // TODO (Figma Fix): Modificamos el flujo de la pantalla de registro/login para un orden apropiado de 
+        // pantallas, dejando para el final las opcionales de KYC (excepto la de done).
         composable(AppDestination.IdVerification.route) {
             IdVerificationScreen(
                 onNextClick = {
@@ -162,18 +164,6 @@ fun AppNavigation() {
         composable(AppDestination.FaceRecognition.route) {
             FaceRecognitionScreen(
                 onNextClick = {
-                    navController.navigate(AppDestination.Signature.route)
-                },
-                onBackClick = {
-                    navController.popBackStack()
-                },
-            )
-        }
-
-        // ── KYC Step 3: Signature ────────────────────────────────────────────
-        composable(AppDestination.Signature.route) {
-            SignatureScreen(
-                onNextClick = {
                     navController.navigate(AppDestination.Verified.route)
                 },
                 onBackClick = {
@@ -182,11 +172,23 @@ fun AppNavigation() {
             )
         }
 
-        // ── KYC Step 4: Verified ─────────────────────────────────────────────
+        // ── KYC Step 4: Signature ────────────────────────────────────────────
+        composable(AppDestination.Signature.route) {
+            SignatureScreen(
+                onNextClick = {
+                    navController.navigate(AppDestination.Done.route)
+                },
+                onBackClick = {
+                    navController.popBackStack()
+                },
+            )
+        }
+
+        // ── KYC Step 3: Verified ─────────────────────────────────────────────
         composable(AppDestination.Verified.route) {
             VerifiedScreen(
                 onNextClick = {
-                    navController.navigate(AppDestination.Done.route)
+                    navController.navigate(AppDestination.Signature.route)
                 },
                 onBackClick = {
                     navController.popBackStack()
@@ -197,6 +199,8 @@ fun AppNavigation() {
         // ── Register Step 5: Done ────────────────────────────────────────────
         composable(AppDestination.Done.route) {
             DoneScreen(
+                // TODO (Figma Fix): Hicimos que luego de crearse la cuenta se vaya a la pantalla 
+                // de login en lugar de ir directamente al home.
                 onNavigateToHome = {
                     navController.navigate(AppDestination.Login.route) {
                         popUpTo(AppDestination.Splash.route) { inclusive = true }

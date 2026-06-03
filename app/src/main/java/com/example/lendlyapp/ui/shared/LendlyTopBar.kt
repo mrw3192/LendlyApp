@@ -1,6 +1,7 @@
 package com.example.lendlyapp.ui.shared
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
@@ -27,7 +28,9 @@ import com.example.lendlyapp.ui.theme.InterFamily
 fun LendlyTopBar(
     onNavigationClick: () -> Unit,
     navigationIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
+    navigationIconContent: (@Composable () -> Unit)? = null,
     title: String = "",
+    centerContent: (@Composable BoxScope.() -> Unit)? = null,
     trailingContent: @Composable RowScope.() -> Unit = { Spacer(Modifier.size(48.dp)) },
 ) {
     Row(
@@ -38,16 +41,22 @@ fun LendlyTopBar(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         IconButton(onClick = onNavigationClick, modifier = Modifier.size(48.dp)) {
-            Icon(
-                imageVector = navigationIcon,
-                contentDescription = null,
-                tint = FigmaLightText,
-                modifier = Modifier.size(24.dp),
-            )
+            if (navigationIconContent != null) {
+                navigationIconContent()
+            } else {
+                Icon(
+                    imageVector = navigationIcon,
+                    contentDescription = null,
+                    tint = FigmaLightText,
+                    modifier = Modifier.size(24.dp),
+                )
+            }
         }
 
         Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
-            if (title.isNotEmpty()) {
+            if (centerContent != null) {
+                centerContent()
+            } else if (title.isNotEmpty()) {
                 Text(
                     text = title,
                     fontSize = 16.sp,

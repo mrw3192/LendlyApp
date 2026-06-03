@@ -2,6 +2,7 @@ package com.example.lendlyapp.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.lendlyapp.model.toDomain
 import com.example.lendlyapp.shared.LendlyApiService
 import com.example.lendlyapp.ui.screens.home.HomeData
 import com.example.lendlyapp.ui.screens.home.HomeUiState
@@ -30,18 +31,17 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = HomeUiState.Loading
             try {
-                // Cambiar el "1" hardcodeado con el user id despues de implementar login
                 val userId = "1"
 
                 coroutineScope {
-                    val userDef     = async { apiService.getUser(userId) }
-                    val loansDef    = async { apiService.getLoans() }
-                    val productsDef = async { apiService.getProducts() }
+                    val userDef  = async { apiService.getUser(userId) }
+                    val loansDef = async { apiService.getLoans() }
+                    val shopDef  = async { apiService.getShopData() }
 
                     val user     = userDef.await().user
                         ?: throw Exception("User data unavailable")
                     val loans    = loansDef.await().loans
-                    val products = productsDef.await().products
+                    val products = shopDef.await().products.map { it.toDomain() }
 
                     _uiState.value = HomeUiState.Success(
                         HomeData(

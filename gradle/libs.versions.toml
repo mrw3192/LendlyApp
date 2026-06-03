@@ -21,6 +21,7 @@ okhttp = "4.12.0"
 room = "2.6.1"
 coil = "2.6.0"
 datastore = "1.1.1"
+foundation = "1.11.2"
 
 [libraries]
 datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }

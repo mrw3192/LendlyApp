@@ -3,15 +3,18 @@ package com.example.lendlyapp.model
 import com.google.gson.annotations.SerializedName
 
 data class Product(
-    @SerializedName("id")                  val id: String = "",
-    @SerializedName("name")                val name: String = "",
-    @SerializedName("monthlyInstallment")  val price: Double = 0.0,
-    @SerializedName("installmentMonths")   val installments: Int = 12,
-    @SerializedName("image")               val imageUrl: String? = null,
-)
-
-// Wrapper for GET /products
-data class ProductsApiResponse(
-    @SerializedName("success")  val success: Boolean = false,
-    @SerializedName("products") val products: List<Product> = emptyList(),
+    @SerializedName("id")                 val id: String,
+    @SerializedName("name")               val name: String,
+                                          val shortName: String,
+    @SerializedName("image")              val imageAsset: String,
+    @SerializedName("monthlyInstallment") val monthlyPayment: Double,
+    @SerializedName("price")              val totalPrice: Double,
+    @SerializedName("category")           val category: String,
+    @SerializedName("brand")              val brand: String,
+    @SerializedName("installmentMonths")  val installmentMonths: Int,
+    @SerializedName("currency")           val currency: String,
+    @SerializedName("isAvailable")        val isAvailable: Boolean,
+    @SerializedName("description")        val description: String,
+    @SerializedName("rating")             val rating: Double,
+    @SerializedName("reviewCount")        val reviewCount: Int,
 )

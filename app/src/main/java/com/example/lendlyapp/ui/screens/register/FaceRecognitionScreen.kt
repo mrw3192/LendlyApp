@@ -139,6 +139,9 @@ fun FaceRecognitionScreen(
                 contentAlignment = Alignment.Center,
             ) {
                 if (hasCameraPermission) {
+                    // TODO (Figma Fix): La cámara ya se encuentra 100% implementada y funcional con CameraX. 
+                    // Para verla funcionar en el emulador, asegúrate de configurar la cámara frontal ("Front") 
+                    // a "Webcam0" en los ajustes avanzados (Advanced Settings) del AVD en Android Studio.
                     CameraPreview(
                         modifier = Modifier.fillMaxSize(),
                         lensFacing = CameraSelector.LENS_FACING_FRONT

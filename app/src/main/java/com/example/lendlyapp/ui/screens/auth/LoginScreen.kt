@@ -128,6 +128,8 @@ fun LoginScreen(
                     Spacer(modifier = Modifier.height(24.dp))
                 } else {
                     // ── Variant A: Phone field ──────────────────────────────
+                    // TODO (Figma Fix): Agregamos la pantalla de login "vacía" (sin usuario recordado) 
+                    // que no estaba explícitamente en el Figma original (Figma solo mostraba a "John Doe").
                     LendlyTextField(
                         label = "Phone Number",
                         value = phone,
@@ -180,10 +182,12 @@ fun LoginScreen(
                 Spacer(modifier = Modifier.weight(1f))
 
                 // Register link
+                // TODO (Figma Fix): Agregamos la opción de "Sign up" en la pantalla de login, 
+                // ya que no estaba incluida en el diseño original de Figma.
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 16.dp),
+                        .padding(bottom = 88.dp),
                     horizontalArrangement = Arrangement.Center,
                 ) {
                     Text(
@@ -308,6 +312,8 @@ private fun ReturningUserCard(
             }
 
             // "Change" link
+            // TODO (Figma Fix): Modificamos la interacción para que el botón de "Change" 
+            // al lado del usuario recordado vuelva a habilitar el campo de phone number en el login.
             Text(
                 text = "Change",
                 fontFamily = InterFamily,
