@@ -1,7 +1,7 @@
 package com.example.lendlyapp.ui.screens.loans
 
 import androidx.compose.foundation.background
- import androidx.compose.foundation.border
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -95,9 +95,12 @@ fun LoanInfoScreen(
         ) {
             Text(
                 text = "Get This Loan",
+                fontFamily = InterFamily,
                 color = OnPrimaryGreen,
                 fontWeight = FontWeight.SemiBold,
-                fontSize = 14.sp
+                lineHeight = 20.sp,
+                letterSpacing = 0.1.sp,
+                fontSize = 14.sp,
             )
         }
 
@@ -221,10 +224,10 @@ private fun LoanInfoCard(modifier: Modifier = Modifier) {
             .background(FigmaLightBg)
             .padding(24.dp)
     ) {
-        Text("You can borrow up to", fontSize = 16.sp, fontWeight = FontWeight.SemiBold, color = Color.Black)
+        Text(text = "You can borrow up to", fontFamily = InterFamily, fontSize = 16.sp, fontWeight = FontWeight.SemiBold, lineHeight = 24.sp, letterSpacing = 0.15.sp, color = Color.Black)
         Spacer(Modifier.height(4.dp))
-        Text("₱ 30,000.00", fontSize = 32.sp, fontWeight = FontWeight.SemiBold, color = FigmaOliveGreen)
-        Text("*Subject to evaluation", fontSize = 12.sp, fontWeight = FontWeight.Medium, color = SubtitleGray)
+        Text("₱ 30,000.00", fontFamily = MontserratFamily , fontSize = 32.sp, fontWeight = FontWeight.SemiBold, lineHeight = 40.sp , color = FigmaOliveGreen)
+        Text("*Subject to evaluation", fontFamily = InterFamily , fontSize = 12.sp, lineHeight = 16.sp , letterSpacing = 0.5.sp , fontWeight = FontWeight.Medium, color = SubtitleGray)
 
         Spacer(Modifier.height(12.dp))
         HorizontalDivider(color = FigmaLightBg.copy(alpha = 0.8f)) // Or use a specific divider color if available
@@ -235,12 +238,15 @@ private fun LoanInfoCard(modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Loan Details", fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = FigmaOliveGreen)
+            Text("Loan Details", fontFamily = InterFamily , fontSize = 14.sp, fontWeight = FontWeight.SemiBold, lineHeight = 20.sp , letterSpacing = 0.1.sp , color = FigmaOliveGreen)
             Text(
                 text = "What is this?",
+                fontFamily = InterFamily,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = FigmaOliveGreen,
+                lineHeight = 20.sp,
+                letterSpacing = 0.1.sp,
+                color = FigmaGreen,
                 textDecoration = TextDecoration.Underline
             )
         }
@@ -265,9 +271,9 @@ private fun LoanInfoCard(modifier: Modifier = Modifier) {
 @Composable
 private fun LoanStatItem(label: String, value: String, unit: String) {
     Column(horizontalAlignment = Alignment.Start) {
-        Text(label, fontSize = 12.sp, fontWeight = FontWeight.Medium, color = Color.Black)
-        Text(value, fontSize = 28.sp, fontWeight = FontWeight.SemiBold, color = FigmaOliveGreen)
-        Text(unit, fontSize = 11.sp, color = SubtitleGray)
+        Text(label, fontFamily = InterFamily , fontSize = 12.sp, fontWeight = FontWeight.Medium, color = Color.Black)
+        Text(value, fontFamily = MontserratFamily ,fontSize = 28.sp, lineHeight = 36.sp , fontWeight = FontWeight.SemiBold, color = FigmaOliveGreen)
+        Text(unit, fontFamily = InterFamily ,fontSize = 11.sp, color = SubtitleGray)
     }
 }
 
@@ -306,7 +312,9 @@ private fun HowItWorksCard(image: String, title: String, description: String, mo
         AsyncImage(
             model = image, 
             contentDescription = null, 
-            modifier = Modifier.size(100.dp),
+            modifier = Modifier
+                .size(100.dp)
+                .background(FigmaLightBg, CircleShape), // Fondo de respaldo si no carga la imagen
             contentScale = ContentScale.Fit
         )
         Spacer(Modifier.height(12.dp))

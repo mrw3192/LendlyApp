@@ -42,7 +42,6 @@ fun LoanFormScreen(
     val purposes = listOf("Educational", "Medical", "Business", "Personal", "Emergency")
     val plans = listOf(
         Triple("6", "2.99% Interest", "₱ 982.12/mo"),
-        Triple("12", "3.99% Interest", "₱ 510.00/mo")
     )
 
     Scaffold(

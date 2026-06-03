@@ -9,7 +9,9 @@ import androidx.compose.ui.graphics.Color
 val FigmaNeonGreen = Color(0xFF7BF179)
 
 /** #4C662B — Links ("Change", "Forgot"), active borders */
-val FigmaOliveGreen = Color(0xFF4C662B)
+val FigmaOliveGreen = Color(0xFF1F3701)
+
+val FigmaGreen = Color(0xFF4C662B)
 
 /** #002203 — Onboarding background, high-contrast dark surfaces */
 val FigmaDarkForest = Color(0xFF002203)
@@ -21,7 +23,7 @@ val FigmaOliveSeed = Color(0xFF122300)
 val FigmaOrangeAccent = Color(0xFFFD7E14)
 
 /** #FCF8F8 — Light theme background, avatars */
-val FigmaLightBg = Color(0xFFFCF8F8)
+val FigmaLightBg = Color(0xD5E1DB)
 
 /** #FFFFFF — Cards, modals, input fields */
 val FigmaLightSurface = Color(0xFFFFFFFF)
