@@ -27,6 +27,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.lendlyapp.model.Product
@@ -47,6 +48,7 @@ import com.example.lendlyapp.viewmodel.MainViewModel
 
 @Composable
 fun MainScaffold(
+    navController: NavController,
     onNavigateToCashIn: () -> Unit = {},
     onNavigateToTransactionDetails: (String) -> Unit = {},
     viewModel: MainViewModel = hiltViewModel(),
@@ -59,7 +61,9 @@ fun MainScaffold(
 
     val showMainTopBar = shopSelectedProduct == null && !shopShowSearch && !shopShowFilter
 
-    Column(modifier = Modifier.fillMaxSize().statusBarsPadding()) {
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .statusBarsPadding()) {
 
         if (showMainTopBar) {
             LendlyTopBar(
@@ -74,7 +78,9 @@ fun MainScaffold(
                                 .build(),
                             contentDescription = null,
                             contentScale = ContentScale.Crop,
-                            modifier = Modifier.size(28.dp).clip(CircleShape),
+                            modifier = Modifier
+                                .size(28.dp)
+                                .clip(CircleShape),
                         )
                     }
                 } else null,
@@ -89,7 +95,9 @@ fun MainScaffold(
             )
         }
 
-        Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
+        Box(modifier = Modifier
+            .weight(1f)
+            .fillMaxWidth()) {
             when (selectedTab) {
                 BottomNavTab.Home    -> HomeScreen(onNavigateToCashIn = onNavigateToCashIn)
                 BottomNavTab.Loan    -> LoanScreen()
@@ -116,7 +124,10 @@ fun MainScaffold(
                     }
                 }
                 BottomNavTab.History -> HistoryScreen(onNavigateToTransactionDetails = onNavigateToTransactionDetails)
-                BottomNavTab.Manage  -> ProfileScreen()
+                BottomNavTab.Manage  -> ProfileScreen(
+                    onNavigateToEditProfile = { navController.navigate(AppDestination.EditProfile.route) },
+                    onNavigateToCreditScore = { navController.navigate(AppDestination.CreditScore.route) }
+                )
             }
         }
 
