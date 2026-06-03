@@ -1,13 +1,18 @@
 package com.example.lendlyapp.di
 
+import android.content.Context
+import com.example.lendlyapp.auth.AuthRepository
+import com.example.lendlyapp.auth.AuthRepositoryImpl
 import com.example.lendlyapp.core.ApiConfig
 import com.example.lendlyapp.core.ApiKeyInterceptor
 import com.example.lendlyapp.core.AuthInterceptor
+import com.example.lendlyapp.data.local.UserPreferences
 import com.example.lendlyapp.shared.AuthApi
 import com.example.lendlyapp.shared.LendlyApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -28,7 +33,7 @@ object NetworkModule {
             level = HttpLoggingInterceptor.Level.BODY
         }
         return OkHttpClient.Builder()
-            .addInterceptor(ApiKeyInterceptor)
+            .addInterceptor(ApiKeyInterceptor) // Use the object directly
             .addInterceptor(authInterceptor)
             .addInterceptor(loggingInterceptor)
             .build()

@@ -27,6 +27,12 @@ sealed class AppDestination(val route: String) {
     data object FaceRecognition : AppDestination("faceRecognition")
     data object Signature : AppDestination("signature")
     data object Verified : AppDestination("verified")
+
+    // ─── Loan Module ──────────────────────────────────────────────────────────
+    data object LoanInfo : AppDestination("loan_info")
+    data object LoanForm : AppDestination("loan_form")
+    data object LoanActive : AppDestination("loan_active")
+    data object LoanSuccess : AppDestination("loan_success")
     // ─── Manage Module ────────────────────────────────────────────────────────
     data object EditProfile : AppDestination("edit_profile")
     data object CreditScore : AppDestination("credit_score")

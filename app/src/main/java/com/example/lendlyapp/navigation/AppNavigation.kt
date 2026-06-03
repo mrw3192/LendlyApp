@@ -1,6 +1,13 @@
 package com.example.lendlyapp.navigation
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -15,6 +22,9 @@ import com.example.lendlyapp.ui.screens.cashin.CashInOverTheCounterScreen
 import com.example.lendlyapp.ui.screens.cashin.CashInScreen
 import com.example.lendlyapp.ui.screens.cashin.SuccessfulTransactionScreen
 import com.example.lendlyapp.ui.screens.onboarding.OnboardingScreen
+import com.example.lendlyapp.ui.screens.register.VerifyPhoneScreen
+import com.example.lendlyapp.ui.screens.register.SmsVerificationScreen
+import com.example.lendlyapp.ui.screens.register.ProfileDetailScreen
 import com.example.lendlyapp.ui.screens.profile.CreditScoreScreen
 import com.example.lendlyapp.ui.screens.profile.EditProfileScreen
 import com.example.lendlyapp.ui.screens.profile.ProfileSuccessScreen
@@ -27,11 +37,30 @@ import com.example.lendlyapp.ui.screens.register.SignatureScreen
 import com.example.lendlyapp.ui.screens.register.SmsVerificationScreen
 import com.example.lendlyapp.ui.screens.register.VerifiedScreen
 import com.example.lendlyapp.ui.screens.register.VerifyPhoneScreen
+import com.example.lendlyapp.ui.screens.loans.LoanInfoScreen
+import com.example.lendlyapp.ui.screens.loans.LoanFormScreen
+import com.example.lendlyapp.ui.screens.loans.LoanSuccessScreen
+import com.example.lendlyapp.ui.screens.loans.ActiveLoanScreen
 import com.example.lendlyapp.viewmodel.ProfileViewModel
 import com.example.lendlyapp.viewmodel.RegisterViewModel
+import com.example.lendlyapp.viewmodel.LoanViewModel
+import com.example.lendlyapp.ui.theme.FigmaDarkBg
+import com.example.lendlyapp.ui.theme.FigmaDarkText
 
 /**
  * Root navigation graph for LendlyApp.
+ *
+ * Start destination: [SplashRoute]
+ * Navigation flow (SPEC_TECNICO §4):
+ *   Splash ──► Onboarding ──► Login / Register ──► Home
+ *           └──────────────────────────────────────────►
+ *
+ * Registration flow:
+ *   VerifyPhone → SmsVerification → ProfileDetail → CreatePassword → Done → Home
+ *
+ * Back-stack policy: all navigations from Splash / Onboarding clear the
+ * entire back-stack before pushing the new destination, so the user can
+ * never press Back to return to those screens.
  */
 @Composable
 fun AppNavigation() {
@@ -215,8 +244,44 @@ fun AppNavigation() {
         // ── Home ─────────────────────────────────────────────────────────────
         composable(AppDestination.Home.route) {
             MainScaffold(
-                navController = navController,
-                onNavigateToCashIn = { navController.navigate(AppDestination.CashIn.route) }
+              navController = navController,
+                onNavigateToCashIn = { navController.navigate(AppDestination.CashIn.route) },               
+                onNavigateToLoanForm = { navController.navigate(AppDestination.LoanForm.route) }
+            )
+        }
+
+        // ── Loans Module ─────────────────────────────────────────────────────
+        composable(AppDestination.LoanForm.route) {
+            val viewModel: LoanViewModel = hiltViewModel()
+            LoanFormScreen(
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() },
+                onSuccess = {
+                    navController.navigate(AppDestination.LoanSuccess.route) {
+                        popUpTo(AppDestination.Home.route)
+                    }
+                }
+            )
+        }
+
+        composable(AppDestination.LoanSuccess.route) {
+            LoanSuccessScreen(
+                onClose = {
+                    navController.navigate(AppDestination.Home.route) {
+                        popUpTo(AppDestination.Home.route) { inclusive = true }
+                    }
+                },
+                onDone = {
+                    navController.navigate(AppDestination.LoanActive.route) {
+                        popUpTo(AppDestination.Home.route)
+                    }
+                }
+            )
+        }
+
+        composable(AppDestination.LoanActive.route) {
+            ActiveLoanScreen(
+                onBack = { navController.popBackStack() }
             )
         }
 

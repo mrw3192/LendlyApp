@@ -33,6 +33,7 @@ import coil.request.ImageRequest
 import com.example.lendlyapp.viewmodel.MainViewModel
 import com.example.lendlyapp.model.Product
 import com.example.lendlyapp.ui.screens.history.HistoryScreen
+import com.example.lendlyapp.ui.screens.loans.LoanInfoScreen
 import com.example.lendlyapp.ui.screens.home.HomeScreen
 import com.example.lendlyapp.ui.screens.loans.LoanScreen
 import com.example.lendlyapp.ui.screens.profile.ProfileScreen
@@ -50,8 +51,10 @@ import com.example.lendlyapp.ui.theme.FigmaLightText
 fun MainScaffold(
     navController: NavController,
     onNavigateToCashIn: () -> Unit = {},
-    viewModel: MainViewModel = hiltViewModel(),
+    onNavigateToLoanForm: () -> Unit = {},
+  viewModel: MainViewModel = hiltViewModel()
 ) {
+    
     val avatarUrl by viewModel.avatarUrl.collectAsState()
     var selectedTab by remember { mutableStateOf(BottomNavTab.Home) }
     var shopSelectedProduct by remember { mutableStateOf<Product?>(null) }
@@ -99,7 +102,7 @@ fun MainScaffold(
             .fillMaxWidth()) {
             when (selectedTab) {
                 BottomNavTab.Home    -> HomeScreen(onNavigateToCashIn = onNavigateToCashIn)
-                BottomNavTab.Loan    -> LoanScreen()
+                BottomNavTab.Loan    -> LoanInfoScreen(onNavigateToForm = onNavigateToLoanForm)              
                 BottomNavTab.Shop    -> {
                     val selected = shopSelectedProduct
                     when {
