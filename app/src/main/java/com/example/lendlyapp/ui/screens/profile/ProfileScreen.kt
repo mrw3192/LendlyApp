@@ -30,6 +30,9 @@ import com.example.lendlyapp.ui.shared.LendlyTopBar
 import com.example.lendlyapp.ui.theme.*
 import com.example.lendlyapp.viewmodel.ProfileUiState
 import com.example.lendlyapp.viewmodel.ProfileViewModel
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 
 @Composable
 fun ProfileScreen(
@@ -39,6 +42,8 @@ fun ProfileScreen(
     onLogout: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState
+    var showLogoutConfirm by remember { mutableStateOf(false) }
+    var showGoodbye by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -97,14 +102,69 @@ fun ProfileScreen(
         HorizontalDivider(color = FigmaLightBg)
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Mejora implementada: El botón de Logout ya no cierra sesión de inmediato. 
+        // Ahora muestra un cartel de confirmación. Si el usuario acepta, se muestra un
+        // segundo cartel de despedida ("Goodbye") con la paleta verde de la aplicación,
+        // y al aceptar se redirige correctamente a la pantalla de Login.
         ProfileMenuItem(
             icon = Icons.Default.Logout,
             title = "Log Out",
-            onClick = onLogout,
+            onClick = { showLogoutConfirm = true },
             tint = FigmaLightText
         )
 
         Spacer(modifier = Modifier.height(32.dp))
+    }
+
+    if (showLogoutConfirm) {
+        AlertDialog(
+            onDismissRequest = { showLogoutConfirm = false },
+            title = { Text("Log Out", color = FigmaLightText, fontWeight = FontWeight.Bold) },
+            text = { Text("Are you sure you want to log out?", color = SubtitleGray) },
+            containerColor = Color.White,
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showLogoutConfirm = false
+                        showGoodbye = true
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = FigmaNeonGreen)
+                ) {
+                    Text("Yes", color = OnPrimaryGreen)
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showLogoutConfirm = false },
+                    colors = ButtonDefaults.textButtonColors(contentColor = FigmaLightText)
+                ) {
+                    Text("No")
+                }
+            }
+        )
+    }
+
+    if (showGoodbye) {
+        AlertDialog(
+            onDismissRequest = {
+                showGoodbye = false
+                onLogout()
+            },
+            title = { Text("Goodbye!", color = FigmaLightText, fontWeight = FontWeight.Bold) },
+            text = { Text("You have been successfully logged out. See you soon!", color = SubtitleGray) },
+            containerColor = Color.White,
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showGoodbye = false
+                        onLogout()
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = FigmaNeonGreen)
+                ) {
+                    Text("OK", color = OnPrimaryGreen)
+                }
+            }
+        )
     }
 }
 
