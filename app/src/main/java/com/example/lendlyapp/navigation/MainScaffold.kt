@@ -128,7 +128,12 @@ fun MainScaffold(
                 BottomNavTab.History -> HistoryScreen()
                 BottomNavTab.Manage  -> ProfileScreen(
                     onNavigateToEditProfile = { navController.navigate(AppDestination.EditProfile.route) },
-                    onNavigateToCreditScore = { navController.navigate(AppDestination.CreditScore.route) }
+                    onNavigateToCreditScore = { navController.navigate(AppDestination.CreditScore.route) },
+                    onLogout = {
+                        navController.navigate(AppDestination.Login.route) {
+                            popUpTo(AppDestination.Home.route) { inclusive = true }
+                        }
+                    }
                 )
             }
         }
