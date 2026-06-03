@@ -77,6 +77,8 @@ fun SmsVerificationScreen(
                 .padding(horizontal = 16.dp),
         ) {
             // Headline — 28sp SemiBold
+            // TODO (Figma Fix): Modificamos el título. En Figma decía "enter your phone number", 
+            // nosotros lo arreglamos para que diga "Enter the code".
             Text(
                 text = "Enter the code",
                 fontFamily = InterFamily,
