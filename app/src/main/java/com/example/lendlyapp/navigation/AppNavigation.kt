@@ -146,6 +146,8 @@ fun AppNavigation() {
         }
 
         // ── KYC Step 1: ID Verification ──────────────────────────────────────
+        // TODO (Figma Fix): Modificamos el flujo de la pantalla de registro/login para un orden apropiado de 
+        // pantallas, dejando para el final las opcionales de KYC (excepto la de done).
         composable(AppDestination.IdVerification.route) {
             IdVerificationScreen(
                 onNextClick = {
@@ -196,6 +198,8 @@ fun AppNavigation() {
         // ── Register Step 5: Done ────────────────────────────────────────────
         composable(AppDestination.Done.route) {
             DoneScreen(
+                // TODO (Figma Fix): Hicimos que luego de crearse la cuenta se vaya a la pantalla 
+                // de login en lugar de ir directamente al home.
                 onNavigateToHome = {
                     navController.navigate(AppDestination.Login.route) {
                         popUpTo(AppDestination.Splash.route) { inclusive = true }

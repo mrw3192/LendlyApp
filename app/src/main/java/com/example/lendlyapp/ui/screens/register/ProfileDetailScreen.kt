@@ -61,6 +61,9 @@ fun ProfileDetailScreen(
 ) {
     val state by viewModel.state.collectAsState()
 
+    // TODO (Figma Fix): Agregamos validaciones en todos los campos para asegurarnos que se coloquen 
+    // valores correctos. También alertamos (con este diálogo y mensajes de error) 
+    // cuando un campo obligatorio quedó vacío.
     if (state.error != null) {
         LendlyAlertDialog(
             title = "Form Validation",
