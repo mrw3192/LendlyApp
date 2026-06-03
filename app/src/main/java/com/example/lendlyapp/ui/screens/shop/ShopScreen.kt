@@ -66,6 +66,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.lendlyapp.model.Product
 import com.example.lendlyapp.ui.shared.LendlyLogo
+import com.example.lendlyapp.ui.shared.ProductCarousel
+import com.example.lendlyapp.ui.shared.ProductCarouselStyle
 import com.example.lendlyapp.ui.theme.FigmaLightBg
 import com.example.lendlyapp.ui.theme.FigmaLightText
 import com.example.lendlyapp.ui.theme.FigmaNeonGreen
@@ -115,10 +117,10 @@ fun ShopScreen(
         if (categories.isNotEmpty()) item { CategorySection(categories) }
         if (brands.isNotEmpty()) item { BrandsSection(brands) }
         if (featured.isNotEmpty()) {
-            item { ProductSection(title = "Recommended For You", products = featured, onProductClick = onProductClick) }
+            item { ProductCarousel(title = "Recommended For You", products = featured, style = ProductCarouselStyle.Shop, onProductClick = onProductClick) }
         }
         if (bestSellers.isNotEmpty()) {
-            item { ProductSection(title = "Best Sellers", products = bestSellers, onProductClick = onProductClick) }
+            item { ProductCarousel(title = "Best Sellers", products = bestSellers, style = ProductCarouselStyle.Shop, onProductClick = onProductClick) }
         }
         if (uiState is ShopUiState.Loading) {
             item {
@@ -438,60 +440,6 @@ private fun BrandsSection(brands: List<com.example.lendlyapp.model.ShopBrand>) {
                     ) {
                         Text(text = brand.name, fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = FormLabel)
                     }
-                }
-            }
-        }
-    }
-}
-
-// ─── Product Section ──────────────────────────────────────────────────────────
-
-@Composable
-private fun ProductSection(
-    title: String,
-    products: List<Product>,
-    onProductClick: (Product) -> Unit,
-) {
-    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        SectionHeader(title = title)
-        LazyRow(
-            contentPadding = PaddingValues(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            items(products) { product ->
-                Column(
-                    modifier = Modifier
-                        .size(width = 132.dp, height = 145.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(FigmaLightBg)
-                        .clickable { onProductClick(product) }
-                        .padding(horizontal = 12.dp, vertical = 10.dp),
-                ) {
-                    AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(product.imageAsset)
-                            .build(),
-                        contentDescription = product.name,
-                        contentScale = ContentScale.Fit,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f),
-                    )
-                    Text(
-                        text = product.shortName,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        fontFamily = InterFamily,
-                        color = FigmaLightText,
-                        maxLines = 1,
-                    )
-                    Text(
-                        text = "${product.currency}%,.0f × ${product.installmentMonths} mo".format(product.monthlyPayment),
-                        fontSize = 11.sp,
-                        fontFamily = InterFamily,
-                        color = SubtitleGray,
-                        maxLines = 1,
-                    )
                 }
             }
         }
