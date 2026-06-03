@@ -34,7 +34,12 @@ import com.example.lendlyapp.ui.screens.register.SignatureScreen
 import com.example.lendlyapp.ui.screens.register.SmsVerificationScreen
 import com.example.lendlyapp.ui.screens.register.VerifiedScreen
 import com.example.lendlyapp.ui.screens.register.VerifyPhoneScreen
+import com.example.lendlyapp.ui.screens.loans.LoanInfoScreen
+import com.example.lendlyapp.ui.screens.loans.LoanFormScreen
+import com.example.lendlyapp.ui.screens.loans.LoanSuccessScreen
+import com.example.lendlyapp.ui.screens.loans.ActiveLoanScreen
 import com.example.lendlyapp.viewmodel.RegisterViewModel
+import com.example.lendlyapp.viewmodel.LoanViewModel
 import com.example.lendlyapp.ui.theme.FigmaDarkBg
 import com.example.lendlyapp.ui.theme.FigmaDarkText
 
@@ -231,7 +236,43 @@ fun AppNavigation() {
         // ── Home ─────────────────────────────────────────────────────────────
         composable(AppDestination.Home.route) {
             MainScaffold(
-                onNavigateToCashIn = { navController.navigate(AppDestination.CashIn.route) }
+                onNavigateToCashIn = { navController.navigate(AppDestination.CashIn.route) },
+                onNavigateToLoanForm = { navController.navigate(AppDestination.LoanForm.route) }
+            )
+        }
+
+        // ── Loans Module ─────────────────────────────────────────────────────
+        composable(AppDestination.LoanForm.route) {
+            val viewModel: LoanViewModel = hiltViewModel()
+            LoanFormScreen(
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() },
+                onSuccess = {
+                    navController.navigate(AppDestination.LoanSuccess.route) {
+                        popUpTo(AppDestination.Home.route)
+                    }
+                }
+            )
+        }
+
+        composable(AppDestination.LoanSuccess.route) {
+            LoanSuccessScreen(
+                onClose = {
+                    navController.navigate(AppDestination.Home.route) {
+                        popUpTo(AppDestination.Home.route) { inclusive = true }
+                    }
+                },
+                onDone = {
+                    navController.navigate(AppDestination.LoanActive.route) {
+                        popUpTo(AppDestination.Home.route)
+                    }
+                }
+            )
+        }
+
+        composable(AppDestination.LoanActive.route) {
+            ActiveLoanScreen(
+                onBack = { navController.popBackStack() }
             )
         }
 
