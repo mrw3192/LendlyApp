@@ -1,56 +1,30 @@
 package com.example.lendlyapp.navigation
 
-import androidx.navigation3.runtime.NavKey
-import kotlinx.serialization.Serializable
+import android.net.Uri
 
-// ─── App-wide Navigation Route Keys ───────────────────────────────────────────
-// Each object is a serializable NavKey for Navigation 3 (androidx.navigation3).
-// Full navigation graph: AppNavigation.kt → SPEC_TECNICO §4
-
-/** Splash/branding screen — validates session and redirects. */
-@Serializable data object SplashRoute : NavKey
-
-/** First-launch onboarding flow (3 pages via HorizontalPager). */
-@Serializable data object OnboardingRoute : NavKey
-
-/** Login screen — email + password authentication. */
-@Serializable data object LoginRoute : NavKey
-
-// ─── Registration Flow ────────────────────────────────────────────────────────
-/** Registration screen — legacy / generic entry point. */
-@Serializable data object RegisterRoute : NavKey
-
-/** Registration step 1 — verify phone number. */
-@Serializable data object VerifyPhoneRoute : NavKey
-
-/** Registration step 2 — SMS OTP verification. */
-@Serializable data object SmsVerificationRoute : NavKey
-
-/** Registration step 3 — personal details form. */
-@Serializable data object ProfileDetailRoute : NavKey
-
-/** Registration step 4 — create password. */
-@Serializable data object CreatePasswordRoute : NavKey
-
-/** Registration step 5 — success / done page. */
-@Serializable data object DoneRoute : NavKey
-
-// ─── Main Content ─────────────────────────────────────────────────────────────
-/** Home / Dashboard screen — post-auth entry point. */
-@Serializable data object HomeRoute : NavKey
-
-// ─── Loan Module ──────────────────────────────────────────────────────────────
-/** Loan Module — Information and conditions screen. */
-@Serializable data object LoanInfoRoute : NavKey
-
-/** Loan Module — Request form screen. */
-@Serializable data object LoanFormRoute : NavKey
-
-/** Loan Module — Active loan management screen. */
-@Serializable data object ActiveLoanRoute : NavKey
-
-/** Loan Module — Successful transaction feedback. */
-@Serializable data object LoanSuccessRoute : NavKey
-
-// ─── Legacy key — kept to avoid breaking MainScreen during development ─────────
-@Serializable data object Main : NavKey
+sealed class AppDestination(val route: String) {
+    data object Splash : AppDestination("splash")
+    data object Onboarding : AppDestination("onboarding")
+    data object Login : AppDestination("login")
+    data object Register : AppDestination("register")
+    data object Home : AppDestination("home")
+    data object CashIn : AppDestination("cash_in")
+    data object CashInOnline : AppDestination("cash_in_online")
+    data object CashInOverTheCounter : AppDestination("cash_in_over_the_counter")
+    data object CashInAmount : AppDestination("cash_in_amount/{bankName}") {
+        fun createRoute(bankName: String) = "cash_in_amount/${Uri.encode(bankName)}"
+    }
+    data object SuccessfulTransaction : AppDestination("successful_transaction/{partnerName}/{amount}") {
+        fun createRoute(partnerName: String, amount: String) =
+            "successful_transaction/${Uri.encode(partnerName)}/${Uri.encode(amount)}"
+    }
+    data object VerifyPhone : AppDestination("verifyPhone")
+    data object SmsVerification : AppDestination("smsVerification")
+    data object ProfileDetail : AppDestination("profileDetail")
+    data object CreatePassword : AppDestination("createPassword")
+    data object Done : AppDestination("done")
+    data object IdVerification : AppDestination("idVerification")
+    data object FaceRecognition : AppDestination("faceRecognition")
+    data object Signature : AppDestination("signature")
+    data object Verified : AppDestination("verified")
+}

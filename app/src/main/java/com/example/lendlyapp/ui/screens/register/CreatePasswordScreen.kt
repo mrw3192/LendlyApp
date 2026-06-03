@@ -98,6 +98,9 @@ fun CreatePasswordScreen(
                 placeholder = "********",
                 isPassword = true,
                 passwordVisible = passwordVisible,
+                isError = state.passwordError != null,
+                errorMessage = state.passwordError,
+                onFocusLost = { viewModel.onPasswordFocusLost() },
                 trailingIcon = {
                     IconButton(onClick = { passwordVisible = !passwordVisible }) {
                         Icon(

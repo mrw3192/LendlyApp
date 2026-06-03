@@ -8,11 +8,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.example.lendlyapp.R
 
-// ─── Font Families (bundled TTFs in res/font/) ────────────────────────────────
-// Fonts sourced from Google Fonts and bundled locally to avoid runtime network
-// dependency. Files live in app/src/main/res/font/.
-
-/** Montserrat — used for onboarding page titles (32sp ExtraBold) */
 val MontserratFamily = FontFamily(
     Font(R.font.montserrat_regular,   FontWeight.Normal),
     Font(R.font.montserrat_semibold,  FontWeight.SemiBold),
@@ -20,7 +15,6 @@ val MontserratFamily = FontFamily(
     Font(R.font.montserrat_extrabold, FontWeight.ExtraBold),
 )
 
-/** Inter — used for body text, subtitles, and button labels */
 val InterFamily = FontFamily(
     Font(R.font.inter_regular,  FontWeight.Normal),
     Font(R.font.inter_medium,   FontWeight.Medium),
@@ -28,13 +22,6 @@ val InterFamily = FontFamily(
     Font(R.font.inter_bold,     FontWeight.Bold),
 )
 
-// ─── Material 3 Typography ─────────────────────────────────────────────────────
-// Figma text-role mapping:
-//   displaySmall  → onboarding title    (Montserrat 32sp ExtraBold, lh 36sp)
-//   titleMedium   → onboarding subtitle (Inter 22sp Regular, lh 28sp)
-//   labelLarge    → button labels       (Inter 14sp SemiBold, lh 20sp)  ← M3 default for buttons
-//   bodyLarge     → general body copy   (Inter 16sp Normal, lh 24sp)
-//   bodyMedium    → secondary body      (Inter 14sp Normal, lh 20sp)
 
 val Typography = Typography(
     displaySmall = TextStyle(

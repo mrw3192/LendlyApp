@@ -21,7 +21,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -101,6 +105,9 @@ fun ProfileDetailScreen(
                 value = state.firstName,
                 onValueChange = { viewModel.onFirstNameChange(it) },
                 placeholder = "John D.",
+                isError = state.firstNameError != null,
+                errorMessage = state.firstNameError,
+                onFocusLost = { viewModel.onFirstNameFocusLost() }
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -111,6 +118,9 @@ fun ProfileDetailScreen(
                 value = state.lastName,
                 onValueChange = { viewModel.onLastNameChange(it) },
                 placeholder = "Doe",
+                isError = state.lastNameError != null,
+                errorMessage = state.lastNameError,
+                onFocusLost = { viewModel.onLastNameFocusLost() }
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -135,6 +145,8 @@ fun ProfileDetailScreen(
                     onValueChange = { viewModel.onDobDayChange(it) },
                     placeholder = "08",
                     modifier = Modifier.weight(1f),
+                    isError = state.dobError != null,
+                    onFocusLost = { viewModel.onDobFocusLost() }
                 )
                 // Month
                 DatePartField(
@@ -143,6 +155,8 @@ fun ProfileDetailScreen(
                     onValueChange = { viewModel.onDobMonthChange(it) },
                     placeholder = "12",
                     modifier = Modifier.weight(1f),
+                    isError = state.dobError != null,
+                    onFocusLost = { viewModel.onDobFocusLost() }
                 )
                 // Year
                 DatePartField(
@@ -151,6 +165,17 @@ fun ProfileDetailScreen(
                     onValueChange = { viewModel.onDobYearChange(it) },
                     placeholder = "1997",
                     modifier = Modifier.weight(1.5f),
+                    isError = state.dobError != null,
+                    onFocusLost = { viewModel.onDobFocusLost() }
+                )
+            }
+            if (state.dobError != null) {
+                Text(
+                    text = state.dobError!!,
+                    color = androidx.compose.ui.graphics.Color.Red,
+                    fontSize = 12.sp,
+                    fontFamily = InterFamily,
+                    modifier = Modifier.padding(top = 4.dp, start = 8.dp)
                 )
             }
 
@@ -162,6 +187,9 @@ fun ProfileDetailScreen(
                 value = state.address,
                 onValueChange = { viewModel.onAddressChange(it) },
                 placeholder = "Somewhere IN BLOCK 12",
+                isError = state.addressError != null,
+                errorMessage = state.addressError,
+                onFocusLost = { viewModel.onAddressFocusLost() }
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -172,6 +200,9 @@ fun ProfileDetailScreen(
                 value = state.city,
                 onValueChange = { viewModel.onCityChange(it) },
                 placeholder = "Davao City",
+                isError = state.cityError != null,
+                errorMessage = state.cityError,
+                onFocusLost = { viewModel.onCityFocusLost() }
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -182,6 +213,9 @@ fun ProfileDetailScreen(
                 value = state.postalCode,
                 onValueChange = { viewModel.onPostalCodeChange(it) },
                 placeholder = "8000",
+                isError = state.postalCodeError != null,
+                errorMessage = state.postalCodeError,
+                onFocusLost = { viewModel.onPostalCodeFocusLost() }
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -193,6 +227,9 @@ fun ProfileDetailScreen(
                 phoneNumber = state.phone,
                 onPhoneNumberChange = { viewModel.onPhoneChange(it) },
                 label = "Phone Number",
+                isError = state.phoneError != null,
+                errorMessage = state.phoneError,
+                onFocusLost = { viewModel.onPhoneFocusLost() }
             )
 
             // Bottom spacing for scroll
@@ -221,7 +258,11 @@ private fun DatePartField(
     onValueChange: (String) -> Unit,
     placeholder: String,
     modifier: Modifier = Modifier,
+    isError: Boolean = false,
+    onFocusLost: () -> Unit = {},
 ) {
+    var hasFocus by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+
     Column(modifier = modifier) {
         Text(
             text = label,
@@ -236,7 +277,15 @@ private fun DatePartField(
             onValueChange = onValueChange,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp),
+                .height(56.dp)
+                .onFocusChanged { state ->
+                    if (state.isFocused) {
+                        hasFocus = true
+                    } else if (hasFocus) {
+                        onFocusLost()
+                        hasFocus = false
+                    }
+                },
             textStyle = TextStyle(
                 fontFamily = InterFamily,
                 fontWeight = FontWeight.Normal,
@@ -259,6 +308,7 @@ private fun DatePartField(
                 focusedContainerColor = FigmaLightSurface,
                 unfocusedContainerColor = FigmaLightSurface,
             ),
+            isError = isError,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         )
     }

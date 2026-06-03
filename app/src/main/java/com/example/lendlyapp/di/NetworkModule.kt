@@ -7,7 +7,6 @@ import com.example.lendlyapp.core.ApiConfig
 import com.example.lendlyapp.core.ApiKeyInterceptor
 import com.example.lendlyapp.core.AuthInterceptor
 import com.example.lendlyapp.data.local.UserPreferences
-import com.example.lendlyapp.data.repository.LendlyApiService
 import com.example.lendlyapp.shared.AuthApi
 import dagger.Module
 import dagger.Provides
@@ -22,13 +21,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AppModule {
-
-    @Provides
-    @Singleton
-    fun provideUserPreferences(
-        @ApplicationContext context: Context,
-    ): UserPreferences = UserPreferences(context)
+object NetworkModule {
 
     @Provides
     @Singleton
@@ -40,7 +33,7 @@ object AppModule {
             level = HttpLoggingInterceptor.Level.BODY
         }
         return OkHttpClient.Builder()
-            .addInterceptor(apiKeyInterceptor)
+            .addInterceptor(ApiKeyInterceptor)
             .addInterceptor(authInterceptor)
             .addInterceptor(loggingInterceptor)
             .build()
@@ -60,20 +53,5 @@ object AppModule {
     @Singleton
     fun provideAuthApi(retrofit: Retrofit): AuthApi {
         return retrofit.create(AuthApi::class.java)
-    }
-
-    @Provides
-    @Singleton
-    fun provideLendlyApiService(retrofit: Retrofit): LendlyApiService {
-        return retrofit.create(LendlyApiService::class.java)
-    }
-
-    @Provides
-    @Singleton
-    fun provideAuthRepository(
-        api: AuthApi,
-        userPreferences: UserPreferences
-    ): AuthRepository {
-        return AuthRepositoryImpl(api, userPreferences)
     }
 }

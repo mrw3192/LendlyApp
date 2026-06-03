@@ -22,4 +22,9 @@ interface AuthApi {
     suspend fun register(
         @Body request: RegisterRequest
     ): Response<RegisterResponse>
+
+    @retrofit2.http.GET("users/{id}")
+    suspend fun getUser(
+        @retrofit2.http.Path("id") id: Int
+    ): Response<com.example.lendlyapp.model.UserResponse>
 }
