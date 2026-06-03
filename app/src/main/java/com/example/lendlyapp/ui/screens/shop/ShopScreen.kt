@@ -83,6 +83,7 @@ import com.example.lendlyapp.ui.theme.SubtitleGray
 fun ShopScreen(
     onProductClick: (Product) -> Unit = {},
     onSearchClick: () -> Unit = {},
+    onFilterClick: () -> Unit = {},
     viewModel: ShopViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -106,7 +107,7 @@ fun ShopScreen(
                     modifier = Modifier.padding(horizontal = 16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
-                    ShopSearchBar(onBarClick = onSearchClick)
+                    ShopSearchBar(onBarClick = onSearchClick, onFilterClick = onFilterClick)
                     PromotionalCard()
                 }
             }
@@ -175,15 +176,21 @@ fun ShopScreen(
 // ─── Search Bar ───────────────────────────────────────────────────────────────
 
 @Composable
-private fun ShopSearchBar(onBarClick: () -> Unit = {}) {
-    Box {
+private fun ShopSearchBar(onBarClick: () -> Unit = {}, onFilterClick: () -> Unit = {}) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .border(1.dp, Color(0xFFE5E2E1), RoundedCornerShape(8.dp))
+            .background(Color.White),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .border(1.dp, Color(0xFFE5E2E1), RoundedCornerShape(8.dp))
-                .background(Color.White),
+                .weight(1f)
+                .fillMaxHeight()
+                .clickable { onBarClick() },
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
@@ -197,25 +204,20 @@ private fun ShopSearchBar(onBarClick: () -> Unit = {}) {
                 color = SubtitleGray,
                 fontSize = 16.sp,
                 modifier = Modifier
-                    .weight(1f)
                     .padding(horizontal = 12.dp),
             )
-            Box(
-                modifier = Modifier
-                    .padding(end = 4.dp)
-                    .size(48.dp)
-                    .clip(RoundedCornerShape(4.dp))
-                    .background(FigmaNeonGreen),
-                contentAlignment = Alignment.Center,
-            ) {
-                Icon(imageVector = Icons.Default.FilterList, contentDescription = null, tint = OnPrimaryGreen)
-            }
         }
         Box(
             modifier = Modifier
-                .matchParentSize()
-                .clickable(onClick = onBarClick),
-        )
+                .padding(end = 4.dp)
+                .size(48.dp)
+                .clip(RoundedCornerShape(4.dp))
+                .background(FigmaNeonGreen)
+                .clickable { onFilterClick() },
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(imageVector = Icons.Default.FilterList, contentDescription = null, tint = OnPrimaryGreen)
+        }
     }
 }
 

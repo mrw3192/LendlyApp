@@ -38,6 +38,7 @@ import com.example.lendlyapp.ui.screens.profile.ProfileScreen
 import com.example.lendlyapp.ui.screens.shop.ProductDetailScreen
 import com.example.lendlyapp.ui.screens.shop.SearchScreen
 import com.example.lendlyapp.ui.screens.shop.ShopScreen
+import com.example.lendlyapp.ui.screens.shop.ShopFilterScreen
 import com.example.lendlyapp.ui.shared.BottomNavBar
 import com.example.lendlyapp.ui.shared.BottomNavTab
 import com.example.lendlyapp.ui.shared.LendlyLogo
@@ -53,8 +54,9 @@ fun MainScaffold(
     var selectedTab by remember { mutableStateOf(BottomNavTab.Home) }
     var shopSelectedProduct by remember { mutableStateOf<Product?>(null) }
     var shopShowSearch by remember { mutableStateOf(false) }
+    var shopShowFilter by remember { mutableStateOf(false) }
 
-    val showMainTopBar = shopSelectedProduct == null && !shopShowSearch
+    val showMainTopBar = shopSelectedProduct == null && !shopShowSearch && !shopShowFilter
 
     Column(modifier = Modifier.fillMaxSize().statusBarsPadding()) {
 
@@ -99,10 +101,16 @@ fun MainScaffold(
                         )
                         shopShowSearch -> SearchScreen(
                             onBack = { shopShowSearch = false },
+                            onFilterClick = { shopShowFilter = true },
+                        )
+                        shopShowFilter -> ShopFilterScreen(
+                            onBack = { shopShowFilter = false },
+                            onApply = { shopShowFilter = false }
                         )
                         else -> ShopScreen(
                             onProductClick = { shopSelectedProduct = it },
                             onSearchClick = { shopShowSearch = true },
+                            onFilterClick = { shopShowFilter = true }
                         )
                     }
                 }
@@ -122,6 +130,7 @@ fun MainScaffold(
                 onTabSelected = { tab ->
                     if (tab != BottomNavTab.Shop) {
                         shopShowSearch = false
+                        shopShowFilter = false
                         shopSelectedProduct = null
                     }
                     selectedTab = tab

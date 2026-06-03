@@ -59,6 +59,7 @@ import com.example.lendlyapp.viewmodel.ShopViewModel
 @Composable
 fun SearchScreen(
     onBack: () -> Unit,
+    onFilterClick: () -> Unit = {},
     viewModel: ShopViewModel = hiltViewModel(),
 ) {
     BackHandler { onBack() }
@@ -89,6 +90,7 @@ fun SearchScreen(
                 onSearch = {
                     if (query.isNotBlank()) viewModel.addRecentSearch(query)
                 },
+                onFilterClick = onFilterClick,
                 focusRequester = focusRequester,
             )
             if (recentSearches.isNotEmpty()) {
@@ -159,6 +161,7 @@ private fun SearchBarInPage(
     query: String,
     onQueryChange: (String) -> Unit,
     onSearch: () -> Unit,
+    onFilterClick: () -> Unit = {},
     focusRequester: FocusRequester,
 ) {
     Row(
@@ -214,7 +217,7 @@ private fun SearchBarInPage(
                 .size(48.dp)
                 .clip(RoundedCornerShape(4.dp))
                 .background(FigmaNeonGreen)
-                .clickable { },
+                .clickable { onFilterClick() },
             contentAlignment = Alignment.Center,
         ) {
             Icon(
