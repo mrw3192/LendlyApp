@@ -32,6 +32,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.lendlyapp.model.Product
 import com.example.lendlyapp.ui.screens.history.HistoryScreen
+import com.example.lendlyapp.ui.screens.loans.LoanInfoScreen
 import com.example.lendlyapp.ui.screens.home.HomeScreen
 import com.example.lendlyapp.ui.screens.loans.LoanScreen
 import com.example.lendlyapp.ui.screens.profile.ProfileScreen
@@ -53,8 +54,10 @@ fun MainScaffold(
     navController: NavController,
     onNavigateToCashIn: () -> Unit = {},
     onNavigateToTransactionDetails: (String) -> Unit = {},
+    onNavigateToLoanForm: () -> Unit = {},
     viewModel: MainViewModel = hiltViewModel(),
 ) {
+    
     val avatarUrl by viewModel.avatarUrl.collectAsState()
     var selectedTab by rememberSaveable { mutableStateOf(BottomNavTab.Home) }
     var shopSelectedProduct by remember { mutableStateOf<Product?>(null) }
@@ -102,7 +105,7 @@ fun MainScaffold(
             .fillMaxWidth()) {
             when (selectedTab) {
                 BottomNavTab.Home    -> HomeScreen(onNavigateToCashIn = onNavigateToCashIn)
-                BottomNavTab.Loan    -> LoanScreen()
+                BottomNavTab.Loan    -> LoanInfoScreen(onNavigateToForm = onNavigateToLoanForm)              
                 BottomNavTab.Shop    -> {
                     val selected = shopSelectedProduct
                     when {
@@ -128,7 +131,12 @@ fun MainScaffold(
                 BottomNavTab.History -> HistoryScreen(onNavigateToTransactionDetails = onNavigateToTransactionDetails)
                 BottomNavTab.Manage  -> ProfileScreen(
                     onNavigateToEditProfile = { navController.navigate(AppDestination.EditProfile.route) },
-                    onNavigateToCreditScore = { navController.navigate(AppDestination.CreditScore.route) }
+                    onNavigateToCreditScore = { navController.navigate(AppDestination.CreditScore.route) },
+                    onLogout = {
+                        navController.navigate(AppDestination.Login.route) {
+                            popUpTo(AppDestination.Home.route) { inclusive = true }
+                        }
+                    }
                 )
             }
         }

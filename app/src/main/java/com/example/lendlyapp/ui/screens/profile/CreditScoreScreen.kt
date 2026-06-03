@@ -82,7 +82,7 @@ fun CreditScoreScreen(
 
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.padding(top = 40.dp)
+                            modifier = Modifier.padding(top = 90.dp)
                         ) {
                             Text(text = score.toString(), fontSize = 48.sp, fontWeight = FontWeight.Bold, color = FigmaLightText)
                             Text(text = "Your Score is Good", fontSize = 16.sp, color = SubtitleGray, fontWeight = FontWeight.Medium)
@@ -160,7 +160,8 @@ fun ScoreArc(score: Int) {
         // Aguja (Gauge needle)
         val angleInRadians = (startAngle + progress) * (Math.PI / 180f).toFloat()
         val radius = size.width / 2
-        val lineLength = radius - 20.dp.toPx()
+        val lineLength = radius - 18.dp.toPx()
+        
         val endX = center.x + lineLength * cos(angleInRadians).toFloat()
         val endY = center.y + lineLength * sin(angleInRadians).toFloat()
 

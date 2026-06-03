@@ -30,6 +30,12 @@ sealed class AppDestination(val route: String) {
     data object TransactionDetails : AppDestination("transaction_details/{transactionId}") {
         fun createRoute(transactionId: String) = "transaction_details/${Uri.encode(transactionId)}"
     }
+
+    // ─── Loan Module ──────────────────────────────────────────────────────────
+    data object LoanInfo : AppDestination("loan_info")
+    data object LoanForm : AppDestination("loan_form")
+    data object LoanActive : AppDestination("loan_active")
+    data object LoanSuccess : AppDestination("loan_success")
     // ─── Manage Module ────────────────────────────────────────────────────────
     data object EditProfile : AppDestination("edit_profile")
     data object CreditScore : AppDestination("credit_score")
