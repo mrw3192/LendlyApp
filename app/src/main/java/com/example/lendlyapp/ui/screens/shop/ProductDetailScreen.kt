@@ -20,13 +20,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.AssignmentTurnedIn
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.Inventory2
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Security
-import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.filled.Mood
+import androidx.compose.material.icons.filled.PrivacyTip
+import androidx.compose.material.icons.filled.Sell
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -117,7 +119,7 @@ fun ProductDetailScreen(
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
                     FeatureItem(
-                        icon = Icons.Default.CheckCircle,
+                        icon = Icons.Default.AssignmentTurnedIn,
                         title = "How To Apply For A Loan",
                         lines = listOf(
                             "(1) Only 1 ID needed for the loan approval and,",
@@ -125,7 +127,7 @@ fun ProductDetailScreen(
                         ),
                     )
                     FeatureItem(
-                        icon = Icons.Default.Security,
+                        icon = Icons.Default.PrivacyTip,
                         title = "Disclaimer",
                         lines = listOf(
                             "Estimated calculation only. Down Payment and other loan terms may vary.",
@@ -199,14 +201,6 @@ private fun ProductTopAppBar(title: String, onBack: () -> Unit) {
                 .padding(horizontal = 8.dp),
             maxLines = 1,
         )
-        Box(
-            modifier = Modifier
-                .size(48.dp)
-                .clip(CircleShape),
-            contentAlignment = Alignment.Center,
-        ) {
-            Icon(imageVector = Icons.Outlined.Info, contentDescription = null, tint = FigmaLightText)
-        }
     }
 }
 
@@ -226,16 +220,22 @@ private fun GreenFeatureBanner() {
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            FeatureChip(label = "Low interest")
-            FeatureChip(label = "0% Installment")
-            FeatureChip(label = "Easy pick-up")
+            FeatureChip(icon = Icons.Default.Mood, label = "Low interest")
+            FeatureChip(icon = Icons.Default.Sell, label = "0% Installment")
+            FeatureChip(icon = Icons.Default.Inventory2, label = "Easy pick-up")
         }
     }
 }
 
 @Composable
-private fun FeatureChip(label: String) {
-    Text(text = label, fontSize = 11.sp, fontWeight = FontWeight.Medium, fontFamily = InterFamily, color = Color(0xFF1D192B))
+private fun FeatureChip(icon: ImageVector, label: String) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(imageVector = icon, contentDescription = null, tint = Color(0xFF1D192B), modifier = Modifier.size(14.dp))
+        Text(text = label, fontSize = 11.sp, fontWeight = FontWeight.Medium, fontFamily = InterFamily, color = Color(0xFF1D192B))
+    }
 }
 
 // ─── Product Image Area ───────────────────────────────────────────────────────
@@ -319,26 +319,6 @@ private fun PriceSection(product: Product) {
                 color = SubtitleGray,
             )
         }
-        if (product.reviewCount > 0) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    text = "⭐ ${product.rating}",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
-                    fontFamily = InterFamily,
-                    color = ShopPriceGreen,
-                )
-                Text(
-                    text = "(${product.reviewCount} reviews)",
-                    fontSize = 12.sp,
-                    fontFamily = InterFamily,
-                    color = SubtitleGray,
-                )
-            }
-        }
     }
 }
 
@@ -359,7 +339,6 @@ private fun LocationDropdown(expanded: Boolean, onToggle: () -> Unit) {
                 fontFamily = InterFamily,
                 color = Color.Black,
             )
-            StepTag()
         }
         AnimatedVisibility(visible = expanded) {
             Row(
@@ -412,17 +391,11 @@ private fun MerchantsDropdown(
                 fontFamily = InterFamily,
                 color = Color.Black,
             )
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                StepTag()
-                Icon(
-                    imageVector = if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                    contentDescription = null,
-                    tint = FigmaLightText,
-                )
-            }
+            Icon(
+                imageVector = if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                contentDescription = null,
+                tint = FigmaLightText,
+            )
         }
         AnimatedVisibility(visible = expanded) {
             Column(
@@ -442,8 +415,6 @@ private fun MerchantRow(name: String, imageAsset: String, product: Product) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(8.dp))
-            .border(1.dp, Color(0xFFE5E2E1), RoundedCornerShape(8.dp))
             .clickable { }
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -519,17 +490,11 @@ private fun ExpandableSection(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(text = header, fontSize = 12.sp, fontWeight = FontWeight.Medium, fontFamily = InterFamily, color = Color.Black)
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                StepTag()
-                Icon(
-                    imageVector = if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                    contentDescription = null,
-                    tint = FigmaLightText,
-                )
-            }
+            Icon(
+                imageVector = if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                contentDescription = null,
+                tint = FigmaLightText,
+            )
         }
         AnimatedVisibility(visible = expanded) {
             content()
@@ -572,20 +537,6 @@ private fun SpecDetail(label: String, lines: List<String>) {
         lines.forEach { line ->
             Text(text = line, fontSize = 12.sp, fontWeight = FontWeight.Medium, fontFamily = InterFamily, color = SubtitleGray)
         }
-    }
-}
-
-// ─── Step Tag ─────────────────────────────────────────────────────────────────
-
-@Composable
-private fun StepTag() {
-    Box(
-        modifier = Modifier
-            .clip(RoundedCornerShape(4.dp))
-            .background(FigmaMintSplash)
-            .padding(horizontal = 8.dp, vertical = 4.dp),
-    ) {
-        Text(text = "Step 3", fontSize = 12.sp, fontWeight = FontWeight.Normal, fontFamily = InterFamily, color = SubtitleGray)
     }
 }
 
