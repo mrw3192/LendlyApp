@@ -161,18 +161,6 @@ fun AppNavigation() {
         composable(AppDestination.FaceRecognition.route) {
             FaceRecognitionScreen(
                 onNextClick = {
-                    navController.navigate(AppDestination.Signature.route)
-                },
-                onBackClick = {
-                    navController.popBackStack()
-                },
-            )
-        }
-
-        // ── KYC Step 3: Signature ────────────────────────────────────────────
-        composable(AppDestination.Signature.route) {
-            SignatureScreen(
-                onNextClick = {
                     navController.navigate(AppDestination.Verified.route)
                 },
                 onBackClick = {
@@ -181,11 +169,23 @@ fun AppNavigation() {
             )
         }
 
-        // ── KYC Step 4: Verified ─────────────────────────────────────────────
+        // ── KYC Step 4: Signature ────────────────────────────────────────────
+        composable(AppDestination.Signature.route) {
+            SignatureScreen(
+                onNextClick = {
+                    navController.navigate(AppDestination.Done.route)
+                },
+                onBackClick = {
+                    navController.popBackStack()
+                },
+            )
+        }
+
+        // ── KYC Step 3: Verified ─────────────────────────────────────────────
         composable(AppDestination.Verified.route) {
             VerifiedScreen(
                 onNextClick = {
-                    navController.navigate(AppDestination.Done.route)
+                    navController.navigate(AppDestination.Signature.route)
                 },
                 onBackClick = {
                     navController.popBackStack()
