@@ -87,6 +87,9 @@ val CloseButtonBg = Color(0xFF0B390F)
 /** #005046 — "Didn't received a code?" link on SMS verification */
 val OtpLinkTeal = Color(0xFF005046)
 
+/** #1F3701 — Price text in Shop catalog and Product Detail */
+val ShopPriceGreen = Color(0xFF1F3701)
+
 // ─── KYC / Verification screen tokens ───────────────────────────────────────────
 
 /** #1D1B20 — AppBar headline on KYC screens */

@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -24,15 +23,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -118,11 +114,8 @@ private fun HomeScreenContent(
         modifier = modifier
             .fillMaxSize()
             .background(Color.White)
-            .statusBarsPadding()
             .verticalScroll(rememberScrollState()),
     ) {
-        HomeTopBar()
-
         Spacer(modifier = Modifier.height(32.dp))
         Text(
             text = "Account",
@@ -173,48 +166,6 @@ private fun HomeScreenContent(
         }
 
         Spacer(modifier = Modifier.height(24.dp))
-    }
-}
-
-@Composable
-private fun HomeTopBar(modifier: Modifier = Modifier) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(56.dp)
-            .padding(horizontal = 4.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        IconButton(
-            onClick = {},
-            modifier = Modifier.size(48.dp),
-        ) {
-            Icon(
-                imageVector = Icons.Default.Person,
-                contentDescription = null,
-                tint = FigmaLightText,
-                modifier = Modifier.size(24.dp),
-            )
-        }
-
-        Box(
-            modifier = Modifier.weight(1f),
-            contentAlignment = Alignment.Center,
-        ) {
-            LendlyLogo(size = DpSize(width = 58.dp, height = 20.dp))
-        }
-
-        IconButton(
-            onClick = {},
-            modifier = Modifier.size(48.dp),
-        ) {
-            Icon(
-                imageVector = Icons.Default.Notifications,
-                contentDescription = null,
-                tint = FigmaLightText,
-                modifier = Modifier.size(24.dp),
-            )
-        }
     }
 }
 
@@ -419,7 +370,7 @@ private fun ProductCard(
             Spacer(modifier = Modifier.height(16.dp))
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(product.imageUrl)
+                    .data(product.imageAsset)
                     .crossfade(true)
                     .build(),
                 contentDescription = product.name,
@@ -443,7 +394,7 @@ private fun ProductCard(
                     .padding(horizontal = 16.dp),
             )
             Text(
-                text = String.format(Locale.US, "₱%,.0f x %d mo", product.price, product.installments),
+                text = String.format(Locale.US, "₱%,.0f x %d mo", product.monthlyPayment, product.installmentMonths),
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Medium,
                 fontFamily = InterFamily,
@@ -469,9 +420,9 @@ private fun HomeScreenPreview() {
                     Loan(id = "2", companyName = "Apple Inc.", amount = 1500.0, description = "Fees of March",   lenderLogo = "https://logo.clearbit.com/apple.com"),
                 ),
                 recommendedProducts = listOf(
-                    Product(id = "1", name = "iPhone 12 Pro",      price = 1200.0, installments = 24, imageUrl = "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone-12-pro-family-hero"),
-                    Product(id = "2", name = "AirPods Pro",        price = 600.0,  installments = 24, imageUrl = "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/MME73"),
-                    Product(id = "3", name = "Samsung Galaxy S21", price = 1000.0, installments = 24, imageUrl = "https://images.samsung.com/is/image/samsung/ph-feature-made-for-the-epic-in-everyday-418978951"),
+                    Product(id = "1", name = "iPhone 12 Pro",      shortName = "iPhone 12 Pro", imageAsset = "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone-12-pro-family-hero", monthlyPayment = 1200.0, totalPrice = 28800.0, category = "", brand = "", installmentMonths = 24, currency = "₱", isAvailable = true, description = "", rating = 0.0, reviewCount = 0),
+                    Product(id = "2", name = "AirPods Pro",        shortName = "AirPods Pro",   imageAsset = "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/MME73",                     monthlyPayment = 600.0,  totalPrice = 14400.0, category = "", brand = "", installmentMonths = 24, currency = "₱", isAvailable = true, description = "", rating = 0.0, reviewCount = 0),
+                    Product(id = "3", name = "Samsung Galaxy S21", shortName = "Samsung S21",   imageAsset = "https://images.samsung.com/is/image/samsung/ph-feature-made-for-the-epic-in-everyday-418978951", monthlyPayment = 1000.0, totalPrice = 24000.0, category = "", brand = "", installmentMonths = 24, currency = "₱", isAvailable = true, description = "", rating = 0.0, reviewCount = 0),
                 ),
             )
         )

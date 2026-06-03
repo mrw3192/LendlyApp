@@ -5,9 +5,10 @@ import com.example.lendlyapp.model.LoanApplyRequest
 import com.example.lendlyapp.model.LoginRequest
 import com.example.lendlyapp.model.LoginResponse
 import com.example.lendlyapp.model.LoansApiResponse
-import com.example.lendlyapp.model.ProductsApiResponse
 import com.example.lendlyapp.model.RegisterRequest
 import com.example.lendlyapp.model.RegisterResponse
+import com.example.lendlyapp.model.ShopResponse
+
 import com.example.lendlyapp.model.TransactionsApiResponse
 import com.example.lendlyapp.model.UserApiResponse
 import retrofit2.http.Body
@@ -36,5 +37,5 @@ interface LendlyApiService {
     suspend fun getTransactions(): TransactionsApiResponse
 
     @GET("products")
-    suspend fun getProducts(): ProductsApiResponse
+    suspend fun getShopData(): ShopResponse
 }

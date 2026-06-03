@@ -47,6 +47,22 @@ fun CameraPreview(
             )
         } catch (e: Exception) {
             e.printStackTrace()
+            // Fallback para emuladores: si la cámara frontal falla porque ambas 
+            // están mapeadas a la misma webcam física y el sistema solo expone una,
+            // intentamos forzar el uso de la cámara trasera como plan B.
+            try {
+                val fallbackSelector = CameraSelector.Builder()
+                    .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+                    .build()
+                cameraProvider.unbindAll()
+                cameraProvider.bindToLifecycle(
+                    lifecycleOwner,
+                    fallbackSelector,
+                    preview
+                )
+            } catch (fallbackE: Exception) {
+                fallbackE.printStackTrace()
+            }
         }
     }
     
