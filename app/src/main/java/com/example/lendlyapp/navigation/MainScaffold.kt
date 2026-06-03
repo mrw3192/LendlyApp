@@ -99,13 +99,13 @@ fun MainScaffold(
                             product = selected,
                             onBack = { shopSelectedProduct = null },
                         )
-                        shopShowSearch -> SearchScreen(
-                            onBack = { shopShowSearch = false },
-                            onFilterClick = { shopShowFilter = true },
-                        )
                         shopShowFilter -> ShopFilterScreen(
                             onBack = { shopShowFilter = false },
                             onApply = { shopShowFilter = false }
+                        )
+                        shopShowSearch -> SearchScreen(
+                            onBack = { shopShowSearch = false },
+                            onFilterClick = { shopShowFilter = true },
                         )
                         else -> ShopScreen(
                             onProductClick = { shopSelectedProduct = it },
