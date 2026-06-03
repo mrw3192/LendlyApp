@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.lendlyapp.ui.shared.LendlyTopBar
 import com.example.lendlyapp.ui.theme.*
 
 // ─── Assets ───────────────────────────────────────────────────────────────────
@@ -50,7 +51,19 @@ fun ActiveLoanScreen(
 ) {
     Scaffold(
         topBar = {
-            ActiveLoanTopBar(onBack = onBack)
+            LendlyTopBar(
+                onNavigationClick = onBack,
+                title = "",
+                trailingContent = {
+                    IconButton(onClick = { /* TODO */ }) {
+                        Icon(
+                            imageVector = Icons.Default.DateRange,
+                            contentDescription = "Calendar",
+                            tint = FigmaLightText
+                        )
+                    }
+                }
+            )
         },
         containerColor = Color.White
     ) { innerPadding ->
@@ -172,25 +185,6 @@ private fun RecentLoanRow(item: RecentLoanItem) {
             Text(item.status, fontSize = 16.sp, color = OnPrimaryGreen, fontWeight = FontWeight.SemiBold)
         }
     }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun ActiveLoanTopBar(onBack: () -> Unit) {
-    TopAppBar(
-        title = {},
-        navigationIcon = {
-            IconButton(onClick = onBack) {
-                Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = FigmaLightText)
-            }
-        },
-        actions = {
-            IconButton(onClick = {}) {
-                Icon(Icons.Default.DateRange, contentDescription = "Calendar", tint = FigmaLightText)
-            }
-        },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
-    )
 }
 
 private fun sampleActiveLoans() = listOf(

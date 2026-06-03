@@ -12,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -24,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.lendlyapp.ui.shared.LendlyTopBar
 import com.example.lendlyapp.ui.theme.*
 import com.example.lendlyapp.viewmodel.LoanViewModel
 
@@ -46,7 +48,19 @@ fun LoanFormScreen(
 
     Scaffold(
         topBar = {
-            LoanFormTopBar(onBack = onBack)
+            LendlyTopBar(
+                onNavigationClick = onBack,
+                title = "Loan",
+                trailingContent = {
+                    IconButton(onClick = { /* TODO */ }) {
+                        Icon(
+                            imageVector = Icons.Outlined.Info,
+                            contentDescription = "Info",
+                            tint = FigmaLightText
+                        )
+                    }
+                }
+            )
         },
         bottomBar = {
             Column(modifier = Modifier.background(Color.White)) {
@@ -253,25 +267,6 @@ private fun SummaryRow(label: String, value: String) {
         Text(label, fontSize = 12.sp, fontWeight = FontWeight.Medium, color = FormLabel)
         Text(value, fontSize = 12.sp, fontWeight = FontWeight.Medium, color = SubtitleGray)
     }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun LoanFormTopBar(onBack: () -> Unit) {
-    TopAppBar(
-        title = { Text("Loan", fontWeight = FontWeight.Medium) },
-        navigationIcon = {
-            IconButton(onClick = onBack) {
-                Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-            }
-        },
-        actions = {
-            IconButton(onClick = {}) {
-                Icon(Icons.Default.Info, contentDescription = "Info")
-            }
-        },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
-    )
 }
 
 @Preview(showBackground = true, showSystemUi = true)

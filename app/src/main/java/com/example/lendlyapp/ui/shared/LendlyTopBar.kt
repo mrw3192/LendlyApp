@@ -28,6 +28,7 @@ fun LendlyTopBar(
     onNavigationClick: () -> Unit,
     navigationIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
     title: String = "",
+    titleContent: (@Composable () -> Unit)? = null,
     trailingContent: @Composable RowScope.() -> Unit = { Spacer(Modifier.size(48.dp)) },
 ) {
     Row(
@@ -47,7 +48,9 @@ fun LendlyTopBar(
         }
 
         Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
-            if (title.isNotEmpty()) {
+            if (titleContent != null) {
+                titleContent()
+            } else if (title.isNotEmpty()) {
                 Text(
                     text = title,
                     fontSize = 16.sp,

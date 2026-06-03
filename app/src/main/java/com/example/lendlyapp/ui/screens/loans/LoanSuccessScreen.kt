@@ -23,6 +23,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.lendlyapp.ui.shared.LendlyTopBar
 import com.example.lendlyapp.ui.theme.*
 
 data class TransactionDetails(
@@ -85,34 +86,21 @@ fun LoanSuccessScreen(
                     .fillMaxWidth()
                     .background(FigmaLightBg)
             ) {
-                // Top App Bar
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 16.dp, top = 8.dp, end = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    // Botón cerrar
-                    Box(
-                        modifier = Modifier
-                            .size(48.dp)
-                            .clip(CircleShape)
-                            .background(FigmaMintSplash),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        IconButton(onClick = onClose) {
-                            Icon(Icons.Default.Close, contentDescription = "Close", tint = Color.Black)
+                LendlyTopBar(
+                    onNavigationClick = onClose,
+                    navigationIcon = Icons.Default.Close,
+                    title = "",
+                    trailingContent = {
+                        Row {
+                            IconButton(onClick = {}) {
+                                Icon(Icons.Default.Info, contentDescription = "Info", tint = FigmaLightText)
+                            }
+                            IconButton(onClick = {}) {
+                                Icon(Icons.Default.MoreHoriz, contentDescription = "More", tint = FigmaLightText)
+                            }
                         }
                     }
-                    Spacer(Modifier.weight(1f))
-                    // Acciones derecha
-                    IconButton(onClick = {}) {
-                        Icon(Icons.Default.Info, contentDescription = "Info", tint = FigmaLightText)
-                    }
-                    IconButton(onClick = {}) {
-                        Icon(Icons.Default.MoreHoriz, contentDescription = "More", tint = FigmaLightText)
-                    }
-                }
+                )
 
                 Spacer(Modifier.height(16.dp))
 

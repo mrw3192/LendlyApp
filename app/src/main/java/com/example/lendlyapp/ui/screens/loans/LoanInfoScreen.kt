@@ -28,24 +28,21 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
 import com.example.lendlyapp.ui.shared.LendlyLogo
+import com.example.lendlyapp.ui.shared.LendlyTopBar
 import com.example.lendlyapp.ui.theme.*
 
 // ─── Assets (Figma URLs) ──────────────────────────────────────────────────────
 private const val IMG_BANNER = "https://www.figma.com/api/mcp/asset/5cf348c0-c623-49d6-93db-55ba16e06994"
 private const val IMG_ALARM  = "https://www.figma.com/api/mcp/asset/0f8a1cfc-470e-4aa1-ab1d-4f674d716a39"
 private const val IMG_HOW_1  = "https://www.figma.com/api/mcp/asset/5ad176fb-45ef-4c95-b1bc-ba9b176f5c98"
-private const val IMG_HOW_2  = "https://www.figma.com/api/mcp/asset/5a2b0b87-936a-4c84-891b-db5bfba3d3f4"
-private const val IMG_HOW_3  = "https://www.figma.com/api/mcp/asset/7c49b657-b290-4bd7-949e-ffc9b6bdb64f"
-private const val IMG_HOW_4  = "https://www.figma.com/api/mcp/asset/58f67a5d-2968-487f-b230-eda17645074c"
+private const val IMG_HOW_2  = "https://www.lendly.com/api/mcp/asset/5a2b0b87-936a-4c84-891b-db5bfba3d3f4"
+private const val IMG_HOW_3  = "https://www.lendly.com/api/mcp/asset/7c49b657-b290-4bd7-949e-ffc9b6bdb64f"
+private const val IMG_HOW_4  = "https://www.lendly.com/api/mcp/asset/58f67a5d-2968-487f-b230-eda17645074c"
 
 @Composable
 fun LoanInfoScreen(
     onNavigateToForm: () -> Unit
 ) {
-    // Note: No Scaffold here if the TopBar and BottomBar are managed by MainScaffold
-    // But since the design has a specific TopBar for this screen, we can use a Column.
-    // If we want the button to stay fixed at the bottom, we use a Scaffold without a bottom bar (it will be in MainScaffold).
-    
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -53,8 +50,23 @@ fun LoanInfoScreen(
             .statusBarsPadding()
             .verticalScroll(rememberScrollState())
     ) {
-        // App Bar
-        LoanTopAppBar()
+        LendlyTopBar(
+            onNavigationClick = { /* TODO: Profile action */ },
+            navigationIcon = Icons.Outlined.Person,
+            titleContent = {
+                LendlyLogo(size = DpSize(width = 58.dp, height = 20.dp))
+            },
+            trailingContent = {
+                IconButton(onClick = {}) {
+                    Icon(
+                        imageVector = Icons.Outlined.Notifications,
+                        contentDescription = "Notifications",
+                        modifier = Modifier.size(width = 15.dp, height = 19.dp),
+                        tint = Color(0xFF1C1B1F)
+                    )
+                }
+            }
+        )
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -105,40 +117,6 @@ fun LoanInfoScreen(
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-    }
-}
-
-@Composable
-private fun LoanTopAppBar() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 4.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        IconButton(onClick = {}) {
-            Icon(
-                imageVector = Icons.Outlined.Person,
-                contentDescription = "Profile",
-                modifier = Modifier.size(24.dp), // Width 24px, Height 24px
-                tint = Color(0xFF1C1B1F) // Color #1C1B1F (No es negro puro)
-            )
-        }
-        
-        // Logo center - Frame 133: 58.26px x 20px
-        LendlyLogo(
-            size = DpSize(width = 58.dp, height = 20.dp)
-        )
-
-        IconButton(onClick = {}) {
-            Icon(
-                imageVector = Icons.Outlined.Notifications,
-                contentDescription = "Notifications",
-                modifier = Modifier.size(width = 15.dp, height = 19.dp), // Width 15px, Height 19.19px
-                tint = Color(0xFF1C1B1F) // Color #1C1B1F
-            )
-        }
     }
 }
 
