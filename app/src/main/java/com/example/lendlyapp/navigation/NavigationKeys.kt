@@ -27,4 +27,8 @@ sealed class AppDestination(val route: String) {
     data object FaceRecognition : AppDestination("faceRecognition")
     data object Signature : AppDestination("signature")
     data object Verified : AppDestination("verified")
+    // ─── Manage Module ────────────────────────────────────────────────────────
+    data object EditProfile : AppDestination("edit_profile")
+    data object CreditScore : AppDestination("credit_score")
+    data object ProfileDone : AppDestination("profile_done")
 }
