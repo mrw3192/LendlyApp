@@ -54,5 +54,7 @@ El trabajo se ha dividido equitativamente para que podamos avanzar en paralelo:
 - **Zaida Martinez:** Módulo Tienda (Catálogo de productos) y Transacciones (Historial).
 - **Santino Lamberti:** Módulo Perfil (Manage, actualización de perfil, operaciones, cerrar sesión).
 
+**Aunque las tareas hayan sido divididas, todos los compañeros aportaron a las distintas areas del proyecto con ayuda, comentarios, o mejoras.**
+
 ## 🤖 Uso de IA Generativa
 Este proyecto ha hecho uso de herramientas de IA generativa para establecer la arquitectura base, dependencias y planificación del proyecto, cumpliendo con la declaración de uso solicitada.
