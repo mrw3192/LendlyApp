@@ -15,6 +15,9 @@ import com.example.lendlyapp.ui.screens.cashin.CashInOverTheCounterScreen
 import com.example.lendlyapp.ui.screens.cashin.CashInScreen
 import com.example.lendlyapp.ui.screens.cashin.SuccessfulTransactionScreen
 import com.example.lendlyapp.ui.screens.onboarding.OnboardingScreen
+import com.example.lendlyapp.ui.screens.profile.CreditScoreScreen
+import com.example.lendlyapp.ui.screens.profile.EditProfileScreen
+import com.example.lendlyapp.ui.screens.profile.ProfileSuccessScreen
 import com.example.lendlyapp.ui.screens.register.CreatePasswordScreen
 import com.example.lendlyapp.ui.screens.register.DoneScreen
 import com.example.lendlyapp.ui.screens.register.FaceRecognitionScreen
@@ -24,6 +27,7 @@ import com.example.lendlyapp.ui.screens.register.SignatureScreen
 import com.example.lendlyapp.ui.screens.register.SmsVerificationScreen
 import com.example.lendlyapp.ui.screens.register.VerifiedScreen
 import com.example.lendlyapp.ui.screens.register.VerifyPhoneScreen
+import com.example.lendlyapp.viewmodel.ProfileViewModel
 import com.example.lendlyapp.viewmodel.RegisterViewModel
 
 /**
@@ -211,6 +215,7 @@ fun AppNavigation() {
         // ── Home ─────────────────────────────────────────────────────────────
         composable(AppDestination.Home.route) {
             MainScaffold(
+                navController = navController,
                 onNavigateToCashIn = { navController.navigate(AppDestination.CashIn.route) }
             )
         }
@@ -274,6 +279,37 @@ fun AppNavigation() {
                 onDone = {
                     navController.navigate(AppDestination.Home.route) { popUpTo(0) { inclusive = true } }
                 },
+            )
+        }
+        // ─── Manage Module ───────────────────────────────────────────────────
+        composable(AppDestination.EditProfile.route) {
+            val viewModel: ProfileViewModel = hiltViewModel()
+            EditProfileScreen(
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() },
+                onSuccess = {
+                    navController.navigate(AppDestination.ProfileDone.route) {
+                        popUpTo(AppDestination.Home.route)
+                    }
+                }
+            )
+        }
+
+        composable(AppDestination.CreditScore.route) {
+            val viewModel: ProfileViewModel = hiltViewModel()
+            CreditScoreScreen(
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(AppDestination.ProfileDone.route) {
+            ProfileSuccessScreen(
+                onDone = {
+                    navController.navigate(AppDestination.Home.route) {
+                        popUpTo(AppDestination.Home.route) { inclusive = true }
+                    }
+                }
             )
         }
     }
