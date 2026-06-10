@@ -4,12 +4,14 @@ import com.example.lendlyapp.data.local.UserPreferences
 import com.example.lendlyapp.model.LoginRequest
 import com.example.lendlyapp.model.RegisterRequest
 import com.example.lendlyapp.shared.AuthApi
+import com.example.lendlyapp.shared.LendlyApiService
 import com.example.lendlyapp.data.local.room.UserDao
 import com.example.lendlyapp.data.local.room.UserEntity
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
     private val api: AuthApi,
+    private val lendlyApiService: LendlyApiService,
     private val userPreferences: UserPreferences,
     private val userDao: UserDao,
 ) : AuthRepository {
@@ -82,32 +84,34 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun getUser(id: Int): Result<com.example.lendlyapp.model.UserDto> {
         return try {
-            // 1. Try to fetch from API
-            val response = api.getUser(id)
-            if (response.isSuccessful) {
-                val body = response.body()
-                if (body != null && body.success && body.user != null) {
-                    val user = body.user
-                    // Cache in Room
-                    userDao.insertUser(
-                        UserEntity(
-                            id = user.id,
-                            name = user.fullName,
-                            phone = user.phone,
-                            email = user.email,
-                            avatar = user.avatar
-                        )
+            val response = lendlyApiService.getUser(id.toString())
+            if (response.success && response.user != null) {
+                val user = response.user
+                userDao.insertUser(
+                    UserEntity(
+                        id = user.id,
+                        name = user.fullName,
+                        phone = user.phone,
+                        email = user.email,
+                        avatar = user.avatar
                     )
-                    Result.success(user)
-                } else {
-                    Result.failure(Exception(body?.message ?: "Failed to fetch user from API"))
-                }
+                )
+                Result.success(
+                    com.example.lendlyapp.model.UserDto(
+                        id = user.id,
+                        fullName = user.fullName,
+                        phone = user.phone,
+                        email = user.email,
+                        avatar = user.avatar.ifEmpty { null },
+                        creditScore = user.creditScore,
+                        availableBalance = user.availableBalance,
+                        memberSince = user.memberSince
+                    )
+                )
             } else {
-                // Network call failed, fallback to Room
                 fallbackToRoom(id)
             }
         } catch (e: Exception) {
-            // Exception (e.g. timeout, no internet), fallback to Room
             fallbackToRoom(id)
         }
     }

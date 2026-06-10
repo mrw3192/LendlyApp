@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,9 +21,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.lendlyapp.ui.shared.LendlyTopBar
 import com.example.lendlyapp.ui.theme.*
+import com.example.lendlyapp.viewmodel.LoanUiState
+import com.example.lendlyapp.viewmodel.LoanViewModel
 
 // ─── Assets ───────────────────────────────────────────────────────────────────
 private const val IMG_APPLE_LOGO = "https://www.figma.com/api/mcp/asset/966f50b5-4544-4adf-a6be-c63c34e288a9"
@@ -45,10 +49,43 @@ data class RecentLoanItem(
 
 @Composable
 fun ActiveLoanScreen(
-    activeLoans: List<ActiveLoanItem> = sampleActiveLoans(),
-    recentLoans: List<RecentLoanItem> = sampleRecentLoans(),
+    viewModel: LoanViewModel = hiltViewModel(),
     onBack: () -> Unit = {}
 ) {
+    val uiState by viewModel.uiState
+
+    val activeLoans: List<ActiveLoanItem>
+    val recentLoans: List<RecentLoanItem>
+    when (val state = uiState) {
+        is LoanUiState.Success -> {
+            activeLoans = state.loans
+                .filter { it.status == "ACTIVE" }
+                .map { loan ->
+                    ActiveLoanItem(
+                        merchant = loan.companyName,
+                        feePeriod = loan.nextPaymentDate ?: "",
+                        productName = loan.purpose,
+                        amount = "₱ ${loan.amount}",
+                        logoUrl = loan.lenderLogo ?: IMG_APPLE_LOGO
+                    )
+                }
+            recentLoans = state.loans
+                .filter { it.status != "ACTIVE" }
+                .map { loan ->
+                    RecentLoanItem(
+                        date = loan.nextPaymentDate ?: "",
+                        merchant = loan.companyName,
+                        productName = loan.purpose,
+                        status = loan.status
+                    )
+                }
+        }
+        else -> {
+            activeLoans = emptyList()
+            recentLoans = emptyList()
+        }
+    }
+
     Scaffold(
         topBar = {
             LendlyTopBar(

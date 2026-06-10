@@ -8,9 +8,6 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
 
-/**
- * Retrofit interface for Authentication endpoints.
- */
 interface AuthApi {
 
     @POST("auth/login")
@@ -22,9 +19,4 @@ interface AuthApi {
     suspend fun register(
         @Body request: RegisterRequest
     ): Response<RegisterResponse>
-
-    @retrofit2.http.GET("users/{id}")
-    suspend fun getUser(
-        @retrofit2.http.Path("id") id: Int
-    ): Response<com.example.lendlyapp.model.UserResponse>
 }

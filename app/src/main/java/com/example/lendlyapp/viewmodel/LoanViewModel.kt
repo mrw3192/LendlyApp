@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.lendlyapp.model.Loan
+import com.example.lendlyapp.model.LoanApplyLoan
 import com.example.lendlyapp.usecase.ApplyForLoanUseCase
 import com.example.lendlyapp.usecase.GetLoansUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,9 +25,18 @@ class LoanViewModel @Inject constructor(
     private val applyForLoanUseCase: ApplyForLoanUseCase
 ) : ViewModel() {
 
-    // Estado principal de la UI (Carga, Éxito, Error)
     private val _uiState = mutableStateOf<LoanUiState>(LoanUiState.Loading)
     val uiState: State<LoanUiState> = _uiState
+
+    private val _appliedLoan = mutableStateOf<LoanApplyLoan?>(null)
+    val appliedLoan: State<LoanApplyLoan?> = _appliedLoan
+
+    private val _navigateToSuccess = mutableStateOf(false)
+    val navigateToSuccess: State<Boolean> = _navigateToSuccess
+
+    fun onSuccessNavigated() {
+        _navigateToSuccess.value = false
+    }
 
     var amountInput = mutableStateOf("")
         private set
@@ -74,9 +84,6 @@ class LoanViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Procesa la solicitud de un nuevo préstamo usando los datos del formulario.
-     */
     fun applyForLoan() {
         val amount = amountInput.value.toDoubleOrNull() ?: return
         val installments = installmentsInput.value.toIntOrNull() ?: return
@@ -84,10 +91,10 @@ class LoanViewModel @Inject constructor(
         _uiState.value = LoanUiState.Loading
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val result = applyForLoanUseCase(amount, installments)
-                _uiState.value = LoanUiState.Success(result)
-                // Limpiamos el formulario tras el éxito
+                val loan = applyForLoanUseCase(amount, installments)
+                _appliedLoan.value = loan
                 amountInput.value = ""
+                _navigateToSuccess.value = true
             } catch (e: Exception) {
                 _uiState.value = LoanUiState.Error("Error al solicitar el préstamo")
             }

@@ -40,6 +40,14 @@ fun LoanFormScreen(
     val selectedPlan by viewModel.installmentsInput
     val selectedPurpose by viewModel.purposeInput
     var purposeExpanded by remember { mutableStateOf(false) }
+    val navigateToSuccess by viewModel.navigateToSuccess
+
+    LaunchedEffect(navigateToSuccess) {
+        if (navigateToSuccess) {
+            viewModel.onSuccessNavigated()
+            onSuccess()
+        }
+    }
 
     val purposes = listOf("Educational", "Medical", "Business", "Personal", "Emergency")
     val plans = listOf(
@@ -65,10 +73,7 @@ fun LoanFormScreen(
         bottomBar = {
             Column(modifier = Modifier.background(Color.White)) {
                 Button(
-                    onClick = {
-                        viewModel.applyForLoan()
-                        onSuccess()
-                    },
+                    onClick = { viewModel.applyForLoan() },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)

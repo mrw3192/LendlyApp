@@ -42,6 +42,7 @@ import com.example.lendlyapp.ui.screens.loans.LoanInfoScreen
 import com.example.lendlyapp.ui.screens.loans.LoanFormScreen
 import com.example.lendlyapp.ui.screens.loans.LoanSuccessScreen
 import com.example.lendlyapp.ui.screens.loans.ActiveLoanScreen
+import com.example.lendlyapp.ui.screens.loans.TransactionDetails
 import com.example.lendlyapp.viewmodel.ProfileViewModel
 import com.example.lendlyapp.viewmodel.RegisterViewModel
 import com.example.lendlyapp.viewmodel.LoanViewModel
@@ -261,15 +262,40 @@ fun AppNavigation() {
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() },
                 onSuccess = {
-                    navController.navigate(AppDestination.LoanSuccess.route) {
-                        popUpTo(AppDestination.Home.route)
+                    val loan = viewModel.appliedLoan.value
+                    if (loan != null) {
+                        navController.navigate(AppDestination.LoanSuccess.createRoute(loan)) {
+                            popUpTo(AppDestination.Home.route)
+                        }
                     }
                 }
             )
         }
 
-        composable(AppDestination.LoanSuccess.route) {
+        composable(
+            route = AppDestination.LoanSuccess.route,
+            arguments = listOf(
+                navArgument("loanId") { type = NavType.StringType; defaultValue = "" },
+                navArgument("amount") { type = NavType.StringType; defaultValue = "0.0" },
+                navArgument("installmentAmount") { type = NavType.StringType; defaultValue = "0.0" },
+                navArgument("installmentPlan") { type = NavType.StringType; defaultValue = "" },
+                navArgument("interestRate") { type = NavType.StringType; defaultValue = "0.0" },
+                navArgument("status") { type = NavType.StringType; defaultValue = "" },
+                navArgument("nextPaymentDate") { type = NavType.StringType; defaultValue = "" },
+            )
+        ) { backStackEntry ->
+            val args = backStackEntry.arguments!!
+            val details = TransactionDetails(
+                amount = "₱ ${args.getString("amount") ?: "0.0"}",
+                source = "Lendly",
+                monthlyFee = "₱ ${args.getString("installmentAmount") ?: "0.0"}",
+                interest = "${args.getString("interestRate") ?: "0"}%",
+                installmentPlan = args.getString("installmentPlan") ?: "",
+                dateTime = args.getString("nextPaymentDate") ?: "",
+                transactionNumber = "#${args.getString("loanId") ?: ""}"
+            )
             LoanSuccessScreen(
+                details = details,
                 onClose = {
                     navController.navigate(AppDestination.Home.route) {
                         popUpTo(AppDestination.Home.route) { inclusive = true }
@@ -284,7 +310,9 @@ fun AppNavigation() {
         }
 
         composable(AppDestination.LoanActive.route) {
+            val viewModel: LoanViewModel = hiltViewModel()
             ActiveLoanScreen(
+                viewModel = viewModel,
                 onBack = { navController.popBackStack() }
             )
         }
