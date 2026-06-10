@@ -32,6 +32,7 @@ fun EditProfileScreen(
     val city by viewModel.cityInput
     val postalCode by viewModel.postalCodeInput
     val phone by viewModel.phoneInput
+    val birthDate by viewModel.birthDateInput
 
     Scaffold(
         topBar = {
@@ -79,13 +80,7 @@ fun EditProfileScreen(
             EditField("Full legal first and middle name(s)", firstName) { viewModel.onFirstNameChange(it) }
             EditField("Full legal last name", lastName) { viewModel.onLastNameChange(it) }
 
-            Text("Date of birth", color = FormLabel, fontSize = 14.sp, fontWeight = FontWeight.Medium)
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Box(Modifier.weight(1f)) { EditField("", "08") { } }
-                Box(Modifier.weight(1f)) { EditField("", "12") { } }
-                Box(Modifier.weight(1.5f)) { EditField("", "1997") { } }
-            }
+            EditField("Date of birth", birthDate) { viewModel.onBirthDateChange(it) }
 
             EditField("Address", address) { viewModel.onAddressChange(it) }
             EditField("City", city) { viewModel.onCityChange(it) }
